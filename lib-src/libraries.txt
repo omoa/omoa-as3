@@ -1,0 +1,5 @@
+Shp-Reader by Edwin van Rijkom
+  org.vanrijkom.shp.*
+  org.vanrijkom.dbf.*
+  http://code.google.com/p/vanrijkom-flashlibs/
+  LGPL 2.1

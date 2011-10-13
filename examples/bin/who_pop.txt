@@ -1,0 +1,194 @@
+Location	Population (in thousands) total	Population median age (years)	Population proportion under 15 (%)	Population proportion over 60 (%)	Population living in urban areas (%)	Annual population growth rate (%)
+Afghanistan	28150	17	46	4	24	0.3
+Albania	3155	30	24	13	47	0
+Algeria	34895	26	27	7	66	0.2
+Andorra	86	 	14	22	88	0.1
+Angola	18498	17	45	4	58	0.3
+Antigua and Barbuda	88	 	27	12	30	0.1
+Argentina	40276	30	25	15	92	0.1
+Armenia	3083	32	20	14	64	0
+Australia	21293	38	19	19	89	0.1
+Austria	8364	41	15	23	67	0
+Azerbaijan	8832	28	24	9	52	0.1
+Bahamas	342	29	26	10	84	0.1
+Bahrain	791	28	26	4	89	0.2
+Bangladesh	162221	24	31	6	28	0.1
+Barbados	256	37	17	15	40	0
+Belarus	9634	38	15	18	74	0
+Belgium	10647	41	17	23	97	0.1
+Belize	307	22	35	6	52	0.2
+Benin	8935	18	43	5	42	0.3
+Bhutan	697	24	31	7	36	0.2
+Bolivia (Plurinational State of)	9863	22	36	7	66	0.2
+Bosnia and Herzegovina	3767	39	15	19	48	0
+Botswana	1950	22	33	6	60	0.1
+Brazil	193734	29	26	10	86	0.1
+Brunei Darussalam	400	28	27	6	75	0.2
+Bulgaria	7545	42	13	24	71	-0.1
+Burkina Faso	15757	17	46	3	20	0.3
+Burundi	8303	20	38	4	11	0.3
+Cambodia	14805	22	33	6	22	0.2
+Cameroon	19522	19	41	5	58	0.2
+Canada	33573	40	17	20	80	0.1
+Cape Verde	506	21	36	5	60	0.1
+Central African Republic	4422	19	41	6	39	0.2
+Chad	11206	17	46	4	27	0.3
+Chile	16970	32	23	13	89	0.1
+China	1353311	34	20	12	44	0.1
+Colombia	45660	26	29	8	75	0.1
+Comoros	676	21	38	5	28	0.2
+Congo	3683	19	40	6	62	0.2
+Cook Islands	20	 	33	8	75	0.1
+Costa Rica	4579	28	26	9	64	0.1
+Croatia	4416	41	15	23	57	0
+Cuba	11204	38	18	17	76	0
+Cyprus	871	36	18	18	70	0.1
+Czech Republic	10369	39	14	22	73	0
+Côte d'Ivoire	21075	19	41	6	49	0.2
+Democratic People's Republic of Korea	23906	34	22	14	63	0
+Democratic Republic of the Congo	66020	17	47	4	35	0.3
+Denmark	5470	41	18	23	87	0
+Djibouti	864	21	36	5	88	0.2
+Dominica	67	 	27	12	74	0
+Dominican Republic	10090	25	31	9	70	0.1
+Ecuador	13625	25	31	9	66	0.1
+Egypt	82999	24	32	7	43	0.2
+El Salvador	6163	24	32	10	61	0
+Equatorial Guinea	676	19	41	4	39	0.3
+Eritrea	5073	19	42	4	21	0.3
+Estonia	1340	39	15	22	69	0
+Ethiopia	82825	18	44	5	17	0.3
+Fiji	849	25	31	8	53	0.1
+Finland	5326	42	17	24	64	0
+France	62343	40	18	23	78	0
+Gabon	1475	21	36	6	86	0.2
+Gambia	1705	19	42	5	57	0.3
+Georgia	4260	37	17	19	53	-0.1
+Germany	82167	44	14	26	74	0
+Ghana	23837	20	38	6	51	0.2
+Greece	11161	41	14	24	61	0
+Grenada	104	25	28	9	31	0
+Guatemala	14027	19	42	6	49	0.2
+Guinea	10069	18	43	5	35	0.2
+Guinea-Bissau	1611	19	43	5	30	0.2
+Guyana	762	27	30	9	28	0
+Haiti	10033	21	36	6	48	0.2
+Honduras	7466	21	37	6	48	0.2
+Hungary	9993	40	15	22	68	0
+Iceland	323	35	21	16	92	0.2
+India	1198003	25	31	7	30	0.1
+Indonesia	229965	28	27	9	53	0.1
+Iran (Islamic Republic of)	74196	26	24	7	69	0.1
+Iraq	30747	19	41	5	66	0.2
+Ireland	4515	34	21	16	62	0.2
+Israel	7170	30	28	14	92	0.2
+Italy	59870	43	14	26	68	0
+Jamaica	2719	26	29	11	53	0
+Japan	127156	44	13	30	67	0
+Jordan	6316	22	34	6	78	0.3
+Kazakhstan	15637	29	24	10	58	0.1
+Kenya	39802	18	43	4	22	0.3
+Kiribati	98	 	31	7	44	0.2
+Kuwait	2985	30	23	4	98	0.2
+Kyrgyzstan	5482	25	29	7	36	0.1
+Lao People's Democratic Republic	6320	20	38	5	32	0.2
+Latvia	2249	40	14	22	68	0
+Lebanon	4224	29	25	10	87	0.1
+Lesotho	2067	20	39	7	26	0.1
+Liberia	3955	18	43	5	61	0.4
+Libyan Arab Jamahiriya	6420	26	30	7	78	0.2
+Lithuania	3287	39	15	21	67	-0.1
+Luxembourg	486	39	18	19	82	0.1
+Madagascar	19625	18	43	5	30	0.3
+Malawi	15263	17	46	5	19	0.3
+Malaysia	27468	26	29	8	71	0.2
+Maldives	309	24	28	6	39	0.1
+Mali	13010	18	44	4	33	0.2
+Malta	409	39	16	21	94	0
+Marshall Islands	62	 	31	7	71	0.2
+Mauritania	3291	20	39	4	41	0.2
+Mauritius	1288	32	23	11	42	0.1
+Mexico	109610	27	28	9	78	0.1
+Micronesia (Federated States of)	111	21	37	6	23	0
+Monaco	33	 	18	23	100	0
+Mongolia	2671	26	26	6	57	0.1
+Montenegro	624	36	19	18	60	0
+Morocco	31993	26	28	8	56	0.1
+Mozambique	22894	18	44	5	38	0.2
+Myanmar	50020	28	27	8	33	0.1
+Namibia	2171	21	37	6	37	0.2
+Nauru	10	 	31	7	100	0
+Nepal	29331	21	37	6	18	0.2
+Netherlands	16592	40	18	21	82	0
+New Zealand	4266	36	20	18	87	0.1
+Nicaragua	5743	22	35	6	57	0.1
+Niger	15290	15	50	4	17	0.4
+Nigeria	154729	19	43	5	49	0.2
+Niue	1	 	33	8	39	-0.3
+Norway	4812	39	19	21	78	0.1
+Oman	2845	24	31	5	72	0.2
+Pakistan	180808	21	37	6	37	0.2
+Palau	20	 	31	7	82	0
+Panama	3454	27	29	10	74	0.2
+Papua New Guinea	6732	20	40	4	12	0.2
+Paraguay	6349	23	34	7	61	0.2
+Peru	29165	25	30	9	72	0.1
+Philippines	91983	23	34	7	66	0.2
+Poland	38074	38	15	19	61	0
+Portugal	10707	41	15	23	60	0
+Qatar	1409	30	16	2	96	1
+Republic of Korea	48333	37	17	15	82	0
+Republic of Moldova	3604	35	17	16	41	-0.1
+Romania	21275	38	15	20	54	0
+Russian Federation	140874	38	15	18	73	0
+Rwanda	9998	19	42	4	19	0.3
+Saint Kitts and Nevis	52	 	27	12	32	0.1
+Saint Lucia	172	27	26	9	28	0.1
+Saint Vincent and the Grenadines	109	28	27	9	47	0
+Samoa	179	19	39	7	23	0
+San Marino	31	 	14	26	94	0.1
+Sao Tome and Principe	163	19	41	5	61	0.2
+Saudi Arabia	25721	24	32	4	82	0.2
+Senegal	12534	18	44	4	43	0.3
+Serbia	9850	37	18	19	52	0
+Seychelles	84	 	23	11	55	0
+Sierra Leone	5696	18	43	4	38	0.2
+Singapore	4737	40	16	15	100	0.3
+Slovakia	5406	37	15	17	57	0
+Slovenia	2020	41	14	22	48	0
+Solomon Islands	523	20	39	5	18	0.2
+Somalia	9133	18	45	4	37	0.2
+South Africa	50110	25	31	7	61	0.1
+Spain	44904	40	15	22	77	0.1
+Sri Lanka	20238	30	24	12	15	0.1
+Sudan	42272	20	39	6	44	0.2
+Suriname	520	27	29	9	75	0.1
+Swaziland	1185	19	39	5	25	0.1
+Sweden	9249	41	17	25	85	0
+Switzerland	7568	42	15	23	74	0
+Syrian Arab Republic	21906	22	35	5	55	0.3
+Tajikistan	6952	20	37	5	26	0.2
+Thailand	67764	33	22	11	34	0.1
+The former Yugoslav Republic of Macedonia	2042	36	18	17	67	0
+Timor-Leste	1134	17	45	5	28	0.3
+Togo	6619	20	40	5	43	0.2
+Tonga	104	21	37	8	25	0
+Trinidad and Tobago	1339	30	21	10	14	0
+Tunisia	10272	29	23	10	67	0.1
+Turkey	74816	28	27	9	69	0.1
+Turkmenistan	5110	24	29	6	49	0.1
+Tuvalu	10	 	33	8	50	0
+Uganda	32710	16	49	4	13	0.3
+Ukraine	45708	39	14	21	68	-0.1
+United Arab Emirates	4599	31	19	2	78	0.3
+United Kingdom	61565	40	17	22	90	0.1
+United Republic of Tanzania	43739	17	45	5	26	0.3
+United States of America	314659	36	20	18	82	0.1
+Uruguay	3361	34	23	18	92	0
+Uzbekistan	27488	24	29	6	37	0.1
+Vanuatu	240	20	39	5	25	0.3
+Venezuela (Bolivarian Republic of)	28583	26	30	8	94	0.2
+Viet Nam	88069	28	26	9	28	0.1
+Yemen	23580	18	44	4	31	0.3
+Zambia	12935	17	46	5	36	0.2
+Zimbabwe	12523	19	40	6	38	0

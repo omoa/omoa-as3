@@ -1,0 +1,578 @@
+/*
+This file is part of OMOA.
+
+(C) Leibniz Institute for Regional Geography,
+    Leipzig, Germany
+
+OMOA is free software: you can redistribute it and/or modify
+it under the terms of the GNU Lesser General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+OMOA is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Lesser General Public License for more details.
+
+You should have received a copy of the GNU Lesser General Public License
+along with OMOA.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
+package org.omoa {
+
+	import flash.display.Shape;
+	import flash.display.Sprite;
+	import flash.events.Event;
+	import flash.events.MouseEvent;
+	import flash.geom.Matrix;
+	import flash.geom.Point;
+	import flash.geom.Rectangle;
+	import flash.geom.Transform;
+	import org.omoa.framework.ILayer;
+	import org.omoa.framework.IOverlay;
+	import org.omoa.framework.IProjection;
+	import org.omoa.framework.ISpaceModel;
+	import org.omoa.Map;
+	import org.omoa.projection.AbstractProjection;
+	import org.omoa.spacemodel.BoundingBox;
+	import org.omoa.util.NavigationButtons;
+	import org.omoa.util.OmoaLogo;
+	
+	/**
+	 * A MapFrame, a map may have more than one, is the visible instance of a map on the screen.
+	 * 
+	 * @author Sebastian Specht
+	 *
+	 */
+
+	public class MapFrame extends Sprite {
+
+		public var center:Point = new Point(0, 0);
+		public var bounds:BoundingBox = new BoundingBox( 0, 0, 1, 1);
+		public var viewportBounds:BoundingBox = new BoundingBox( 0, 0, 1, 1);
+		public var projection:IProjection = new AbstractProjection();
+		public var transformation:Transform = null;  //veraltet???
+		
+		public var logo:OmoaLogo;
+		public var navigation:NavigationButtons;
+		
+		private var _layers:Vector.<ILayer> = new Vector.<ILayer>();
+		private var _overlays:Vector.<IOverlay> = new Vector.<IOverlay>();
+		private var _map:Map;
+		
+		private var _bg:Shape;
+		private var _layerContainer:Sprite;
+		private var _frameDecoration:Sprite;
+		private var _overlayContainer:Sprite;
+		private var _mask:Shape;
+		private var _debug:Shape;
+		
+		private var _scale:Number = 1;
+		private var _worldWidth:Number;
+		private var _worldHeight:Number;
+		
+		private var layerTransformation:Matrix = new Matrix();
+		
+		public function MapFrame(map:Map=null) {
+			_map = map;
+			
+			mouseEnabled = true;
+			
+			_bg = new Shape();
+			bgColor = 0xfffff9;
+			addChild( _bg );
+			
+			// TODO: Use scrollRect and chacheAsBitmap instead (supposed to have better performance)
+			// http://www.gskinner.com/blog/archives/2006/11/understanding_d.html
+			_mask = new Shape();
+			_mask.name = "mask";
+			_mask.graphics.beginFill(0);
+			_mask.graphics.drawRect( 0, 0, 1, 1 );
+			_mask.graphics.endFill();
+			//addChild( _mask );
+			
+			//mask = clipMask;
+			
+			_layerContainer = new Sprite();
+			_layerContainer.mouseChildren = true;
+			_layerContainer.cacheAsBitmap = true;
+			//_layerContainer.mask = _mask;
+			//_layerContainer.scrollRect = _mask.getRect(this);
+			addChild( _layerContainer);
+			
+			_frameDecoration = new Sprite();
+			_frameDecoration.mouseChildren = false;
+			addChild( _frameDecoration );
+			
+			_overlayContainer = new Sprite();
+			_overlayContainer.mouseChildren = false;
+			addChild( _overlayContainer );
+			
+			transformation = new Transform(_layerContainer);
+			
+			_debug = new Shape();
+			_debug.name = "debug";
+			addChild( _debug );
+			
+			layerTransformation.b = 0;
+			layerTransformation.c = 0;
+			
+			logo = new OmoaLogo();
+			addChild( logo );
+			
+			navigation = new NavigationButtons();
+			addChild( navigation );
+			navigation.addEventListener(NavigationButtons.EVENT_PLUS, zoomIn);
+			navigation.addEventListener(NavigationButtons.EVENT_MINUS, zoomOut);
+			navigation.addEventListener(NavigationButtons.EVENT_HOME, fitToFrame);
+			
+			navigation.addEventListener(NavigationButtons.EVENT_NORTH, moveNorth);
+			navigation.addEventListener(NavigationButtons.EVENT_SOUTH, moveSouth);
+			navigation.addEventListener(NavigationButtons.EVENT_WEST, moveWest);
+			navigation.addEventListener(NavigationButtons.EVENT_EAST, moveEast);
+		}
+		
+		public function setMap( map:Map ):void {
+			_map = map;
+		}
+		
+		public function set bgColor( value:int ):void {
+			_bg.graphics.clear();
+			_bg.graphics.beginFill(value);
+			_bg.graphics.drawRect(0, 0, 1, 1);
+			_bg.graphics.endFill();
+		}
+		
+		override public function startDrag(lockCenter:Boolean = false, bounds:Rectangle = null):void {
+			//_layerContainer.cacheAsBitmap = true;
+			_layerContainer.startDrag(lockCenter, bounds);
+			addEventListener(MouseEvent.MOUSE_MOVE, whileDrag);
+		}
+		
+		private function whileDrag(e:MouseEvent):void {
+			_overlayContainer.visible = false;
+			//moveCenterByScreenCoordinates( _layerContainer.x*-1, _layerContainer.y*-1 );
+			//_layerContainer.x = 0;
+			//_layerContainer.y = 0;
+		}
+		
+		override public function stopDrag():void {
+			removeEventListener(MouseEvent.MOUSE_MOVE, whileDrag);
+			_overlayContainer.visible = true;
+			_layerContainer.stopDrag();
+			//_layerContainer.cacheAsBitmap = false;
+			moveCenterByScreenCoordinates( _layerContainer.x*-1, _layerContainer.y*-1 );
+			_layerContainer.x = 0;
+			_layerContainer.y = 0;
+		}
+		
+		public function addLayer(layer:ILayer):void {
+			if (projection.isIdentical(layer.spaceModel.projection)) {
+				var layerSprite:Sprite = new Sprite();
+				layerSprite.name = layer.id;
+				
+				_layers.push( layer );
+				if (_map) {
+					_map.addLayer( layer );
+				}
+				
+				// TODO: set all Layersprites to mouseChildren=true?
+				
+				_layerContainer.addChild( layerSprite );
+				
+				if (layer.spaceModel.isComplete) {
+					trace( layer.id + ": layer setup at addLayer()");
+					layer.setup( layerSprite );
+					renderLayer( layer.id );
+				} else {
+					trace( layer.id + ": layer setup defered");
+					layer.spaceModel.addEventListener(Event.COMPLETE, setupLayer, false, 100 );
+				}
+				
+			} else {
+				throw new Error( "The Projection of the Layers SpaceModel " +
+				"does not match the Projection of the MapFrame." );
+			}
+			
+		}
+		
+		public function addOverlay(overlay:IOverlay):void {
+			var overlaySprite:Sprite = new Sprite();
+			overlaySprite.name = overlay.id;
+			_overlayContainer.addChild( overlaySprite );
+			_overlays.push( overlay );
+			if (overlay.spaceModel) {
+				if (overlay.spaceModel.isComplete) {
+					overlay.setup( overlaySprite );
+				} else {
+					overlay.spaceModel.addEventListener(Event.COMPLETE, eventOverlaySMComplete, false, 500 );
+				}
+			} else {
+				// has no SpaceModel, which is OK
+				overlay.setup( overlaySprite );
+			}
+			renderOverlays();
+		}
+		
+		private function eventOverlaySMComplete(e:Event):void {
+			var sm:ISpaceModel = e.target as ISpaceModel;
+			for each (var overlay:IOverlay in _overlays) {
+				if (overlay.spaceModel == sm) {
+					overlay.spaceModel.removeEventListener(Event.COMPLETE, eventOverlaySMComplete);
+					overlay.setup( _overlayContainer.getChildByName( overlay.id ) as Sprite );
+					break;
+				}
+			}
+		}
+		
+		public function removeOverlay(overlay:IOverlay):void {
+			var overlaySprite:Sprite = _overlayContainer.getChildByName(overlay.id) as Sprite;
+			if (_overlays.indexOf(overlay) > -1) {
+				if (overlaySprite) {
+					overlay.deconstruct(overlaySprite);
+					_overlayContainer.removeChild(overlaySprite);
+				}
+				_overlays.splice( _overlays.indexOf(overlay), 1);
+			}
+			renderOverlays();
+		}
+		
+		private function setupLayer(e:Event):void {
+			var spaceModel:ISpaceModel = e.target as ISpaceModel;
+			var layer:ILayer;
+			var layerSprite:Sprite;
+			
+			// trace( "SpaceModel intialized: " + spaceModel.id );
+			
+			if (spaceModel) {
+				spaceModel.removeEventListener( Event.COMPLETE, setupLayer );
+				for each ( layer in _layers) {
+					if (layer.spaceModel == spaceModel) {
+						layerSprite = _layerContainer.getChildByName(layer.id) as Sprite;
+						trace( layer.id + ": defered layer setup");
+						layer.setup( layerSprite );
+						renderLayer( layer.id );
+					}
+				}
+			}
+		}
+		
+		public function countLayers():int {
+			return _layers.length;
+		}
+		
+		public function getLayer( index:int ):ILayer {
+			if (index >= 0 && index < _layers.length) {
+				return _layers[index];
+			}
+			return null;
+		}
+		
+		public function getLayerSpriteByID( layerID:String ):Sprite {
+			var layerSprite:Sprite;
+			layerSprite = _layerContainer.getChildByName( layerID ) as Sprite;
+			return layerSprite;
+		}
+		
+		
+		/* ===========================================
+		 * Scale Manipulation
+		 * =========================================== */
+		
+		public function fitToFrame(e:Event=null):void {	
+			var b:Rectangle = new Rectangle();
+			var layer:ILayer;
+			
+			if (_layers.length > 0) {
+				for each (layer in _layers) {
+					if (layer.spaceModel.isComplete) {
+						b = b.union(layer.spaceModel.bounds as Rectangle);
+					}
+				}
+				bounds.fromRectangle(b);
+			} else {
+				return;
+			}
+			
+			
+			_scale = Math.max( _mask.width/bounds.width, _mask.height/bounds.height ) * 1.0;
+
+			center.x = bounds.minx + bounds.width * 0.5;
+			center.y = bounds.maxy - bounds.height * 0.5;
+			
+			_worldWidth = _mask.width / _scale;
+			_worldHeight = _mask.height / _scale;
+			
+			// Bounds nun dem Kartenausschnitt anpassen
+			calculateBounds();
+			
+			// force render
+			render();
+		}
+		
+		public function zoomIn(e:Event=null):void {
+			zoom(1.5);
+		}
+		
+		public function zoomOut(e:Event=null):void {
+			zoom(0.75);
+		}
+		
+		public function zoom(factor:Number=0.7):void {
+			_scale *= factor;
+			_worldWidth = _mask.width / _scale;
+			_worldHeight = _mask.height / _scale;
+			calculateBounds();
+			rescale();
+		}
+		
+		/* ===========================================
+		 * Extent Manipulation
+		 * =========================================== */
+		
+		public function resize(widthNew:Number, heightNew:Number):void {
+			_bg.width = widthNew;
+			_bg.height = heightNew;
+			_mask.width = widthNew;
+			_mask.height = heightNew;
+			_worldWidth = widthNew / _scale;
+			_worldHeight = heightNew / _scale;
+			//trace( "MapFrame " + this.name + ": resize()  " + _mask.width + " / " + _mask.height );
+			_frameDecoration.graphics.clear();
+			_frameDecoration.graphics.lineStyle(1, 0, 1, true);
+			_frameDecoration.graphics.drawRect(0, 0, widthNew-0.55, heightNew-0.55);
+			calculateBounds();
+			recenter();
+			logo.x = 5;
+			logo.y = heightNew - logo.height - 5;
+			
+			navigation.x = 5;
+			navigation.y = 5;
+		}
+		
+		public function moveNorth(e:Event = null):void {
+			moveCenterByScreenCoordinates( 0, _bg.height * -0.33)
+		}
+		
+		public function moveSouth(e:Event = null):void {
+			moveCenterByScreenCoordinates( 0, _bg.height * 0.33)
+		}
+		
+		public function moveEast(e:Event = null):void {
+			moveCenterByScreenCoordinates( _bg.height * 0.33, 0)
+		}
+		
+		public function moveWest(e:Event = null):void {
+			moveCenterByScreenCoordinates( _bg.height * -0.33, 0)
+		}
+		
+		public function setCenterByScreenCoordinates( x:Number, y:Number ):void {
+			//trace( "Clicked: " +x + ", " + y + " entspricht "+center.x+", "+center.y);
+			center.x = viewportBounds.minx + x / _scale;
+			center.y = viewportBounds.maxy - y / _scale;
+			calculateBounds();
+			//trace( "Clicked: " +x + ", " + y + " entspricht "+center.x+", "+center.y);
+			recenter();
+		}
+		
+		public function moveCenterByScreenCoordinates( x:Number, y:Number ):void {
+			//trace( "Clicked: " +x + ", " + y + " entspricht "+center.x+", "+center.y);
+			center.x = center.x + (x / _scale);
+			center.y = center.y - (y / _scale);
+			calculateBounds();
+			//trace( "Clicked: " +x + ", " + y + " entspricht "+center.x+", "+center.y);
+			recenter();
+		}
+		
+		public function setCenterByStageCoordinates( x:Number, y:Number ):void {
+			//trace( "Clicked: " +x + ", " + y + " entspricht "+center.x+", "+center.y);
+			var p:Point = new Point( x - this.x, y - this.y );
+			p = this.globalToLocal( p );
+			center.x = viewportBounds.minx + (p.x) / _scale;
+			center.y = viewportBounds.maxy - (p.y ) / _scale;
+			calculateBounds();
+			//trace( "Clicked (stage): " +x + ", " + y + " entspricht "+center.x+", "+center.y);
+			recenter();
+		}
+		
+		public function setCenterByMapCoordinates( x:Number, y:Number ):void {
+			center.x = x;
+			center.y = y;
+			calculateBounds();
+			//trace( "Clicked: " +x + ", " + y );
+			recenter();
+		}
+		
+		private function calculateBounds():void {
+			viewportBounds.minx = center.x - _worldWidth * 0.5;
+			viewportBounds.miny = center.y - _worldHeight * 0.5;
+			viewportBounds.maxx = center.x + _worldWidth * 0.5;
+			viewportBounds.maxy = center.y + _worldHeight * 0.5;
+			
+			layerTransformation.tx = ((0 - center.x) + (viewportBounds.minx - center.x) * -1) * _scale;
+			layerTransformation.ty = ((0 + center.y) - (viewportBounds.miny - center.y)) * _scale;
+			layerTransformation.a = _scale;
+			layerTransformation.d = _scale * -1;
+			
+		}
+		
+		/* ===========================================
+		 * Rendering
+		 * =========================================== */
+		
+		/**
+		 * To be called on a scale change.
+		 */
+		private function rescale():void {
+			var layerSprite:Sprite;
+			var layer:ILayer;
+			
+			//var totalT:Number = new Date().time;
+			
+			for each (layer in _layers) {
+				if (layer.isSetUp) {
+					layerSprite = _layerContainer.getChildByName(layer.id) as Sprite
+					if (layerSprite && layerSprite.visible) {
+						layer.rescale( layerSprite, _mask.getRect( stage ), viewportBounds, layerTransformation );
+					}
+				}
+			}
+			renderOverlays();
+			//trace( name + "'s rescale took (ms): " + (new Date().time - totalT) );
+		}
+		
+		/** 
+		 * To be called on a change of the map center (panning) or of the map extent (resize).
+		 */
+		private function recenter():void {
+			var layerSprite:Sprite;
+			var layer:ILayer;
+			
+			//var totalT:Number = new Date().time;
+			
+			for each (layer in _layers) {
+				if (layer.isSetUp) {
+					layerSprite = _layerContainer.getChildByName(layer.id) as Sprite
+					if (layerSprite && layerSprite.visible) {
+						layer.recenter( layerSprite, _mask.getRect( stage ), viewportBounds, layerTransformation );
+					}
+				}
+			}
+			renderOverlays();
+			//trace( name + "'s recenter took (ms): " + (new Date().time -totalT) );
+		}
+		
+		// Aushilfsweise: Rendern auslösen (nach Daten-Änderung z.B.
+		public function reRender():void {
+			render();
+		}
+		
+		private function render():void {
+			var layer:ILayer;
+			var layerSprite:Sprite;
+			
+			//var totalT:Number = new Date().time;
+			
+			for each ( layer in _layers) {
+				if (layer.isSetUp) {
+					layerSprite = _layerContainer.getChildByName(layer.id) as Sprite;
+					if (layerSprite && layerSprite.visible) {
+						layer.render( layerSprite, _mask.getRect( stage ), viewportBounds, layerTransformation );
+					}
+				}
+			}
+			
+			//trace( name + "'s render took (ms): " + (new Date().time -totalT) );
+		}
+		
+		public function renderLayer( layerID:String ):void {
+			var layerSprite:Sprite;
+			var layer:ILayer;
+			for each (layer in _layers) {
+				if (layer.id == layerID) {
+					break;
+				}
+			}
+			if (layer) {
+				layerSprite = _layerContainer.getChildByName( layerID ) as Sprite;
+				if (layerSprite && layerSprite.visible) {
+					layer.render( layerSprite, _mask.getRect( stage ), viewportBounds, layerTransformation );
+					calculateBounds();
+					rescale();
+				}
+			}
+		}
+		
+		public function renderOverlays():void {
+			var overlay:IOverlay;
+			var overlaySprite:Sprite;
+			
+			for each ( overlay in _overlays) {
+				if (overlay.isSetup) {
+					overlaySprite = _overlayContainer.getChildByName(overlay.id) as Sprite;
+					overlay.render(  overlaySprite, _mask.getRect( stage ), viewportBounds, layerTransformation );
+				}
+			}
+		}
+		
+		override public function get width():Number { return super.width; }
+		
+		override public function set width(value:Number):void {
+			resize(value, _mask.height);
+		}
+		
+		override public function get height():Number { return super.height; }
+		
+		override public function set height(value:Number):void {
+			resize(_mask.width, value);
+		}
+		
+		public function get scale():Number { return _scale; }
+		
+		public function set scale(value:Number):void {
+			if (value != _scale) {
+				_scale = value;
+				_worldWidth = _mask.width / _scale;
+				_worldHeight = _mask.height / _scale;
+				calculateBounds();
+				
+				removeEventListener(Event.ENTER_FRAME, applyRecenter);
+				removeEventListener(Event.ENTER_FRAME, applyRescale);
+				
+				addEventListener(Event.ENTER_FRAME, applyRescale);
+			}
+		}
+		
+		public function get centerX():Number { return center.x; }
+		
+		public function set centerX(value:Number):void {
+			center.x = value;
+			if (!hasEventListener(Event.ENTER_FRAME)) {
+				addEventListener(Event.ENTER_FRAME, applyRecenter);
+			}
+		}
+		
+		public function get centerY():Number { return center.y; }
+		
+		public function set centerY(value:Number):void {
+			center.y = value;
+			if (!hasEventListener(Event.ENTER_FRAME)) {
+				addEventListener(Event.ENTER_FRAME, applyRecenter);
+			}
+		}
+		
+		private function applyRecenter(e:Event):void {
+			removeEventListener(Event.ENTER_FRAME, applyRecenter);
+			calculateBounds();
+			recenter();
+		}
+		
+		private function applyRescale(e:Event):void {
+			removeEventListener(Event.ENTER_FRAME, applyRecenter);
+			removeEventListener(Event.ENTER_FRAME, applyRescale);
+			calculateBounds();
+			rescale();
+		}
+
+	}
+}
