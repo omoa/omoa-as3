@@ -284,9 +284,8 @@ package org.omoa {
 				return;
 			}
 			
+			_scale = Math.max( _bg.width / bounds.width, _bg.height / bounds.height ) * 1.0;
 			
-			_scale = Math.max( _bg.width/bounds.width, _bg.height/bounds.height ) * 1.0;
-
 			center.x = bounds.minx + bounds.width * 0.5;
 			center.y = bounds.maxy - bounds.height * 0.5;
 			
@@ -298,6 +297,7 @@ package org.omoa {
 			
 			// force render
 			render();
+			renderOverlays();
 		}
 		
 		public function zoomIn(e:Event=null):void {

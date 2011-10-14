@@ -45,7 +45,7 @@ package org.omoa {
 
 	public class Map extends Sprite {
 		
-		public var synchronizeMapFrames:Boolean = true;
+		public var synchronizeMapFrames:Boolean = false;
 		public var mapframeMargin:int = 10;
 
 		protected var layers:Vector.<ILayer> = new Vector.<ILayer>();

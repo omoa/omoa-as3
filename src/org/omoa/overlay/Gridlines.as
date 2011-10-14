@@ -161,9 +161,6 @@ package org.omoa.overlay {
 			sprite.mask.width = displayExtent.width;
 			sprite.mask.height = displayExtent.height;
 			
-			trace( displayExtent );
-			trace(sprite.mask.getBounds( sprite.stage ));
-			
 			for (var i:int = 0; i < numGrids; i++ ) {
 				gridWidth = _gridLines[i];
 				shape = sprite.getChildAt(i+1) as Shape;

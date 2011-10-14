@@ -73,6 +73,7 @@ package org.omoa.layer {
 					_interactive = true;
 				}
 			} else {
+				//TODO: make this history
 				throw new Error( "For now, you need to add Symbols before setup is executed. Sorry.");
 			}
 		}
@@ -83,48 +84,50 @@ package org.omoa.layer {
 			var symbolToSymbolSprite:Dictionary;
 			var count:int;
 			
-			if (!_isSetUp) {
+			if (_interactive) {
 				sprite.mouseChildren = true;
-				
 				sprite.addEventListener(MouseEvent.CLICK, symbolRollOver );
-				//sprite.addEventListener(MouseEvent.ROLL_OVER, symbolRollOver );
-				//sprite.addEventListener(MouseEvent.ROLL_OUT, symbolRollOut );
+			} else {
+				sprite.mouseChildren = false;
+			}
+			
+			
+			// this should fail...
+			symbolToSymbolSprite = layerSpriteToSymbol[sprite] as Dictionary;
+			if (!symbolToSymbolSprite) {
+				// ...instead create a symbolToSymbolSprite Dictionary
+				symbolToSymbolSprite = new Dictionary(false);
+				layerSpriteToSymbol[sprite] = symbolToSymbolSprite;
+			}
+			
+			var symbolCount:int = 0;
+			for each (symbol in _symbols) {
+				//TODO: This does not handle the dependance on a DataModel yet
 				
-				symbolToSymbolSprite = layerSpriteToSymbol[sprite] as Dictionary;
-				if (!symbolToSymbolSprite) {
-					// create a symbolToSymbolSprite Dictionary
-					symbolToSymbolSprite = new Dictionary(true);
-					layerSpriteToSymbol[sprite] = symbolToSymbolSprite;
-				}
+				var symbolSprite:Sprite = symbolToSymbolSprite[symbol];
 				
-				var symbolCount:int = 0;
-				for each (symbol in _symbols) {
-					//TODO: This does not handle the dependance on a DataModel yet
+				// prevent setup from being executed twice per symbol and layer
+				if (!symbolSprite) {
 					
-					var symbolSprite:Sprite = symbolToSymbolSprite[symbol];
-					if (!symbolSprite) {
-						symbolSprite = new Sprite();
-						symbolSprite.name = sprite.name + "_symbol_" + symbolCount;
-						sprite.addChild( symbolSprite );
-						symbolToSymbolSprite[symbol] = symbolSprite;
-						
-						if (symbol.needsInteractivity) { 
-							symbolSprite.mouseChildren = true;
-							symbolSprite.mouseEnabled = true;
-						} else {
-							symbolSprite.mouseChildren = false;
-							symbolSprite.mouseEnabled = false;
-						}
-						
+					symbolSprite = new Sprite();
+					symbolSprite.name = sprite.name + "_symbol_" + symbolCount;
+					sprite.addChild( symbolSprite );
+					symbolToSymbolSprite[symbol] = symbolSprite;
+					
+					if (symbol.needsInteractivity) { 
+						symbolSprite.mouseChildren = true;
+						symbolSprite.mouseEnabled = true;
+					} else {
+						symbolSprite.mouseChildren = false;
+						symbolSprite.mouseEnabled = false;
 					}
 					
 					var entityToDisplayObjects:Dictionary = null;
 					var displayObjectToEntity:Dictionary = null;
 					
 					
-					// do the real symbol setup
+					// setup symbols with individual entites
 					if (symbol.needsEntities) {
-						// setup symbols with individual entites
 						var displayObjectForEntity:DisplayObject;
 						var spaceEntity:SpaceModelEntity;
 						
@@ -143,31 +146,24 @@ package org.omoa.layer {
 							
 							entityToDisplayObjects[spaceEntity] = displayObjectForEntity;
 							displayObjectToEntity[displayObjectForEntity] = spaceEntity;
-							/*
-							 * This ought to be managed by the symbols themself
-							 */
-							if (symbol.needsInteractivity) {
-								// setup intetractivity for Sprites
+							
+							//TODO: This ought to be managed by the symbols themself
+							if (symbol.needsInteractivity && displayObjectForEntity is Sprite) {
+								// setup interactivity only for Sprites
 								var entityAsSprite:Sprite = displayObjectForEntity as Sprite;
-								if (entityAsSprite) {
-									entityAsSprite.mouseEnabled = true;
-									//entityAsSprite.addEventListener(MouseEvent.ROLL_OVER, symbolRollOver );
-									//entityAsSprite.addEventListener(MouseEvent.ROLL_OUT, symbolRollOut );
-								}
+								entityAsSprite.mouseEnabled = true;
 							}
 							
 						}
 					}
 					
 					symbolSpriteToEntityDictionary[symbolSprite] = entityToDisplayObjects;
-					
-					symbolCount++;
-					
 				}
-				_isSetUp = true;
-			} else {
-				trace( "setup called on a set-up layer" + this.id );
+				
+				symbolCount++;
+				
 			}
+			//_isSetUp = true;
 		}
 		
 		override public function render(sprite:Sprite, displayExtent:Rectangle, viewportBounds:BoundingBox, transformation:Matrix):void {
