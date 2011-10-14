@@ -61,6 +61,7 @@ package org.omoa {
 		private var _map:Map;
 		
 		private var _bg:Shape;
+		private var _layerContainerWrapper:Sprite;
 		private var _layerContainer:Sprite;
 		private var _frameDecoration:Sprite;
 		private var _overlayContainer:Sprite;
@@ -93,12 +94,16 @@ package org.omoa {
 			
 			//mask = clipMask;
 			
+			_layerContainerWrapper = new Sprite();
+			_layerContainerWrapper.scrollRect = _mask.getRect(this);
+			addChild(_layerContainerWrapper);
+			
 			_layerContainer = new Sprite();
 			_layerContainer.mouseChildren = true;
 			_layerContainer.cacheAsBitmap = true;
 			//_layerContainer.mask = _mask;
 			//_layerContainer.scrollRect = _mask.getRect(this);
-			addChild( _layerContainer);
+			_layerContainerWrapper.addChild( _layerContainer);
 			
 			_frameDecoration = new Sprite();
 			_frameDecoration.mouseChildren = false;
@@ -146,20 +151,19 @@ package org.omoa {
 		override public function startDrag(lockCenter:Boolean = false, bounds:Rectangle = null):void {
 			//_layerContainer.cacheAsBitmap = true;
 			_layerContainer.startDrag(lockCenter, bounds);
+
 			addEventListener(MouseEvent.MOUSE_MOVE, whileDrag);
 		}
 		
 		private function whileDrag(e:MouseEvent):void {
 			_overlayContainer.visible = false;
-			//moveCenterByScreenCoordinates( _layerContainer.x*-1, _layerContainer.y*-1 );
-			//_layerContainer.x = 0;
-			//_layerContainer.y = 0;
 		}
 		
 		override public function stopDrag():void {
 			removeEventListener(MouseEvent.MOUSE_MOVE, whileDrag);
 			_overlayContainer.visible = true;
 			_layerContainer.stopDrag();
+			
 			//_layerContainer.cacheAsBitmap = false;
 			moveCenterByScreenCoordinates( _layerContainer.x*-1, _layerContainer.y*-1 );
 			_layerContainer.x = 0;
@@ -346,6 +350,13 @@ package org.omoa {
 			logo.x = 5;
 			logo.y = heightNew - logo.height - 5;
 			
+			var r:Rectangle = _layerContainerWrapper.scrollRect;
+			r.x = 0;
+			r.y = 0;
+			r.width = widthNew;
+			r.height = heightNew;
+			_layerContainerWrapper.scrollRect = r;
+			
 			navigation.x = 5;
 			navigation.y = 5;
 		}
@@ -409,8 +420,8 @@ package org.omoa {
 			viewportBounds.maxx = center.x + _worldWidth * 0.5;
 			viewportBounds.maxy = center.y + _worldHeight * 0.5;
 			
-			layerTransformation.tx = ((0 - center.x) + (viewportBounds.minx - center.x) * -1) * _scale;
-			layerTransformation.ty = ((0 + center.y) - (viewportBounds.miny - center.y)) * _scale;
+			layerTransformation.tx = ((0 - center.x) - (viewportBounds.minx - center.x)) * _scale;
+			layerTransformation.ty = (center.y - (viewportBounds.miny - center.y)) * _scale;
 			layerTransformation.a = _scale;
 			layerTransformation.d = _scale * -1;
 			

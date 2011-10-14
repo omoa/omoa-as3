@@ -159,15 +159,7 @@ package org.omoa.overlay {
 		
 		public function render(sprite:Sprite, displayExtent:Rectangle, viewportBounds:BoundingBox, transformation:Matrix):void {
 
-			sprite.transform.matrix = transformation;
-			//sprite.x = p.x;
-			//sprite.y = displayExtent.y;	
-			
-			//sprite.scaleX = transformation.a;
-			//sprite.scaleY = transformation.d * -1;
-			////sprite.y = sprite.x = 100;
-			
-			
+			sprite.transform.matrix = transformation;			
 			
 			var gridWidth:Number;
 			var numGrids:int = _gridLines.length;
