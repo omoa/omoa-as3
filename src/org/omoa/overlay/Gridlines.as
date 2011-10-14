@@ -29,22 +29,11 @@ package org.omoa.overlay {
 	import flash.display.LineScaleMode;
 	import flash.display.Shape;
 	import flash.display.Sprite;
-	import flash.events.Event;
-	import flash.filters.BlurFilter;
 	import flash.geom.Matrix;
-	import flash.geom.Point;
 	import flash.geom.Rectangle;
-	import flash.utils.Dictionary;
 	import org.omoa.framework.IOverlay;
 	import org.omoa.framework.ISpaceModel;
-	import org.omoa.framework.ISpaceModelIterator;
-	import org.omoa.framework.ISymbol;
 	import org.omoa.spacemodel.BoundingBox;
-	import org.omoa.spacemodel.iterator.InsideBoxIterator;
-	import org.omoa.spacemodel.iterator.OutsideBoxIterator;
-	import org.omoa.spacemodel.SpaceModelEntity;
-	import org.omoa.symbol.PointSymbol;
-	import org.omoa.symbol.PointSymbolEntity;
 	
 	
 	/**
@@ -60,11 +49,7 @@ package org.omoa.overlay {
 		private var _id:String;
 		private var _spaceModel:ISpaceModel;
 		private var _isSetup:Boolean = false;
-		private var _gridLines:Array;
-		
-		private var gridGraphics:Vector.<IGraphicsPath> = new Vector.<IGraphicsPath>();
-		private var gridShapes:Vector.<Shape> = new Vector.<Shape>();
-		
+		private var _gridLines:Array;	
 		
 		public function Gridlines( id:String, spaceModel:ISpaceModel, gridLines:Array = null ) {
 			_id = id;
@@ -102,10 +87,17 @@ package org.omoa.overlay {
 			stroke.fill = strokefill;
 			stroke.scaleMode = LineScaleMode.NONE;
 			
+			var mask:Shape = new Shape();
+			mask.graphics.beginFill(0x000000);
+			mask.graphics.drawRect(0, 0, 1, 1);
+			mask.graphics.endFill();
+			mask.visible = false;
+			sprite.mask = mask;
+			sprite.addChild( mask );
+			
 			for each (var gridWidth:Number in _gridLines) {
 				shape = new Shape();
 				sprite.addChild(shape);
-				gridShapes.push(shape);
 				
 				rect = _spaceModel.bounds as Rectangle;
 				linesPerWidth = rect.width / gridWidth + 1.5;
@@ -150,73 +142,33 @@ package org.omoa.overlay {
 				shape.graphics.drawGraphicsData( graphic );
 			}
 			
-			//sprite.scrollRect = new Rectangle( -180, -90, 360, 180);
-			//sprite.cacheAsBitmap = true;
-			
-			var mask:Shape = new Shape();
-			mask.graphics.beginFill(0x000000);
-			mask.graphics.drawRect(0, 0, 1, 1);
-			mask.graphics.endFill();
-			sprite.mask = mask;
 			
 			_isSetup = true;
 		}
 		
 		public function deconstruct(sprite:Sprite):void {
+			// does this work? :-)
+			while (sprite.numChildren) {
+				sprite.removeChildAt(0);
+			}
 		}
 		
 		public function render(sprite:Sprite, displayExtent:Rectangle, viewportBounds:BoundingBox, transformation:Matrix):void {
-			/*
-			sprite.transform.matrix = transformation;	
-			*/
-			//var p:Point = sprite.globalToLocal(sprite.getBounds(sprite.stage).topLeft);
-			//sprite.x = displayExtent.x;
-			//sprite.y = displayExtent.y;
-			sprite.mask.x = displayExtent.x;
-			sprite.mask.y = displayExtent.y;
-			sprite.mask.width = displayExtent.width;
-			sprite.mask.height = displayExtent.height;
-			
 			var gridWidth:Number;
 			var numGrids:int = _gridLines.length;
 			var shape:Shape;
-			/*
-			var p:Point = transformation.transformPoint( _spaceModel.bounds.topLeft );
-			var scaleTransform:Matrix = transformation.clone();
-			scaleTransform.tx = 0;
-			scaleTransform.ty = displayExtent.height;
-			sprite.transform.matrix = scaleTransform;
-			//sprite.x = p.x;
-			//sprite.y = displayExtent.y;	
 			
-			//sprite.scaleX = transformation.a;
-			//sprite.scaleY = transformation.d * -1;
-			////sprite.y = sprite.x = 100;
+			sprite.mask.width = displayExtent.width;
+			sprite.mask.height = displayExtent.height;
 			
-			var spriter:Rectangle = sprite.getRect( sprite.stage );
-			
-			var scrollrect:Rectangle = sprite.scrollRect;			
-			scrollrect.x = viewportBounds.minx;
-			scrollrect.y = viewportBounds.maxy-viewportBounds.height+0.3;
-			scrollrect.width = viewportBounds.width;
-			scrollrect.height = viewportBounds.height;
-			sprite.scrollRect = scrollrect;
-			
-			trace("topleft:       " +  _spaceModel.bounds.topLeft );
-			trace("      transfmd " + p );
-			trace(" scale:        " + transformation);
-			trace(" displayextent " + displayExtent);
-			trace(" viewportbound " + viewportBounds);
-			trace( " sprite        " + sprite.getRect(sprite.stage) );
-			trace( " sprite.scroll " + sprite.scrollRect );
-			*/
+			trace( displayExtent );
+			trace(sprite.mask.getBounds( sprite.stage ));
 			
 			for (var i:int = 0; i < numGrids; i++ ) {
 				gridWidth = _gridLines[i];
-				//shape = gridShapes[i];
-				shape = sprite.getChildAt(i) as Shape;
+				shape = sprite.getChildAt(i+1) as Shape;
 				
-				if ( int(gridWidth * transformation.a) > 25 ) {
+				if ( int(gridWidth * transformation.a) > 15 ) {
 					shape.visible = true;
 				} else {
 					shape.visible = false;
