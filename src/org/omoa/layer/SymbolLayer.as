@@ -86,7 +86,7 @@ package org.omoa.layer {
 			
 			if (_interactive) {
 				sprite.mouseChildren = true;
-				sprite.addEventListener(MouseEvent.CLICK, symbolRollOver );
+				sprite.addEventListener( MouseEvent.CLICK, symbolClick );
 			} else {
 				sprite.mouseChildren = false;
 			}
@@ -102,7 +102,7 @@ package org.omoa.layer {
 			
 			var symbolCount:int = 0;
 			for each (symbol in _symbols) {
-				//TODO: This does not handle the dependance on a DataModel yet
+				//TODO: How to handle a change in the DataModel or a description?
 				
 				var symbolSprite:Sprite = symbolToSymbolSprite[symbol];
 				
@@ -163,7 +163,7 @@ package org.omoa.layer {
 				symbolCount++;
 				
 			}
-			//_isSetUp = true;
+			_isSetUp = true;
 		}
 		
 		override public function render(sprite:Sprite, displayExtent:Rectangle, viewportBounds:BoundingBox, transformation:Matrix):void {
@@ -180,7 +180,7 @@ package org.omoa.layer {
 			var symbolToSymbolSprite:Dictionary = layerSpriteToSymbol[sprite] as Dictionary;
 			for each (symbol in _symbols) {
 				iterator.reset();
-				trace( "render " + sprite.name + " " + symbol );
+				
 				var symbolSprite:Sprite = symbolToSymbolSprite[symbol];
 				symbol.prepareRender(symbolSprite);
 				
@@ -212,7 +212,7 @@ package org.omoa.layer {
 			var iterator:ISpaceModelIterator;
 			var spaceEntity:SpaceModelEntity;
 			var symbol:ISymbol;
-			//trace("RESCALE");
+			
 			if (customIterator) {
 				iterator = customIterator;
 			} else {
@@ -226,8 +226,8 @@ package org.omoa.layer {
 					trace( "SymbolLayer.rescale(): ERROR, no Dictionary for Symbol existing." );
 					break;
 				}
-				var symbolSprite:Sprite = symbolToSymbolSprite[symbol];
 				
+				var symbolSprite:Sprite = symbolToSymbolSprite[symbol];
 				if (!symbolSprite) {
 					// TODO: This shouldn't happen: Setup hasn't been called yet. Bailing out.
 					trace( "SymbolLayer.rescale(): ERROR, no Sprite for Symbol existing." );
@@ -268,7 +268,7 @@ package org.omoa.layer {
 			var iterator:ISpaceModelIterator;
 			var spaceEntity:SpaceModelEntity;
 			var symbol:ISymbol;
-			//trace("RECENTER");
+			
 			if (customIterator) {
 				iterator = customIterator;
 			} else {
@@ -276,8 +276,6 @@ package org.omoa.layer {
 			}
 			
 			for each (symbol in _symbols) {
-				//trace ( "     >>" + sprite.parent.parent.name + ">>"+ sprite.parent.name + ">>" + sprite.name );
-				//trace( "     >>" + layerSpriteToSymbol[sprite]);
 				var symbolToSymbolSprite:Dictionary = layerSpriteToSymbol[sprite] as Dictionary;
 				var symbolSprite:Sprite = symbolToSymbolSprite[symbol];
 				
@@ -323,36 +321,11 @@ package org.omoa.layer {
 		}
 		
 		public function getEntityForSprite( displayObject:DisplayObject ):SpaceModelEntity {
-			return SpaceModelEntityForSprite[ displayObject ] as SpaceModelEntity;
+			return spaceModel.findById(displayObject.name);
 		}
 		
 		public function getSymbolForSprite( displayObject:DisplayObject ):SpaceModelEntity {
 			return null;
-		}
-		
-		// connected to click
-		private function symbolRollOver(e:MouseEvent):void {
-			var sprite:Sprite = e.target as Sprite;
-			if (sprite) {
-				trace( "click " + sprite.name);
-				//sprite.graphics.copyFrom( e.target as Sprite);
-				//sprite.doubleClickEnabled = true;
-				//sprite.buttonMode = true;
-				
-				//sprite.addEventListener(MouseEvent.CLICK, symbolClick );
-				//sprite.addEventListener(MouseEvent.ROLL_OUT, spaceEntityRollOut );
-			}
-		}
-		
-		private function symbolRollOut(e:MouseEvent):void {
-			var sprite:Sprite = e.target as Sprite;
-			if (sprite) {
-				//sprite.graphics.copyFrom( e.target as Sprite);
-				
-				//sprite.removeEventListener(MouseEvent.CLICK, symbolClick);
-				//sprite.removeEventListener(MouseEvent.ROLL_OUT, spaceEntityRollOut );
-				//sprite.doubleClickEnabled = false;
-			}
 		}
 		
 		private function symbolClick(e:MouseEvent):void {
@@ -360,17 +333,13 @@ package org.omoa.layer {
 												e.localX, e.localY, e.target as InteractiveObject,
 												e.ctrlKey, e.altKey, e.shiftKey, e.buttonDown, e.delta);
 			
-			// TODO: Broken.
-			//se.entity = SpaceModelEntityForSprite[ e.target ] as SpaceModelEntity;
-			
 			if (e.target) {
 				se.entity = spaceModel.findById(e.target.name);
 			}
 				
-			//trace( se.entity );
-			//trace( "Alt+Click (Selected) " + e.target.name );
-			dispatchEvent( se );
-			//e.stopImmediatePropagation();
+			if (se.entity) {
+				dispatchEvent( se );
+			}
 		}
 		
 		public function set scalable(value:Boolean):void {
