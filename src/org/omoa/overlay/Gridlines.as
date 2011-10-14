@@ -149,8 +149,16 @@ package org.omoa.overlay {
 				
 				shape.graphics.drawGraphicsData( graphic );
 			}
+			
 			//sprite.scrollRect = new Rectangle( -180, -90, 360, 180);
-			sprite.cacheAsBitmap = true;
+			//sprite.cacheAsBitmap = true;
+			
+			var mask:Shape = new Shape();
+			mask.graphics.beginFill(0x000000);
+			mask.graphics.drawRect(0, 0, 1, 1);
+			mask.graphics.endFill();
+			sprite.mask = mask;
+			
 			_isSetup = true;
 		}
 		
@@ -158,15 +166,22 @@ package org.omoa.overlay {
 		}
 		
 		public function render(sprite:Sprite, displayExtent:Rectangle, viewportBounds:BoundingBox, transformation:Matrix):void {
-
-			sprite.transform.matrix = transformation;			
+			/*
+			sprite.transform.matrix = transformation;	
+			*/
+			//var p:Point = sprite.globalToLocal(sprite.getBounds(sprite.stage).topLeft);
+			//sprite.x = displayExtent.x;
+			//sprite.y = displayExtent.y;
+			sprite.mask.x = displayExtent.x;
+			sprite.mask.y = displayExtent.y;
+			sprite.mask.width = displayExtent.width;
+			sprite.mask.height = displayExtent.height;
 			
 			var gridWidth:Number;
 			var numGrids:int = _gridLines.length;
 			var shape:Shape;
-			
 			/*
-			 * var p:Point = transformation.transformPoint( _spaceModel.bounds.topLeft );
+			var p:Point = transformation.transformPoint( _spaceModel.bounds.topLeft );
 			var scaleTransform:Matrix = transformation.clone();
 			scaleTransform.tx = 0;
 			scaleTransform.ty = displayExtent.height;
@@ -198,13 +213,15 @@ package org.omoa.overlay {
 			
 			for (var i:int = 0; i < numGrids; i++ ) {
 				gridWidth = _gridLines[i];
-				shape = gridShapes[i];
+				//shape = gridShapes[i];
+				shape = sprite.getChildAt(i) as Shape;
 				
-				if ( int(gridWidth * transformation.a) > 20 ) {
+				if ( int(gridWidth * transformation.a) > 25 ) {
 					shape.visible = true;
 				} else {
 					shape.visible = false;
 				}
+				shape.transform.matrix = transformation;
 			}
 		}
 

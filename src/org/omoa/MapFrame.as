@@ -65,7 +65,6 @@ package org.omoa {
 		private var _layerContainer:Sprite;
 		private var _frameDecoration:Sprite;
 		private var _overlayContainer:Sprite;
-		private var _mask:Shape;
 		private var _debug:Shape;
 		
 		private var _scale:Number = 1;
@@ -83,26 +82,13 @@ package org.omoa {
 			bgColor = 0xfffff9;
 			addChild( _bg );
 			
-			// TODO: Use scrollRect and chacheAsBitmap instead (supposed to have better performance)
-			// http://www.gskinner.com/blog/archives/2006/11/understanding_d.html
-			_mask = new Shape();
-			_mask.name = "mask";
-			_mask.graphics.beginFill(0);
-			_mask.graphics.drawRect( 0, 0, 1, 1 );
-			_mask.graphics.endFill();
-			//addChild( _mask );
-			
-			//mask = clipMask;
-			
 			_layerContainerWrapper = new Sprite();
-			_layerContainerWrapper.scrollRect = _mask.getRect(this);
+			_layerContainerWrapper.scrollRect = new Rectangle(0,0,1,1);
 			addChild(_layerContainerWrapper);
 			
 			_layerContainer = new Sprite();
 			_layerContainer.mouseChildren = true;
 			_layerContainer.cacheAsBitmap = true;
-			//_layerContainer.mask = _mask;
-			//_layerContainer.scrollRect = _mask.getRect(this);
 			_layerContainerWrapper.addChild( _layerContainer);
 			
 			_frameDecoration = new Sprite();
@@ -299,13 +285,13 @@ package org.omoa {
 			}
 			
 			
-			_scale = Math.max( _mask.width/bounds.width, _mask.height/bounds.height ) * 1.0;
+			_scale = Math.max( _bg.width/bounds.width, _bg.height/bounds.height ) * 1.0;
 
 			center.x = bounds.minx + bounds.width * 0.5;
 			center.y = bounds.maxy - bounds.height * 0.5;
 			
-			_worldWidth = _mask.width / _scale;
-			_worldHeight = _mask.height / _scale;
+			_worldWidth = _bg.width / _scale;
+			_worldHeight = _bg.height / _scale;
 			
 			// Bounds nun dem Kartenausschnitt anpassen
 			calculateBounds();
@@ -324,8 +310,8 @@ package org.omoa {
 		
 		public function zoom(factor:Number=0.7):void {
 			_scale *= factor;
-			_worldWidth = _mask.width / _scale;
-			_worldHeight = _mask.height / _scale;
+			_worldWidth = _bg.width / _scale;
+			_worldHeight = _bg.height / _scale;
 			calculateBounds();
 			rescale();
 		}
@@ -337,11 +323,9 @@ package org.omoa {
 		public function resize(widthNew:Number, heightNew:Number):void {
 			_bg.width = widthNew;
 			_bg.height = heightNew;
-			_mask.width = widthNew;
-			_mask.height = heightNew;
 			_worldWidth = widthNew / _scale;
 			_worldHeight = heightNew / _scale;
-			//trace( "MapFrame " + this.name + ": resize()  " + _mask.width + " / " + _mask.height );
+			
 			_frameDecoration.graphics.clear();
 			_frameDecoration.graphics.lineStyle(1, 0, 1, true);
 			_frameDecoration.graphics.drawRect(0, 0, widthNew-0.55, heightNew-0.55);
@@ -439,16 +423,17 @@ package org.omoa {
 			var layer:ILayer;
 			
 			//var totalT:Number = new Date().time;
-			
+			_layerContainer.cacheAsBitmap = false;
 			for each (layer in _layers) {
 				if (layer.isSetUp) {
 					layerSprite = _layerContainer.getChildByName(layer.id) as Sprite
 					if (layerSprite && layerSprite.visible) {
-						layer.rescale( layerSprite, _mask.getRect( stage ), viewportBounds, layerTransformation );
+						layer.rescale( layerSprite, _bg.getRect( stage ), viewportBounds, layerTransformation );
 					}
 				}
 			}
 			renderOverlays();
+			_layerContainer.cacheAsBitmap = true;
 			//trace( name + "'s rescale took (ms): " + (new Date().time - totalT) );
 		}
 		
@@ -460,16 +445,17 @@ package org.omoa {
 			var layer:ILayer;
 			
 			//var totalT:Number = new Date().time;
-			
+			_layerContainer.cacheAsBitmap = false;
 			for each (layer in _layers) {
 				if (layer.isSetUp) {
 					layerSprite = _layerContainer.getChildByName(layer.id) as Sprite
 					if (layerSprite && layerSprite.visible) {
-						layer.recenter( layerSprite, _mask.getRect( stage ), viewportBounds, layerTransformation );
+						layer.recenter( layerSprite, _bg.getRect( stage ), viewportBounds, layerTransformation );
 					}
 				}
 			}
 			renderOverlays();
+			_layerContainer.cacheAsBitmap = true;
 			//trace( name + "'s recenter took (ms): " + (new Date().time -totalT) );
 		}
 		
@@ -483,16 +469,16 @@ package org.omoa {
 			var layerSprite:Sprite;
 			
 			//var totalT:Number = new Date().time;
-			
+			_layerContainer.cacheAsBitmap = false;
 			for each ( layer in _layers) {
 				if (layer.isSetUp) {
 					layerSprite = _layerContainer.getChildByName(layer.id) as Sprite;
 					if (layerSprite && layerSprite.visible) {
-						layer.render( layerSprite, _mask.getRect( stage ), viewportBounds, layerTransformation );
+						layer.render( layerSprite, _bg.getRect( stage ), viewportBounds, layerTransformation );
 					}
 				}
 			}
-			
+			_layerContainer.cacheAsBitmap = true;
 			//trace( name + "'s render took (ms): " + (new Date().time -totalT) );
 		}
 		
@@ -504,14 +490,16 @@ package org.omoa {
 					break;
 				}
 			}
+			_layerContainer.cacheAsBitmap = false;
 			if (layer) {
 				layerSprite = _layerContainer.getChildByName( layerID ) as Sprite;
 				if (layerSprite && layerSprite.visible) {
-					layer.render( layerSprite, _mask.getRect( stage ), viewportBounds, layerTransformation );
+					layer.render( layerSprite, _bg.getRect( stage ), viewportBounds, layerTransformation );
 					calculateBounds();
 					rescale();
 				}
 			}
+			_layerContainer.cacheAsBitmap = true;
 		}
 		
 		public function renderOverlays():void {
@@ -521,7 +509,7 @@ package org.omoa {
 			for each ( overlay in _overlays) {
 				if (overlay.isSetup) {
 					overlaySprite = _overlayContainer.getChildByName(overlay.id) as Sprite;
-					overlay.render(  overlaySprite, _mask.getRect( stage ), viewportBounds, layerTransformation );
+					overlay.render(  overlaySprite, _bg.getRect( stage ), viewportBounds, layerTransformation );
 				}
 			}
 		}
@@ -529,13 +517,13 @@ package org.omoa {
 		override public function get width():Number { return super.width; }
 		
 		override public function set width(value:Number):void {
-			resize(value, _mask.height);
+			resize(value, _bg.height);
 		}
 		
 		override public function get height():Number { return super.height; }
 		
 		override public function set height(value:Number):void {
-			resize(_mask.width, value);
+			resize(_bg.width, value);
 		}
 		
 		public function get scale():Number { return _scale; }
@@ -543,8 +531,8 @@ package org.omoa {
 		public function set scale(value:Number):void {
 			if (value != _scale) {
 				_scale = value;
-				_worldWidth = _mask.width / _scale;
-				_worldHeight = _mask.height / _scale;
+				_worldWidth = _bg.width / _scale;
+				_worldHeight = _bg.height / _scale;
 				calculateBounds();
 				
 				removeEventListener(Event.ENTER_FRAME, applyRecenter);
