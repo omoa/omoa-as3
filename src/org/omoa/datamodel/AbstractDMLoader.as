@@ -22,11 +22,11 @@ package org.omoa.datamodel {
 	
 	import flash.events.EventDispatcher;
 	import flash.utils.getDefinitionByName;
-	import org.omoa.datamodel.Description;
-	import org.omoa.datamodel.Datum;
+	import org.omoa.framework.Description;
+	import org.omoa.framework.Datum;
 	import org.omoa.datamodel.loader.SMEAttributeDataModel;
 	import org.omoa.datamodel.loader.Text;
-	import org.omoa.datamodel.ModelDimension;
+	import org.omoa.framework.ModelDimension;
 	import org.omoa.framework.IDataModel;
 	import org.omoa.framework.IDataModelIterator;
 	import org.omoa.framework.IDataModelLoader;

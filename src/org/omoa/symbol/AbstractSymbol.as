@@ -26,8 +26,8 @@ package org.omoa.symbol {
 	import flash.geom.Matrix;
 	import flash.geom.Rectangle;
 	import org.omoa.classification.AbstractClassification;
-	import org.omoa.datamodel.Description;
-	import org.omoa.datamodel.Datum;
+	import org.omoa.framework.Description;
+	import org.omoa.framework.Datum;
 	import org.omoa.framework.ISymbol;
 	import org.omoa.framework.ISymbolPropertyManipulator;
 	import org.omoa.framework.SymbolProperty;

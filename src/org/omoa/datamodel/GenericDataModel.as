@@ -21,6 +21,9 @@ along with OMOA.  If not, see <http://www.gnu.org/licenses/>.
 package org.omoa.datamodel {
 	
 	import flash.events.EventDispatcher;
+	import org.omoa.framework.Datum;
+	import org.omoa.framework.Description;
+	import org.omoa.framework.ModelDimension;
 	
 	/**
 	*

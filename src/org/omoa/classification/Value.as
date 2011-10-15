@@ -20,7 +20,7 @@ along with OMOA.  If not, see <http://www.gnu.org/licenses/>.
 
 package org.omoa.classification {
 	
-	import org.omoa.datamodel.Description;
+	import org.omoa.framework.Description;
 	import org.omoa.framework.IStyle;
 	import org.omoa.framework.ISymbolPropertyManipulator;
 	import org.omoa.framework.SymbolPropertyType;

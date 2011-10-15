@@ -23,10 +23,10 @@ package org.omoa.datamodel.loader {
 	import flash.events.Event;
 	import org.omoa.datamodel.AbstractDMLoader;
 	import org.omoa.datamodel.DataModel;
-	import org.omoa.datamodel.Datum;
+	import org.omoa.framework.Datum;
 	import org.omoa.datamodel.GenericDataModel;
-	import org.omoa.datamodel.ModelDimension;
-	import org.omoa.datamodel.ModelDimensionType;
+	import org.omoa.framework.ModelDimension;
+	import org.omoa.framework.ModelDimensionType;
 	import org.omoa.framework.ISpaceModel;
 	import org.omoa.framework.ISpaceModelIterator;
 	import org.omoa.spacemodel.SpaceModelEntity;

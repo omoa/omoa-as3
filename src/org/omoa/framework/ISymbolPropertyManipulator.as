@@ -20,9 +20,6 @@ along with OMOA.  If not, see <http://www.gnu.org/licenses/>.
 	
 package org.omoa.framework {
 	
-	import org.omoa.datamodel.Description;
-	import org.omoa.datamodel.Datum;
-	
 	/**
 	 * Implementations of this interface are able to change
 	 * the properties of a symbol and store a value or a style; value or style may

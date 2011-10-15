@@ -18,7 +18,7 @@ You should have received a copy of the GNU Lesser General Public License
 along with OMOA.  If not, see <http://www.gnu.org/licenses/>.
 */
 	
-package org.omoa.datamodel {
+package org.omoa.framework {
 
 	/**
 	 * This class stores the DataModel value that can be found under

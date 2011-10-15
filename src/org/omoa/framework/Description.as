@@ -18,10 +18,7 @@ You should have received a copy of the GNU Lesser General Public License
 along with OMOA.  If not, see <http://www.gnu.org/licenses/>.
 */
 	
-package org.omoa.datamodel {
-	
-	import org.omoa.framework.IDataModel;
-	import org.omoa.datamodel.ModelDimension;
+package org.omoa.framework {
 
 	/**
 	 * A Description stores a description of a value within a DataModel

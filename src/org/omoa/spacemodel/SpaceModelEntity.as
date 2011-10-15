@@ -26,7 +26,7 @@ package org.omoa.spacemodel {
 	import flash.geom.Matrix;
 	import flash.geom.Point;
 	
-	import org.omoa.datamodel.Description;
+	import org.omoa.framework.Description;
 	//import org.omoa.framework.IDataModel;
 
 	/**

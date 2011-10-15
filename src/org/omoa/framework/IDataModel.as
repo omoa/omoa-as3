@@ -21,9 +21,6 @@ along with OMOA.  If not, see <http://www.gnu.org/licenses/>.
 package org.omoa.framework {
 
 	import flash.events.IEventDispatcher;
-	import org.omoa.datamodel.Description;
-	import org.omoa.datamodel.Datum;
-	import org.omoa.datamodel.ModelDimension;
 	
 	/**
 	 * Signalises the end of the loading process. You may now use this class.

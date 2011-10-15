@@ -5,8 +5,8 @@
 package org.omoa.spacemodel {
 
 	import flash.events.EventDispatcher;
-	import org.omoa.datamodel.Description;
-	import org.omoa.datamodel.ModelDimension;
+	import org.omoa.framework.Description;
+	import org.omoa.framework.ModelDimension;
 	import org.omoa.framework.GeometryType;
 	import org.omoa.framework.IDataModel;
 	import org.omoa.framework.IProjection;

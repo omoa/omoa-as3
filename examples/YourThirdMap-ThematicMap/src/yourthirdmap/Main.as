@@ -7,9 +7,9 @@ package yourthirdmap {
 	import org.omoa.classification.LinearInterpolateClassification;
 	import org.omoa.classification.SquarerootClassification;
 	import org.omoa.classification.Value;
-	import org.omoa.datamodel.Description;
+	import org.omoa.framework.Description;
 	import org.omoa.datamodel.DataModel;
-	import org.omoa.datamodel.Datum;
+	import org.omoa.framework.Datum;
 	import org.omoa.datamodel.loader.Text;
 	import org.omoa.datamodel.loader.SMEAttributeDataModel;
 	import org.omoa.datamodel.loader.Text;

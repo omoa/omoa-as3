@@ -19,8 +19,6 @@ along with OMOA.  If not, see <http://www.gnu.org/licenses/>.
 */
 	
 package org.omoa.framework {
-	
-	import org.omoa.datamodel.Datum;
 
 	/**	
 	 * [PURE VIRTUAL BY NOW] Implementations of this interface iterate over
