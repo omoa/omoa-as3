@@ -1,33 +1,19 @@
 package yourthirdmap {
 	
-	import flash.display.Sprite;
-	import flash.display.StageAlign;
-	import flash.display.StageScaleMode;
-	import flash.events.Event;
-	import org.omoa.classification.LinearInterpolateClassification;
-	import org.omoa.classification.SquarerootClassification;
-	import org.omoa.classification.Value;
-	import org.omoa.datamodel.DataDescription;
-	import org.omoa.datamodel.DataModel;
-	import org.omoa.datamodel.DataModelDatum;
-	import org.omoa.datamodel.loader.Text;
-	import org.omoa.datamodel.loader.SMEAttributeDataModel;
-	import org.omoa.datamodel.loader.Text;
-	import org.omoa.framework.IDataModel;
-	import org.omoa.framework.ISpaceModel;
-	import org.omoa.framework.ISpaceModelLoader;
-	import org.omoa.layer.ImageLayer;
-	import org.omoa.layer.SymbolLayer;
-	import org.omoa.Map;
-	import org.omoa.spacemodel.BoundingBox;
-	import org.omoa.spacemodel.SpaceModelEntity;
-	import org.omoa.symbol.PointSymbol;
-	import org.omoa.symbol.PointSymbolEntity;
-	import org.omoa.symbol.VectorSymbol;
-	import org.omoa.util.NavigationButtons;
+	import flash.display.*;
+	import flash.events.*;
+	import org.omoa.*;
+	import org.omoa.classification.*;
+	import org.omoa.datamodel.*;
+	import org.omoa.datamodel.loader.*;
+	import org.omoa.framework.*;
+	import org.omoa.layer.*;
+	import org.omoa.spacemodel.*;
+	import org.omoa.symbol.*;
 	
 	/**
 	 * ...
+	 * 
 	 * @author Sebastian Specht
 	 */
 	public class Main extends Sprite {
