@@ -25,7 +25,7 @@ package org.omoa.framework {
 	import flash.events.IEventDispatcher;
 	import flash.geom.Matrix;
 	import flash.geom.Rectangle;
-	import org.omoa.spacemodel.BoundingBox;
+	import org.omoa.framework.BoundingBox;
 	import org.omoa.spacemodel.SpaceModelEntity;
 	
 	

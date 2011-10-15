@@ -28,7 +28,7 @@ package org.omoa.layer {
 	import org.omoa.framework.ILayer;
 	import org.omoa.framework.ILegend;
 	import org.omoa.framework.ISpaceModel;
-	import org.omoa.spacemodel.BoundingBox;
+	import org.omoa.framework.BoundingBox;
 	
 	/**
 	 * This is an abstract implementation of the ILayer interface.

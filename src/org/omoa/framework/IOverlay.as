@@ -24,8 +24,6 @@ package org.omoa.framework {
 	import flash.geom.Matrix;
 	import flash.geom.Rectangle;
 	
-	import org.omoa.spacemodel.BoundingBox;
-	
 	/**
 	 * Implementaions of this interface provide a visualization of a SpaceModel
 	 * on top of all other layers in a MapFrame, example: a coordinate grid.

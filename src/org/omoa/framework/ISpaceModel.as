@@ -21,7 +21,6 @@ along with OMOA.  If not, see <http://www.gnu.org/licenses/>.
 package org.omoa.framework {
 
 	import flash.events.IEventDispatcher;
-	import org.omoa.spacemodel.BoundingBox;
 	import org.omoa.spacemodel.SpaceModelEntity;
 	
 	

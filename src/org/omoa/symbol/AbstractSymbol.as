@@ -31,7 +31,7 @@ package org.omoa.symbol {
 	import org.omoa.framework.ISymbol;
 	import org.omoa.framework.ISymbolPropertyManipulator;
 	import org.omoa.framework.SymbolProperty;
-	import org.omoa.spacemodel.BoundingBox;
+	import org.omoa.framework.BoundingBox;
 	import org.omoa.spacemodel.SpaceModelEntity;
 	
 	

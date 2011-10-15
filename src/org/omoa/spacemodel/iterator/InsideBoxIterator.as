@@ -21,6 +21,7 @@ along with OMOA.  If not, see <http://www.gnu.org/licenses/>.
 package org.omoa.spacemodel.iterator {
 	
 	import flash.geom.Rectangle;
+	import org.omoa.framework.BoundingBox;
 	import org.omoa.spacemodel.*;
 	
 	/**

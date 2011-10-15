@@ -31,7 +31,7 @@ package org.omoa.layer {
 	import org.omoa.framework.ISpaceModel;
 	import org.omoa.framework.ISpaceModelIterator;
 	import org.omoa.framework.ISymbol;
-	import org.omoa.spacemodel.BoundingBox;
+	import org.omoa.framework.BoundingBox;
 	import org.omoa.spacemodel.SpaceModelEntity;
 	
 	[Event(name = SymbolEvent.CLICK, type = "org.omoa.event.SymbolEvent")]

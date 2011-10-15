@@ -32,7 +32,7 @@ package org.omoa.overlay {
 	import org.omoa.framework.ISpaceModel;
 	import org.omoa.framework.ISpaceModelIterator;
 	import org.omoa.framework.ISymbol;
-	import org.omoa.spacemodel.BoundingBox;
+	import org.omoa.framework.BoundingBox;
 	import org.omoa.spacemodel.iterator.InsideBoxIterator;
 	import org.omoa.spacemodel.iterator.OutsideBoxIterator;
 	import org.omoa.spacemodel.SpaceModelEntity;

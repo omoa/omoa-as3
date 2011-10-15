@@ -5,6 +5,7 @@
 package org.omoa.spacemodel {
 
 	import flash.events.EventDispatcher;
+	import org.omoa.framework.BoundingBox;
 	import org.omoa.framework.Description;
 	import org.omoa.framework.ModelDimension;
 	import org.omoa.framework.GeometryType;

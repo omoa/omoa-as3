@@ -28,6 +28,7 @@ package org.omoa.spacemodel.loader {
 	import flash.net.URLLoaderDataFormat;
 	import flash.net.URLRequest;
 	import flash.utils.ByteArray;
+	import org.omoa.framework.BoundingBox;
 	import org.omoa.framework.GeometryType;
 	import org.omoa.spacemodel.*;
 	import org.vanrijkom.dbf.*;

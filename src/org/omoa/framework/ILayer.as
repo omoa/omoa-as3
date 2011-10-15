@@ -26,8 +26,6 @@ package org.omoa.framework {
 	import flash.geom.Transform;
 	import flash.geom.Rectangle;
 	
-	import org.omoa.spacemodel.BoundingBox;
-	
 	/**
 	 * Implementations of this interface provide a visualization of a SpaceModel in a MapFrame.
 	 * 

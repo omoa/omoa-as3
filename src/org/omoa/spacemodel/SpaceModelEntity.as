@@ -25,6 +25,7 @@ package org.omoa.spacemodel {
 	import flash.display.IGraphicsPath;
 	import flash.geom.Matrix;
 	import flash.geom.Point;
+	import org.omoa.framework.BoundingBox;
 	
 	import org.omoa.framework.Description;
 	//import org.omoa.framework.IDataModel;

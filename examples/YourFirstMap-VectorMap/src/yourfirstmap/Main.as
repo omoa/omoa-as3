@@ -10,7 +10,7 @@ package yourfirstmap {
 	import org.omoa.layer.ImageLayer;
 	import org.omoa.layer.SymbolLayer;
 	import org.omoa.Map;
-	import org.omoa.spacemodel.BoundingBox;
+	import org.omoa.framework.BoundingBox;
 	import org.omoa.symbol.VectorSymbol;
 	
 	/**

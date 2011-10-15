@@ -26,6 +26,7 @@ package org.omoa.spacemodel.loader {
 	import flash.geom.Point;
 	import flash.net.URLLoader;
 	import flash.net.URLRequest;
+	import org.omoa.framework.BoundingBox;
 	import org.omoa.framework.GeometryType;
 	import org.omoa.spacemodel.*;
 	
