@@ -27,7 +27,7 @@ package org.omoa.symbol {
 	import flash.geom.Rectangle;
 	import org.omoa.classification.AbstractClassification;
 	import org.omoa.datamodel.DataDescription;
-	import org.omoa.datamodel.DataModelDatum;
+	import org.omoa.datamodel.Datum;
 	import org.omoa.framework.ISymbol;
 	import org.omoa.framework.ISymbolPropertyManipulator;
 	import org.omoa.framework.SymbolProperty;
@@ -49,7 +49,7 @@ package org.omoa.symbol {
 		protected var _propertyNames:Array = new Array();
 		protected var _propertyIndexes:Object = new Object();
 		
-		protected var _temporaryDatum:DataModelDatum;
+		protected var _temporaryDatum:Datum;
 		
 		protected var _interactive:Boolean = false;
 		protected var _entities:Boolean = false;

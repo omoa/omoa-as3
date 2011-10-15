@@ -22,7 +22,7 @@ package org.omoa.framework {
 
 	import flash.events.IEventDispatcher;
 	import org.omoa.datamodel.DataDescription;
-	import org.omoa.datamodel.DataModelDatum;
+	import org.omoa.datamodel.Datum;
 	import org.omoa.datamodel.ModelDimension;
 	
 	/**
@@ -53,13 +53,13 @@ package org.omoa.framework {
 		function valueDimensionCount():int;
 		function valueDimension(index:int = 0):ModelDimension;
 		function createDescription( descriptionString:String = null ):DataDescription;
-		function getDatum(description:DataDescription):DataModelDatum;
-		function updateDatum(datum:DataModelDatum):void;
+		function getDatum(description:DataDescription):Datum;
+		function updateDatum(datum:Datum):void;
 		function get isRemote():Boolean;
 		function get isComplete():Boolean;
 		function toString():String;
 		
-		function addDatum(datum:DataModelDatum):void;
+		function addDatum(datum:Datum):void;
 		function addPropertyDimension(propertyDimension:ModelDimension):void;
 		function addValueDimension(valueDimension:ModelDimension):void;
 

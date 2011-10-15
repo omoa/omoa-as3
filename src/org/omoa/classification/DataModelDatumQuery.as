@@ -21,7 +21,7 @@ along with OMOA.  If not, see <http://www.gnu.org/licenses/>.
 package org.omoa.classification {
 	
 	import org.omoa.datamodel.DataDescription;
-	import org.omoa.datamodel.DataModelDatum;
+	import org.omoa.datamodel.Datum;
 	import org.omoa.framework.IClassificationElement;
 	
 	/**
@@ -32,15 +32,15 @@ package org.omoa.classification {
 	 * @author Sebastian Specht
 	 */
 	
-	public class DataModelDatumQuery extends AbstractClassification {
+	public class DatumQuery extends AbstractClassification {
 		
 		private var _selectedElementBuffer:ClassificationElement;
 		
-		public function DataModelDatumQuery( dataDescription:DataDescription=null) {
+		public function DatumQuery( dataDescription:DataDescription=null) {
 			super();
 			_description = dataDescription;
 			
-			_selectedElementBuffer = new ClassificationElement("DataModelDatumQuery", new Value(0));
+			_selectedElementBuffer = new ClassificationElement("DatumQuery", new Value(0));
 			_selectedElement = null;
 		}
 		

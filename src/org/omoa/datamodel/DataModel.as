@@ -38,7 +38,7 @@ package org.omoa.datamodel {
 			super(id);
 		}
 
-		override public function addDatum(datum:DataModelDatum):void {
+		override public function addDatum(datum:Datum):void {
 			var i:int;
 			var index:int;
 			var valueIndex:int;
@@ -60,8 +60,8 @@ package org.omoa.datamodel {
 			}
 		}
 		
-		override public function getDatum(description:DataDescription):DataModelDatum {
-			var datum:DataModelDatum = new DataModelDatum();
+		override public function getDatum(description:DataDescription):Datum {
+			var datum:Datum = new Datum();
 			datum.description = description;
 			if (description.representsScalar) {
 				var index:int;
@@ -80,14 +80,14 @@ package org.omoa.datamodel {
 		}
 		
 		/**
-		 * Updates a <code>DataModelDatum</code> with the data value according to the <code>DataDescription</code>.
+		 * Updates a <code>Datum</code> with the data value according to the <code>DataDescription</code>.
 		 * This is the fastest way to request a data value, since it does not create any object.
 		 * The description of the datum needs to point to a scalar value, otherwise the value property of
 		 * the datum will be <code>NaN</code>.
-		 * @param	datum	The DataModelDatum you want to be updated according to the description 
+		 * @param	datum	The Datum you want to be updated according to the description 
 		 * 					property (DataDescription).
 		 */
-		override public function updateDatum(datum:DataModelDatum):void {
+		override public function updateDatum(datum:Datum):void {
 			if (datum.description.hasValueIndex) {
 				datum.value = data[datum.description.valueIndex];
 			} else {

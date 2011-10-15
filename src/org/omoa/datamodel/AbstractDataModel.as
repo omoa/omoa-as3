@@ -98,15 +98,15 @@ package org.omoa.datamodel {
 			return null;
 		}
 		
-		public function getDatum(description:DataDescription):DataModelDatum {
+		public function getDatum(description:DataDescription):Datum {
 			throw new Error( "getDatum() must be implemented in Subclass." );
 		}
 		
-		public function updateDatum(datum:DataModelDatum):void {
+		public function updateDatum(datum:Datum):void {
 			throw new Error( "updateDatum() must be implemented in Subclass." );
 		}
 		
-		public function addDatum(datum:DataModelDatum):void {
+		public function addDatum(datum:Datum):void {
 			throw new Error( "addDatum() must be implemented in Subclass." );
 		}
 		

@@ -20,7 +20,7 @@ along with OMOA.  If not, see <http://www.gnu.org/licenses/>.
 	
 package org.omoa.framework {
 	
-	import org.omoa.datamodel.DataModelDatum;
+	import org.omoa.datamodel.Datum;
 
 	/**	
 	 * [PURE VIRTUAL BY NOW] Implementations of this interface iterate over
@@ -31,7 +31,7 @@ package org.omoa.framework {
 	
 	public interface IDataModelIterator {
 
-		function next():DataModelDatum;
+		function next():Datum;
 		function count():int;
 		function reset():void;
 		function hasNext():Boolean;

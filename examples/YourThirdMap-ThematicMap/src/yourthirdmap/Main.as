@@ -9,7 +9,7 @@ package yourthirdmap {
 	import org.omoa.classification.Value;
 	import org.omoa.datamodel.DataDescription;
 	import org.omoa.datamodel.DataModel;
-	import org.omoa.datamodel.DataModelDatum;
+	import org.omoa.datamodel.Datum;
 	import org.omoa.datamodel.loader.Text;
 	import org.omoa.datamodel.loader.SMEAttributeDataModel;
 	import org.omoa.datamodel.loader.Text;
@@ -142,10 +142,10 @@ package yourthirdmap {
 			var description:DataDescription = gdp.createDescription("Afghanistan.GDP_USDM");
 			trace(description.toString());
 			
-			//    A DataModelDatum can store the result of such a "query".
+			//    A Datum can store the result of such a "query".
 			//    The IDataModel.getDatum() function creates a datum Object.
 			//    This can be a costly operation.
-			var datum:DataModelDatum = gdp.getDatum( description );
+			var datum:Datum = gdp.getDatum( description );
 			trace( "GDP for Afghanistan: " + datum );
 			
 			//    The updateDatum() is much faster as no object is created.

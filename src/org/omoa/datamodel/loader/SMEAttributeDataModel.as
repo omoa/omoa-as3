@@ -23,7 +23,7 @@ package org.omoa.datamodel.loader {
 	import flash.events.Event;
 	import org.omoa.datamodel.AbstractDMLoader;
 	import org.omoa.datamodel.DataModel;
-	import org.omoa.datamodel.DataModelDatum;
+	import org.omoa.datamodel.Datum;
 	import org.omoa.datamodel.GenericDataModel;
 	import org.omoa.datamodel.ModelDimension;
 	import org.omoa.datamodel.ModelDimensionType;
@@ -114,7 +114,7 @@ package org.omoa.datamodel.loader {
 			addValueDimension( attributeDimension );
 			
 			// store data
-			var value:DataModelDatum = new DataModelDatum();
+			var value:Datum = new Datum();
 			value.description = createDescription();
 			value.description.selectByCode( value.description.valueDimensionOrder(), attributeKey );
 			

@@ -22,13 +22,13 @@ package org.omoa.datamodel {
 
 	/**
 	 * This class stores the DataModel value that can be found under
-	 * a DataDescription; example: DataModelDatum.value = 30145, 
-	 * DataModelDatum.description.toString()="GERMANY.FEMALE.1989.GDP".
+	 * a DataDescription; example: Datum.value = 30145, 
+	 * Datum.description.toString()="GERMANY.FEMALE.1989.GDP".
 	 * 
-	 * @author Sebastian Specht 2009-2011
+	 * @author Sebastian Specht
 	 */
 
-	public class DataModelDatum {
+	public class Datum {
 
 		public var value:* = NaN;
 		
@@ -38,12 +38,12 @@ package org.omoa.datamodel {
 
 		//public var valueDimension:ModelDimension = null;
 
-		public function DataModelDatum() {
+		public function Datum() {
 		}
 		
 		public function toString():String {
 			return description.toString() + "=" + value;
 		}
 
-	} // end class
-} // end package
+	}
+}
