@@ -30,6 +30,7 @@ package org.omoa.symbol {
 	import org.omoa.datamodel.DataModelDatum;
 	import org.omoa.framework.ISymbol;
 	import org.omoa.framework.ISymbolPropertyManipulator;
+	import org.omoa.framework.SymbolProperty;
 	import org.omoa.spacemodel.BoundingBox;
 	import org.omoa.spacemodel.SpaceModelEntity;
 	
@@ -85,7 +86,7 @@ package org.omoa.symbol {
 			renderEntity(target, spaceEntity, transformation);
 		}
 		
-		protected function updateValues( spaceEntity:SpaceModelEntity, property:SymbolProperty ):void {
+		public function updateValues( spaceEntity:SpaceModelEntity, property:SymbolProperty ):void {
 			var property:SymbolProperty;
 			var propertyDataDescription:DataDescription;
 			var entityDataDescription:DataDescription;
@@ -200,5 +201,5 @@ package org.omoa.symbol {
 			super.addEventListener(type, listener, useCapture, priority, useWeakReference);
 		}
 
-	} // end class
-} // end package
+	}
+}

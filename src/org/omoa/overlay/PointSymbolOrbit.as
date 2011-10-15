@@ -65,8 +65,6 @@ package org.omoa.overlay {
 		
 		private var blurShape:Shape;
 		
-		private var doSetup:Boolean = false;
-		
 		public var margin:Number = 0;
 		
 		public var blur:Boolean = false;
@@ -80,12 +78,6 @@ package org.omoa.overlay {
 			} else {
 				throw new Error( "PointSymbolOrbit can only handle PointSymbol or PointSymbolEntity");
 			}
-			
-			if (_spaceModel.isComplete) {
-				doSetup();
-			} else {
-				_spaceModel.addEventListener( Event.COMPLETE, doSetup );
-			}
 		}
 		
 		public function get spaceModel():ISpaceModel { return _spaceModel; }
@@ -94,52 +86,17 @@ package org.omoa.overlay {
 		
 		public function get isSetup():Boolean { return _isSetup; }
 		
-		private function doSetup( e:Event = null ):void {
-			var sprite:Sprite;
+		public function setup(sprite:Sprite):void {
 			var sme:SpaceModelEntity;
 			
-			if (_spaceModel.hasEventListener(Event.COMPLETE)) {
-				_spaceModel.removeEventListener(Event.COMPLETE, doSetup );
-			}
 			outsideIterator = _spaceModel.iterator( "OutsideBoxIterator" ) as OutsideBoxIterator;
 			if (_symbol is PointSymbol) {
 				
 			} else if (_symbol is PointSymbolEntity) {
 				entityDictionary = new Dictionary();
-				iterator = _spaceModel.iterator();
+				
 				insideIterator = _spaceModel.iterator( "InsideBoxIterator" ) as InsideBoxIterator;
-				doSetup = true;
-				_isSetup = true;
-				/*
-				while (i.hasNext()) {
-					sprite = new Sprite();
-					sme = i.next();
-					sprite.name = sme.id;
-					entityDictionary[sme] = sprite;
-				}
-				*/
-			}
-		}
-		
-		public function setup(sprite:Sprite):void {
-			//TODO: Use setup function
-			//_isSetup = true;
-		}
-		
-		public function deconstruct(sprite:Sprite):void {
-			sprite.removeChild( blurShape );
-			for (var i:int = 0; i < sprite.numChildren; i++ ) {
-				sprite.removeChildAt(i);
-			}
-			doSetup = true;
-		}
-		
-		public function render(sprite:Sprite, displayExtent:Rectangle, viewportBounds:BoundingBox, transformation:Matrix):void {
-			var sme:SpaceModelEntity;
-			
-			// Setup
-			if (doSetup) {
-				var s:Sprite;
+				
 				if (blur) {
 					blurShape = new Shape();
 					var filters:Array = blurShape.filters;
@@ -147,15 +104,28 @@ package org.omoa.overlay {
 					blurShape.filters = filters;
 					sprite.addChild(blurShape);
 				}
-				iterator.reset();
+				
+				iterator = _spaceModel.iterator();
 				while (iterator.hasNext()) {
 					sme = iterator.next();
-					s = entityDictionary[sme];
 					
 					entityDictionary[sme] = _symbol.setupEntity(sprite, sme);
 				}
-				doSetup = false;
+				
+				_isSetup = true;
 			}
+		}
+		
+		public function deconstruct(sprite:Sprite):void {
+			sprite.removeChild( blurShape );
+			for (var i:int = 0; i < sprite.numChildren; i++ ) {
+				sprite.removeChildAt(i);
+			}
+		}
+		
+		public function render(sprite:Sprite, displayExtent:Rectangle, viewportBounds:BoundingBox, transformation:Matrix):void {
+			var sme:SpaceModelEntity;
+			var s:Sprite;
 			
 			if (displayExtent && sprite) {
 				
@@ -232,9 +202,7 @@ package org.omoa.overlay {
 						p4.y = frame.top;
 						p4.x = frame.right;
 						pointFound = doIntersect(p, bbCenter, p3, p4, cp);
-					}
-					
-					
+					}	
 					
 					smeProxy.center = invt.transformPoint(cp);
 					
@@ -272,7 +240,7 @@ package org.omoa.overlay {
 				var zaehlerA:Number = (p4.x-p3.x)*(p1.y-p3.y)-(p4.y-p3.y)*(p1.x-p3.x);
 				var ua:Number = zaehlerA/nenner;
 				
-				//if (isNaN(ua)) {  // isNaN() ist sehr langsam
+				//if (isNaN(ua)) {  // isNaN() is said to be slow
 				if (ua!=ua) {
 					return false;
 				} else {

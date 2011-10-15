@@ -28,6 +28,8 @@ package org.omoa.symbol {
 	import flash.geom.Matrix;
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
+	import org.omoa.framework.SymbolProperty;
+	import org.omoa.framework.SymbolPropertyType;
 	import org.omoa.spacemodel.BoundingBox;
 	import org.omoa.spacemodel.SpaceModelEntity;
 	

@@ -23,7 +23,7 @@ package org.omoa.classification {
 	import org.omoa.datamodel.DataDescription;
 	import org.omoa.framework.IStyle;
 	import org.omoa.framework.ISymbolPropertyManipulator;
-	import org.omoa.symbol.SymbolPropertyType;
+	import org.omoa.framework.SymbolPropertyType;
 
 	/**
 	 * A Value is the most simple and basic implementation of an 
@@ -69,5 +69,5 @@ package org.omoa.classification {
 			return null;
 		}
 
-	} // end class
-} // end package
+	}
+}

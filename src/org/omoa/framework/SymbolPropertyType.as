@@ -18,25 +18,17 @@ You should have received a copy of the GNU Lesser General Public License
 along with OMOA.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-package org.omoa.symbol {
+package org.omoa.framework {
 	
-	import org.omoa.datamodel.DataModelDatum;
-	import org.omoa.framework.ISymbolPropertyManipulator;
-
 	/**
 	* @author Sebastian Specht
 	*/
-	
-	public final class SymbolProperty {
 
-		public var name:String;
-		public var description:String;
-		public var type:String;
-		public var manipulator:ISymbolPropertyManipulator;
-		public var datum:DataModelDatum;
+	public final class SymbolPropertyType {
 
-		public function SymbolProperty() {
-		}
+		public static const VALUE:String = "value";
+		public static const STYLE_TEXT:String = "style_text";
+		public static const STYLE_GRAPHICS:String = "style_graphics";
 
 	}
 }

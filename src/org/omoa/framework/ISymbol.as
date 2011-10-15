@@ -25,10 +25,9 @@ package org.omoa.framework {
 	import flash.events.IEventDispatcher;
 	import flash.geom.Matrix;
 	import flash.geom.Rectangle;
-	
 	import org.omoa.spacemodel.BoundingBox;
 	import org.omoa.spacemodel.SpaceModelEntity;
-	import org.omoa.symbol.SymbolProperty;
+	
 	
 	/**
 	 * Implementations of this interface are responsible for the visualization
@@ -64,6 +63,8 @@ package org.omoa.framework {
 		
 		function get needsRecenter():Boolean;
 		function recenter(target:DisplayObject, spaceEntity:SpaceModelEntity, displayExtent:Rectangle, viewportBounds:BoundingBox, transformation:Matrix):void;
+		
+		function updateValues(spaceEntity:SpaceModelEntity, property:SymbolProperty):void;
 
 	}
 }

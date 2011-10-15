@@ -26,11 +26,11 @@ package org.omoa.symbol {
 	import flash.display.LineScaleMode;
 	import flash.display.Sprite;
 	import flash.geom.Matrix;
-	
+	import org.omoa.framework.SymbolProperty;
+	import org.omoa.framework.SymbolPropertyType;
 	import org.omoa.spacemodel.SpaceModelEntity;
 	import org.omoa.symbol.AbstractSymbol;
-	import org.omoa.symbol.SymbolProperty;
-	import org.omoa.symbol.SymbolPropertyType;
+	
 	
 	/**
 	 * A symbol that renders ...
@@ -90,9 +90,6 @@ package org.omoa.symbol {
 		
 		public const ALL_COLOR:String = "all_color";
 		public const ALL_ALPHA:String = "all_alpha";
-		
-		private const SINPI4:Number = Math.sin( Math.PI * 0.25 );
-		private const COSPI4:Number = Math.cos( Math.PI * 0.25 );
 
 		private var fill:GraphicsSolidFill = new GraphicsSolidFill(0xffffff);
 		private var strokefill:GraphicsSolidFill = new GraphicsSolidFill();
@@ -342,6 +339,9 @@ package org.omoa.symbol {
 		override protected function renderEntity(target:DisplayObject, spaceEntity:SpaceModelEntity, transformation:Matrix):void {
 			//sprite.graphics.clear();
 			var sprite:Sprite = target as Sprite;
+			var SINPI4:Number = Math.sin( Math.PI * 0.25 );
+			var COSPI4:Number = Math.cos( Math.PI * 0.25 );
+		
 			if (size!=0) {
 				if (fill.alpha > 0) {
 					sprite.graphics.beginFill( fill.color, fill.alpha );

@@ -27,6 +27,8 @@ package org.omoa.symbol {
 	import flash.display.Sprite;
 	import flash.geom.Matrix;
 	import flash.geom.Point;
+	import org.omoa.framework.SymbolProperty;
+	import org.omoa.framework.SymbolPropertyType;
 	import org.omoa.spacemodel.SpaceModelEntity;
 	
 	/**
