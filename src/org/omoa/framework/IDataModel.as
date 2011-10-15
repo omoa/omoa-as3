@@ -21,9 +21,6 @@ along with OMOA.  If not, see <http://www.gnu.org/licenses/>.
 package org.omoa.framework {
 
 	import flash.events.IEventDispatcher;
-	import org.omoa.datamodel.DataDescription;
-	import org.omoa.datamodel.DataModelDatum;
-	import org.omoa.datamodel.ModelDimension;
 	
 	/**
 	 * Signalises the end of the loading process. You may now use this class.
@@ -52,14 +49,14 @@ package org.omoa.framework {
 		function propertyDimension(order:int):ModelDimension;
 		function valueDimensionCount():int;
 		function valueDimension(index:int = 0):ModelDimension;
-		function createDescription( descriptionString:String = null ):DataDescription;
-		function getDatum(description:DataDescription):DataModelDatum;
-		function updateDatum(datum:DataModelDatum):void;
+		function createDescription( descriptionString:String = null ):Description;
+		function getDatum(description:Description):Datum;
+		function updateDatum(datum:Datum):void;
 		function get isRemote():Boolean;
 		function get isComplete():Boolean;
 		function toString():String;
 		
-		function addDatum(datum:DataModelDatum):void;
+		function addDatum(datum:Datum):void;
 		function addPropertyDimension(propertyDimension:ModelDimension):void;
 		function addValueDimension(valueDimension:ModelDimension):void;
 

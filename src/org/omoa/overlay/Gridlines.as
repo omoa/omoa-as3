@@ -33,7 +33,7 @@ package org.omoa.overlay {
 	import flash.geom.Rectangle;
 	import org.omoa.framework.IOverlay;
 	import org.omoa.framework.ISpaceModel;
-	import org.omoa.spacemodel.BoundingBox;
+	import org.omoa.framework.BoundingBox;
 	
 	
 	/**

@@ -124,14 +124,14 @@ package yourthirdmap {
 			
 			
 			
-			//    A DataDescription can be seen as a query on a DataModel.
-			var description:DataDescription = gdp.createDescription("Afghanistan.GDP_USDM");
+			//    A Description can be seen as a query on a DataModel.
+			var description:Description = gdp.createDescription("Afghanistan.GDP_USDM");
 			trace(description.toString());
 			
-			//    A DataModelDatum can store the result of such a "query".
+			//    A Datum can store the result of such a "query".
 			//    The IDataModel.getDatum() function creates a datum Object.
 			//    This can be a costly operation.
-			var datum:DataModelDatum = gdp.getDatum( description );
+			var datum:Datum = gdp.getDatum( description );
 			trace( "GDP for Afghanistan: " + datum );
 			
 			//    The updateDatum() is much faster as no object is created.

@@ -18,7 +18,7 @@ You should have received a copy of the GNU Lesser General Public License
 along with OMOA.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-package org.omoa.datamodel {
+package org.omoa.framework {
 
 	/**
 	 * This class holds the constants that describe the nature of the statistical data
@@ -70,5 +70,5 @@ package org.omoa.datamodel {
 		 */
 		public static const ENTITY_ID:String = "id";
 
-	} // end class
-} // end package
+	} 
+} 

@@ -26,12 +26,12 @@ package org.omoa.symbol {
 	import flash.geom.Matrix;
 	import flash.geom.Rectangle;
 	import org.omoa.classification.AbstractClassification;
-	import org.omoa.datamodel.DataDescription;
-	import org.omoa.datamodel.DataModelDatum;
+	import org.omoa.framework.Description;
+	import org.omoa.framework.Datum;
 	import org.omoa.framework.ISymbol;
 	import org.omoa.framework.ISymbolPropertyManipulator;
 	import org.omoa.framework.SymbolProperty;
-	import org.omoa.spacemodel.BoundingBox;
+	import org.omoa.framework.BoundingBox;
 	import org.omoa.spacemodel.SpaceModelEntity;
 	
 	
@@ -49,7 +49,7 @@ package org.omoa.symbol {
 		protected var _propertyNames:Array = new Array();
 		protected var _propertyIndexes:Object = new Object();
 		
-		protected var _temporaryDatum:DataModelDatum;
+		protected var _temporaryDatum:Datum;
 		
 		protected var _interactive:Boolean = false;
 		protected var _entities:Boolean = false;
@@ -88,20 +88,20 @@ package org.omoa.symbol {
 		
 		public function updateValues( spaceEntity:SpaceModelEntity, property:SymbolProperty ):void {
 			var property:SymbolProperty;
-			var propertyDataDescription:DataDescription;
-			var entityDataDescription:DataDescription;
+			var propertyDescription:Description;
+			var entityDescription:Description;
 
 			if (property.manipulator) {
-				propertyDataDescription = property.manipulator.dataDescription;
-				if (propertyDataDescription) {
-					entityDataDescription = spaceEntity.getDataDescription( propertyDataDescription.model.id );
-					//trace( spaceEntity.id + " and " + propertyDataDescription.model.id + " = " + entityDataDescription );
-					if (entityDataDescription) {
+				propertyDescription = property.manipulator.dataDescription;
+				if (propertyDescription) {
+					entityDescription = spaceEntity.getDescription( propertyDescription.model.id );
+					//trace( spaceEntity.id + " and " + propertyDescription.model.id + " = " + entityDescription );
+					if (entityDescription) {
 						if (!property.datum) {
-							property.datum = propertyDataDescription.model.getDatum( propertyDataDescription );
+							property.datum = propertyDescription.model.getDatum( propertyDescription );
 						}
-						entityDataDescription.combine( property.datum.description, propertyDataDescription ); 
-						entityDataDescription.model.updateDatum( property.datum );
+						entityDescription.combine( property.datum.description, propertyDescription ); 
+						entityDescription.model.updateDatum( property.datum );
 						//trace( property.datum );
 					} else {
 						property.datum = null;

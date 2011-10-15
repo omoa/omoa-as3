@@ -20,7 +20,7 @@ along with OMOA.  If not, see <http://www.gnu.org/licenses/>.
 	
 package org.omoa.classification {
 	
-	import org.omoa.datamodel.DataDescription;
+	import org.omoa.framework.Description;
 	import org.omoa.framework.*;
 
 	/**
@@ -36,7 +36,7 @@ package org.omoa.classification {
 
 		protected var _elements:Vector.<IClassificationElement> = new Vector.<IClassificationElement>();
 		protected var _selectedElement:IClassificationElement;
-		protected var _description:DataDescription;
+		protected var _description:Description;
 		
 		protected var _label:String = "AbstractClassification";
 		protected var _classificationDescription:String;
@@ -115,7 +115,7 @@ package org.omoa.classification {
 		
 		public function set style(style:IStyle):void {}
 
-		public function get dataDescription():DataDescription {
+		public function get dataDescription():Description {
 			//if (_selectedElement) {
 			//	return _selectedElement.manipulator.dataDescription;
 			//}

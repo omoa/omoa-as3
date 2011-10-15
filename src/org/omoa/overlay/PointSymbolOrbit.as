@@ -32,7 +32,7 @@ package org.omoa.overlay {
 	import org.omoa.framework.ISpaceModel;
 	import org.omoa.framework.ISpaceModelIterator;
 	import org.omoa.framework.ISymbol;
-	import org.omoa.spacemodel.BoundingBox;
+	import org.omoa.framework.BoundingBox;
 	import org.omoa.spacemodel.iterator.InsideBoxIterator;
 	import org.omoa.spacemodel.iterator.OutsideBoxIterator;
 	import org.omoa.spacemodel.SpaceModelEntity;
@@ -176,8 +176,8 @@ package org.omoa.overlay {
 					smeProxy.attributes = sme.attributes;
 					smeProxy.bounds = sme.bounds;
 					smeProxy.path = sme.path;
-					smeProxy.removeDataDescription( sme.getDataDescription(sme.getModelIDs()[0]) );
-					smeProxy.addDataDescription( sme.getDataDescription(sme.getModelIDs()[0]) );
+					smeProxy.removeDescription( sme.getDescription(sme.getModelIDs()[0]) );
+					smeProxy.addDescription( sme.getDescription(sme.getModelIDs()[0]) );
 					
 					
 					p = transformation.transformPoint(sme.center);

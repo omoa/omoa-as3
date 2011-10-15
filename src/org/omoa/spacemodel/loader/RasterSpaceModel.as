@@ -29,7 +29,7 @@ package org.omoa.spacemodel.loader {
 	import flash.utils.Dictionary;
 	import org.omoa.framework.GeometryType;
 	import org.omoa.framework.ISpaceModelLoader;
-	import org.omoa.spacemodel.BoundingBox;
+	import org.omoa.framework.BoundingBox;
 	import org.omoa.spacemodel.SpaceModel;
 	import org.omoa.spacemodel.SpaceModelEntity;
 	

@@ -21,8 +21,11 @@ along with OMOA.  If not, see <http://www.gnu.org/licenses/>.
 package org.omoa.datamodel {
 	
 	import flash.events.EventDispatcher;
+	import org.omoa.framework.Datum;
+	import org.omoa.framework.Description;
 	import org.omoa.framework.IDataModel;
 	import org.omoa.framework.IDataModelIterator;
+	import org.omoa.framework.ModelDimension;
 	
 	/**
 	 * ...
@@ -56,8 +59,8 @@ package org.omoa.datamodel {
 			}
 		}
 		
-		public function createDescription( descriptionString:String = null ):DataDescription {
-			return new DataDescription( this, propertyDimensions, valueDimensions, descriptionString );
+		public function createDescription( descriptionString:String = null ):Description {
+			return new Description( this, propertyDimensions, valueDimensions, descriptionString );
 		}
 		
 		public function get id():String {
@@ -98,15 +101,15 @@ package org.omoa.datamodel {
 			return null;
 		}
 		
-		public function getDatum(description:DataDescription):DataModelDatum {
+		public function getDatum(description:Description):Datum {
 			throw new Error( "getDatum() must be implemented in Subclass." );
 		}
 		
-		public function updateDatum(datum:DataModelDatum):void {
+		public function updateDatum(datum:Datum):void {
 			throw new Error( "updateDatum() must be implemented in Subclass." );
 		}
 		
-		public function addDatum(datum:DataModelDatum):void {
+		public function addDatum(datum:Datum):void {
 			throw new Error( "addDatum() must be implemented in Subclass." );
 		}
 		

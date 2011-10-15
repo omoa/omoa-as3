@@ -62,5 +62,5 @@ package org.omoa.classification {
 			return _manipulator;
 		}
 
-	} // end class
-} // end package
+	} 
+} 

@@ -34,7 +34,7 @@ package org.omoa {
 	import org.omoa.framework.ISpaceModel;
 	import org.omoa.Map;
 	import org.omoa.projection.AbstractProjection;
-	import org.omoa.spacemodel.BoundingBox;
+	import org.omoa.framework.BoundingBox;
 	import org.omoa.util.NavigationButtons;
 	import org.omoa.util.OmoaLogo;
 	

@@ -20,7 +20,7 @@ along with OMOA.  If not, see <http://www.gnu.org/licenses/>.
 	
 package org.omoa.classification {
 	
-	import org.omoa.datamodel.DataDescription;
+	import org.omoa.framework.Description;
 	import org.omoa.framework.IClassificationElement;
 	
 	/**
@@ -40,7 +40,7 @@ package org.omoa.classification {
 		
 		private var _selectedElementBuffer:ClassificationElement;
 		
-		public function LinearInterpolateClassification( minValue:Number, minClassValue:Number, maxValue:Number, maxClassValue:Number, dataDescription:DataDescription=null) {
+		public function LinearInterpolateClassification( minValue:Number, minClassValue:Number, maxValue:Number, maxClassValue:Number, dataDescription:Description=null) {
 			super();
 			_min = minValue;
 			_max = maxValue;

@@ -18,32 +18,32 @@ You should have received a copy of the GNU Lesser General Public License
 along with OMOA.  If not, see <http://www.gnu.org/licenses/>.
 */
 	
-package org.omoa.datamodel {
+package org.omoa.framework {
 
 	/**
 	 * This class stores the DataModel value that can be found under
-	 * a DataDescription; example: DataModelDatum.value = 30145, 
-	 * DataModelDatum.description.toString()="GERMANY.FEMALE.1989.GDP".
+	 * a Description; example: Datum.value = 30145, 
+	 * Datum.description.toString()="GERMANY.FEMALE.1989.GDP".
 	 * 
-	 * @author Sebastian Specht 2009-2011
+	 * @author Sebastian Specht
 	 */
 
-	public class DataModelDatum {
+	public class Datum {
 
 		public var value:* = NaN;
 		
 		public var array:Object = null;
 
-		public var description:DataDescription = null;
+		public var description:Description = null;
 
 		//public var valueDimension:ModelDimension = null;
 
-		public function DataModelDatum() {
+		public function Datum() {
 		}
 		
 		public function toString():String {
 			return description.toString() + "=" + value;
 		}
 
-	} // end class
-} // end package
+	}
+}

@@ -31,7 +31,7 @@ package org.omoa.symbol {
 	import flash.text.TextFormat;
 	import org.omoa.framework.SymbolProperty;
 	import org.omoa.framework.SymbolPropertyType;
-	import org.omoa.spacemodel.BoundingBox;
+	import org.omoa.framework.BoundingBox;
 	import org.omoa.spacemodel.SpaceModelEntity;
 	
 	/**

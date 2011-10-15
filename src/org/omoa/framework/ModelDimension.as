@@ -18,13 +18,13 @@ You should have received a copy of the GNU Lesser General Public License
 along with OMOA.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-package org.omoa.datamodel {
+package org.omoa.framework {
 
 	/**
 	 * This class represents one dimension of a DataModel, examples: "Time" {1999,2000,2001},
 	 * "Sex" {male,female}, "Country" {UK,PL,FR}.
 	 * 
-	 * @see org.omoa.datamodel.ModelDimensionType
+	 * @see org.omoa.framework.ModelDimensionType
 	 * 
 	 * @author Sebastian Specht
 	 */
@@ -151,5 +151,5 @@ package org.omoa.datamodel {
 			return _isRemote;
 		}
 
-	} // end class
-} // end package
+	} 
+} 

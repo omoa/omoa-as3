@@ -25,8 +25,9 @@ package org.omoa.spacemodel {
 	import flash.display.IGraphicsPath;
 	import flash.geom.Matrix;
 	import flash.geom.Point;
+	import org.omoa.framework.BoundingBox;
 	
-	import org.omoa.datamodel.DataDescription;
+	import org.omoa.framework.Description;
 	//import org.omoa.framework.IDataModel;
 
 	/**
@@ -88,12 +89,12 @@ package org.omoa.spacemodel {
 		}
 		
 		/**
-		 * Adds a linked DataDescription to a DataModel. An entity can hold one
-		 * DataDescription per DataModel.
+		 * Adds a linked Description to a DataModel. An entity can hold one
+		 * Description per DataModel.
 		 * 
-		 * @param	dataDescription The DataDescription created by a DataModel.
+		 * @param	dataDescription The Description created by a DataModel.
 		 */
-		public function addDataDescription( dataDescription:DataDescription ):void {
+		public function addDescription( dataDescription:Description ):void {
 			//_dataDescriptions[ dataDescription.model.id ] = null;
 			if (dataDescription) {
 				_dataDescriptions[ dataDescription.model.id ] = dataDescription;
@@ -101,24 +102,24 @@ package org.omoa.spacemodel {
 		}
 		
 		/**
-		 * Remove a linked DataDescription.
+		 * Remove a linked Description.
 		 * 
 		 * @param	dataDescription
 		 */
-		public function removeDataDescription( dataDescription:DataDescription ):void {
+		public function removeDescription( dataDescription:Description ):void {
 			if (dataDescription && dataDescription.model) {
 				_dataDescriptions[ dataDescription.model.id ] = null;
 			}
 		}
 		
 		/**
-		 * Returns a DataDescription (DataModel link) for a given DataModel-ID.
+		 * Returns a Description (DataModel link) for a given DataModel-ID.
 		 * 
 		 * @param	modelID The ID-String of the DataModel.
-		 * @return  The DataDescription or null.
+		 * @return  The Description or null.
 		 */
-		public function getDataDescription( modelID:String ):DataDescription {
-			return _dataDescriptions[modelID] as DataDescription;
+		public function getDescription( modelID:String ):Description {
+			return _dataDescriptions[modelID] as Description;
 		}
 		
 		/**
@@ -179,5 +180,5 @@ package org.omoa.spacemodel {
 			return out;
 		}
 
-	} // end class
-} // end package
+	} 
+} 

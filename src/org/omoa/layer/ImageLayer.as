@@ -26,7 +26,7 @@ package org.omoa.layer {
 	import flash.geom.Rectangle;
 	import flash.utils.Dictionary;
 	import org.omoa.framework.ISpaceModelIterator;
-	import org.omoa.spacemodel.BoundingBox;
+	import org.omoa.framework.BoundingBox;
 	import org.omoa.spacemodel.loader.RasterSpaceModel;
 	import org.omoa.spacemodel.SpaceModelEntity;
 	

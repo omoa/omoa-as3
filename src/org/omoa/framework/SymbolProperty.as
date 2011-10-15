@@ -19,8 +19,6 @@ along with OMOA.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 package org.omoa.framework {
-	
-	import org.omoa.datamodel.DataModelDatum;
 
 	/**
 	 * ...
@@ -34,7 +32,7 @@ package org.omoa.framework {
 		public var description:String;
 		public var type:String;
 		public var manipulator:ISymbolPropertyManipulator;
-		public var datum:DataModelDatum; //TODO: Why?
+		public var datum:Datum; //TODO: Why?
 
 		public function SymbolProperty() {
 		}

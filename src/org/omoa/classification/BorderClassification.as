@@ -20,7 +20,7 @@ along with OMOA.  If not, see <http://www.gnu.org/licenses/>.
 	
 package org.omoa.classification {
 	
-	import org.omoa.datamodel.DataDescription;
+	import org.omoa.framework.Description;
 	import org.omoa.framework.IClassificationElement;
 	import org.omoa.framework.ISymbolPropertyManipulator;
 	
@@ -40,14 +40,14 @@ package org.omoa.classification {
 		 * ISymbolPropertyManipulators.
 		 * 
 		 * @param	dataDescription
-		 * The relevant DataDescription.
+		 * The relevant Description.
 		 * @param	borders
 		 * An array of numeric class border values.
 		 * @param	values
 		 * An array of numeric values or ISymbolPropertyManipulators serving as the class values.
 		 * You need one entry more than entries in the <code>borders</code> array.
 		 */
-		public function BorderClassification( dataDescription:DataDescription, borders:Array = null, values:Array = null) {
+		public function BorderClassification( dataDescription:Description, borders:Array = null, values:Array = null) {
 			super();
 			if (borders.length != values.length - 1) {
 				throw new Error( "You need (borders + 1) values in a BorderClassification" );

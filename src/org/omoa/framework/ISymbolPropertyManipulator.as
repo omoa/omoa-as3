@@ -20,9 +20,6 @@ along with OMOA.  If not, see <http://www.gnu.org/licenses/>.
 	
 package org.omoa.framework {
 	
-	import org.omoa.datamodel.DataDescription;
-	import org.omoa.datamodel.DataModelDatum;
-	
 	/**
 	 * Implementations of this interface are able to change
 	 * the properties of a symbol and store a value or a style; value or style may
@@ -42,7 +39,7 @@ package org.omoa.framework {
 		function get style():IStyle;
 		function set style(style:IStyle):void;
 		
-		function get dataDescription():DataDescription;
+		function get dataDescription():Description;
 
 	}
 }
