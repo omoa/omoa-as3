@@ -7,7 +7,7 @@ package yourthirdmap {
 	import org.omoa.classification.LinearInterpolateClassification;
 	import org.omoa.classification.SquarerootClassification;
 	import org.omoa.classification.Value;
-	import org.omoa.datamodel.DataDescription;
+	import org.omoa.datamodel.Description;
 	import org.omoa.datamodel.DataModel;
 	import org.omoa.datamodel.Datum;
 	import org.omoa.datamodel.loader.Text;
@@ -138,8 +138,8 @@ package yourthirdmap {
 			
 			
 			
-			//    A DataDescription can be seen as a query on a DataModel.
-			var description:DataDescription = gdp.createDescription("Afghanistan.GDP_USDM");
+			//    A Description can be seen as a query on a DataModel.
+			var description:Description = gdp.createDescription("Afghanistan.GDP_USDM");
 			trace(description.toString());
 			
 			//    A Datum can store the result of such a "query".

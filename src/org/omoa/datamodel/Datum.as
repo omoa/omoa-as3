@@ -22,7 +22,7 @@ package org.omoa.datamodel {
 
 	/**
 	 * This class stores the DataModel value that can be found under
-	 * a DataDescription; example: Datum.value = 30145, 
+	 * a Description; example: Datum.value = 30145, 
 	 * Datum.description.toString()="GERMANY.FEMALE.1989.GDP".
 	 * 
 	 * @author Sebastian Specht
@@ -34,7 +34,7 @@ package org.omoa.datamodel {
 		
 		public var array:Object = null;
 
-		public var description:DataDescription = null;
+		public var description:Description = null;
 
 		//public var valueDimension:ModelDimension = null;
 

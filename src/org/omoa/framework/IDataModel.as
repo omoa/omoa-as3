@@ -21,7 +21,7 @@ along with OMOA.  If not, see <http://www.gnu.org/licenses/>.
 package org.omoa.framework {
 
 	import flash.events.IEventDispatcher;
-	import org.omoa.datamodel.DataDescription;
+	import org.omoa.datamodel.Description;
 	import org.omoa.datamodel.Datum;
 	import org.omoa.datamodel.ModelDimension;
 	
@@ -52,8 +52,8 @@ package org.omoa.framework {
 		function propertyDimension(order:int):ModelDimension;
 		function valueDimensionCount():int;
 		function valueDimension(index:int = 0):ModelDimension;
-		function createDescription( descriptionString:String = null ):DataDescription;
-		function getDatum(description:DataDescription):Datum;
+		function createDescription( descriptionString:String = null ):Description;
+		function getDatum(description:Description):Datum;
 		function updateDatum(datum:Datum):void;
 		function get isRemote():Boolean;
 		function get isComplete():Boolean;

@@ -21,7 +21,7 @@ along with OMOA.  If not, see <http://www.gnu.org/licenses/>.
 package org.omoa.framework {
 
 	import flash.events.IEventDispatcher;
-	import org.omoa.datamodel.DataDescription;
+	import org.omoa.datamodel.Description;
 	import org.omoa.spacemodel.BoundingBox;
 	import org.omoa.spacemodel.SpaceModelEntity;
 	
@@ -58,7 +58,7 @@ package org.omoa.framework {
 		function getIndexByAttribute(attribute:String, value:String):int;
 		function entityCount():int;
 		function entity(index:uint):SpaceModelEntity;
-		function linkDataModel( model:IDataModel, dataDescription:DataDescription = null ):void;
+		function linkDataModel( model:IDataModel, dataDescription:Description = null ):void;
 
 		function findById(id:String):SpaceModelEntity;
 	}

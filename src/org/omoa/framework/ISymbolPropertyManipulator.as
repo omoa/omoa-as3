@@ -20,7 +20,7 @@ along with OMOA.  If not, see <http://www.gnu.org/licenses/>.
 	
 package org.omoa.framework {
 	
-	import org.omoa.datamodel.DataDescription;
+	import org.omoa.datamodel.Description;
 	import org.omoa.datamodel.Datum;
 	
 	/**
@@ -42,7 +42,7 @@ package org.omoa.framework {
 		function get style():IStyle;
 		function set style(style:IStyle):void;
 		
-		function get dataDescription():DataDescription;
+		function get dataDescription():Description;
 
 	}
 }

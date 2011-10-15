@@ -56,8 +56,8 @@ package org.omoa.datamodel {
 			}
 		}
 		
-		public function createDescription( descriptionString:String = null ):DataDescription {
-			return new DataDescription( this, propertyDimensions, valueDimensions, descriptionString );
+		public function createDescription( descriptionString:String = null ):Description {
+			return new Description( this, propertyDimensions, valueDimensions, descriptionString );
 		}
 		
 		public function get id():String {
@@ -98,7 +98,7 @@ package org.omoa.datamodel {
 			return null;
 		}
 		
-		public function getDatum(description:DataDescription):Datum {
+		public function getDatum(description:Description):Datum {
 			throw new Error( "getDatum() must be implemented in Subclass." );
 		}
 		

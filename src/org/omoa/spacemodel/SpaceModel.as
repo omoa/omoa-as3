@@ -5,7 +5,7 @@
 package org.omoa.spacemodel {
 
 	import flash.events.EventDispatcher;
-	import org.omoa.datamodel.DataDescription;
+	import org.omoa.datamodel.Description;
 	import org.omoa.datamodel.ModelDimension;
 	import org.omoa.framework.GeometryType;
 	import org.omoa.framework.IDataModel;
@@ -137,16 +137,16 @@ package org.omoa.spacemodel {
 		 * @param	model	The Model.
 		 * @param	dataDescription		
 		 */
-		public function linkDataModel( model:IDataModel, dataDescription:DataDescription = null ):void {
+		public function linkDataModel( model:IDataModel, dataDescription:Description = null ):void {
 			var order:int;
 			var dimension:ModelDimension;
 			var entity:SpaceModelEntity;
-			var description:DataDescription;
+			var description:Description;
 			
 			if (dataDescription) {
 				var wildcardDimensionOrder:int;
 				for (order = 1; order <= model.propertyDimensionCount(); order++) {
-					if (dataDescription.selectedIndex( order ) == DataDescription.WILDCARD_INDEX) {
+					if (dataDescription.selectedIndex( order ) == Description.WILDCARD_INDEX) {
 						wildcardDimensionOrder = order;
 					}
 					
@@ -154,7 +154,7 @@ package org.omoa.spacemodel {
 				for each (entity in entities) {
 					description = model.createDescription( dataDescription.toString() );
 					if (description.selectByCode( wildcardDimensionOrder, entity.id )) {
-						entity.addDataDescription( description );
+						entity.addDescription( description );
 					}
 				}
 			} else {
@@ -170,7 +170,7 @@ package org.omoa.spacemodel {
 						for each (entity in entities) {
 							description = model.createDescription( entity.id );
 							if ( description.representsSomething) {
-								entity.addDataDescription( description );
+								entity.addDescription( description );
 							}
 						}
 					}

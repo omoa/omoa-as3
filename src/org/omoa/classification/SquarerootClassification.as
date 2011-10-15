@@ -20,7 +20,7 @@ along with OMOA.  If not, see <http://www.gnu.org/licenses/>.
 	
 package org.omoa.classification {
 	
-	import org.omoa.datamodel.DataDescription;
+	import org.omoa.datamodel.Description;
 	import org.omoa.framework.IClassificationElement;
 	
 	/**
@@ -59,7 +59,7 @@ package org.omoa.classification {
 		 */
 		public function SquarerootClassification( preFactor:Number = 1,
 												  postFactor:Number = 1, 
-												  dataDescription:DataDescription = null)
+												  dataDescription:Description = null)
 		{
 			super()
 			_description = dataDescription;

@@ -20,7 +20,7 @@ along with OMOA.  If not, see <http://www.gnu.org/licenses/>.
 	
 package org.omoa.classification {
 	
-	import org.omoa.datamodel.DataDescription;
+	import org.omoa.datamodel.Description;
 	import org.omoa.datamodel.Datum;
 	import org.omoa.framework.IClassificationElement;
 	
@@ -36,7 +36,7 @@ package org.omoa.classification {
 		
 		private var _selectedElementBuffer:ClassificationElement;
 		
-		public function DatumQuery( dataDescription:DataDescription=null) {
+		public function DatumQuery( dataDescription:Description=null) {
 			super();
 			_description = dataDescription;
 			

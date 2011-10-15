@@ -57,11 +57,11 @@ package org.omoa.datamodel {
 				}
 				storageObject[datum.description.selectedCode(datum.description.valueDimensionOrder())] = datum.value;
 			} else {
-				throw new Error( "DataDescription does not represent a scalar value." );
+				throw new Error( "Description does not represent a scalar value." );
 			}
 		}
 		
-		override public function getDatum(description:DataDescription):Datum {
+		override public function getDatum(description:Description):Datum {
 			var datum:Datum = new Datum();
 			datum.description = description;
 			var result:Object = data;
@@ -79,12 +79,12 @@ package org.omoa.datamodel {
 		}
 		
 		/**
-		 * Updates a <code>Datum</code> with the data value according to the <code>DataDescription</code>.
+		 * Updates a <code>Datum</code> with the data value according to the <code>Description</code>.
 		 * This is the fastest way to request a data value, since it does not create any object.
 		 * The description of the datum needs to point to a scalar value, otherwise the value property of
 		 * the datum will be <code>NaN</code>.
 		 * @param	datum	The Datum you want to be updated according to the description 
-		 * 					property (DataDescription).
+		 * 					property (Description).
 		 */
 		override public function updateDatum(datum:Datum):void {
 			var result:Object = data;

@@ -24,13 +24,13 @@ package org.omoa.datamodel {
 	import org.omoa.datamodel.ModelDimension;
 
 	/**
-	 * A DataDescription stores a description of a value within a DataModel
-	 * or a subset of a DataModel; example of a DataDescription: "GERMANY.FEMALE.1989.GDP". 
+	 * A Description stores a description of a value within a DataModel
+	 * or a subset of a DataModel; example of a Description: "GERMANY.FEMALE.1989.GDP". 
 	 * 
 	 * @author Sebastian Specht 2009-2011
 	 */
 	
-	public class DataDescription {
+	public class Description {
 		
 		public static const UNDEFINED:String = "_";
 		public static const UNDEFINED_INDEX:int = 0;
@@ -50,7 +50,7 @@ package org.omoa.datamodel {
 		public var hasValueIndex:Boolean;
 		public var valueIndex:int;
 
-		public function DataDescription(model:IDataModel, propertyDimensions:Vector.<ModelDimension>, valueDimensions:Vector.<ModelDimension>, descriptionString:String = null ) {
+		public function Description(model:IDataModel, propertyDimensions:Vector.<ModelDimension>, valueDimensions:Vector.<ModelDimension>, descriptionString:String = null ) {
 			_model = model;
 			_propertyDimensions = propertyDimensions;
 			_valueDimensions = valueDimensions;
@@ -172,7 +172,7 @@ package org.omoa.datamodel {
 			return 0;
 		}
 		
-		public function combine( target:DataDescription, gapFiller:DataDescription):void {
+		public function combine( target:Description, gapFiller:Description):void {
 			var order:int;
 			var thisIndex:int;
 			if (_model == gapFiller.model) {

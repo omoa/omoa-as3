@@ -22,7 +22,7 @@ package org.omoa.datamodel {
 	
 	import flash.events.EventDispatcher;
 	import flash.utils.getDefinitionByName;
-	import org.omoa.datamodel.DataDescription;
+	import org.omoa.datamodel.Description;
 	import org.omoa.datamodel.Datum;
 	import org.omoa.datamodel.loader.SMEAttributeDataModel;
 	import org.omoa.datamodel.loader.Text;
@@ -141,11 +141,11 @@ package org.omoa.datamodel {
 			return model.valueDimension(index);
 		}
 		
-		public function createDescription(descriptionString:String = null):DataDescription {
+		public function createDescription(descriptionString:String = null):Description {
 			return model.createDescription(descriptionString);
 		}
 		
-		public function getDatum(description:DataDescription):Datum {
+		public function getDatum(description:Description):Datum {
 			return model.getDatum(description);
 		}
 		

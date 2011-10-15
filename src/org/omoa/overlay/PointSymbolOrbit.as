@@ -176,8 +176,8 @@ package org.omoa.overlay {
 					smeProxy.attributes = sme.attributes;
 					smeProxy.bounds = sme.bounds;
 					smeProxy.path = sme.path;
-					smeProxy.removeDataDescription( sme.getDataDescription(sme.getModelIDs()[0]) );
-					smeProxy.addDataDescription( sme.getDataDescription(sme.getModelIDs()[0]) );
+					smeProxy.removeDescription( sme.getDescription(sme.getModelIDs()[0]) );
+					smeProxy.addDescription( sme.getDescription(sme.getModelIDs()[0]) );
 					
 					
 					p = transformation.transformPoint(sme.center);
