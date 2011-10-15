@@ -215,5 +215,5 @@ package org.omoa.datamodel {
 			valueIndex = 0;
 		}
 
-	} // end class
-} // end package
+	} 
+} 

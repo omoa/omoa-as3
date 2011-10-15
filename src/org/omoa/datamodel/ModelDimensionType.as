@@ -70,5 +70,5 @@ package org.omoa.datamodel {
 		 */
 		public static const ENTITY_ID:String = "id";
 
-	} // end class
-} // end package
+	} 
+} 

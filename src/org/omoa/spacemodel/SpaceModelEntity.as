@@ -179,5 +179,5 @@ package org.omoa.spacemodel {
 			return out;
 		}
 
-	} // end class
-} // end package
+	} 
+} 

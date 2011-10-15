@@ -151,5 +151,5 @@ package org.omoa.datamodel {
 			return _isRemote;
 		}
 
-	} // end class
-} // end package
+	} 
+} 
