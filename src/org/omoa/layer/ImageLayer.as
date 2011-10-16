@@ -52,9 +52,6 @@ package org.omoa.layer {
 			super( id, spaceModel );
 			_type = "ImageLayer";
 			
-			_scalable = true;
-			_interactive = false;
-			
 			layerspriteToEntityDictionary = new Dictionary(false);
 		}
 		

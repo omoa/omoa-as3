@@ -56,6 +56,8 @@ package org.omoa.layer {
 		private var SpaceModelEntityForSprite:Dictionary;
 		
 		private var entityDictionaries:Vector.<Dictionary>;
+		
+		private var _interactive:Boolean;
 
 		public function SymbolLayer(id:String, spaceModel:ISpaceModel) {
 			super(id, spaceModel);
@@ -340,10 +342,6 @@ package org.omoa.layer {
 			if (se.entity) {
 				dispatchEvent( se );
 			}
-		}
-		
-		public function set scalable(value:Boolean):void {
-			_scalable = value;
 		}
 
 	}

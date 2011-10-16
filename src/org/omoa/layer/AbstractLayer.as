@@ -46,17 +46,11 @@ package org.omoa.layer {
 		protected var _type:String = "AbstractLayer";
 		protected var _title:String;
 		protected var _description:String;
-		protected var _interactive:Boolean = false;
-		protected var _scalable:Boolean = true;
 		protected var _isSetUp:Boolean = false;
 
 		public function AbstractLayer(id:String, spaceModel:ISpaceModel) {
 			_id = id;
 			_spaceModel = spaceModel;
-		}
-
-		public function initialize(layerXML:XML):Boolean {
-			return false;
 		}
 
 		public function get id():String {
@@ -74,10 +68,6 @@ package org.omoa.layer {
 		public function get description():String {
 			return _description;
 		}
-
-		public function get isDynamic():Boolean {
-			return false;
-		}
 		
 		public function get isSetUp():Boolean { return _isSetUp; }
 
@@ -91,16 +81,6 @@ package org.omoa.layer {
 
 		public function get legend():ILegend {
 			return _legend;
-		}
-		
-		/*
-		public function get interactive():Boolean {
-			return _interactive;
-		}
-		*/
-		
-		public function get scalable():Boolean {
-			return _scalable;
 		}
 		
 		public function setup(sprite:Sprite):void {

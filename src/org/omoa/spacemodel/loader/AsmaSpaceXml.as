@@ -55,7 +55,7 @@ package org.omoa.spacemodel.loader {
 		private function loadComplete( e:Event ):void {
 			if (loader) {
 				//trace( "Load complete");
-				initialise( loader.data );
+				initialize( loader.data );
 				loader.removeEventListener(Event.COMPLETE, loadComplete );
 				loader.removeEventListener(IOErrorEvent.IO_ERROR, error );
 				loader = null;
@@ -67,7 +67,7 @@ package org.omoa.spacemodel.loader {
 			trace ( e );
 		}
 		
-		override public function initialise( data:* ):void {
+		override public function initialize( data:* ):void {
 			var xml:XML;
 			if (data is XML) {
 				xml = data as XML;

@@ -58,7 +58,7 @@ package org.omoa.datamodel {
 			throw new Error("Must be implemented by Loader subclass");
 		}
 		
-		public function initialise(data:*):void {
+		public function initialize(data:*):void {
 			throw new Error("Must be implemented by Loader subclass");
 		}
 		

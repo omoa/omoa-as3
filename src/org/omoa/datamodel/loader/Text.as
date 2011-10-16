@@ -134,7 +134,7 @@ package org.omoa.datamodel.loader {
 		
 		private function loadComplete(e:Event):void {
 			if (loader){
-				initialise(loader.data);
+				initialize(loader.data);
 				dispatchEvent(new Event(Event.COMPLETE));
 			}
 		}
@@ -180,7 +180,7 @@ package org.omoa.datamodel.loader {
 			return type;
 		}
 		
-		override public function initialise(data:*):void {
+		override public function initialize(data:*):void {
 			var t:Date = new Date();
 			var file:String = data as String;
 			var id:String;

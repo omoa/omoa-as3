@@ -54,8 +54,6 @@ package org.omoa {
 		
 		protected var mapFrames:Vector.<MapFrame> = new Vector.<MapFrame>();
 		
-		//protected var _rootDisplayObject:DisplayObjectContainer;
-		
 		private var _width:Number=1;
 		private var _height:Number=1;
 		

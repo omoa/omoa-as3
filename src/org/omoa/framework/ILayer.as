@@ -34,18 +34,17 @@ package org.omoa.framework {
 
 	public interface ILayer extends IEventDispatcher{
 
-		function initialize(layerXML:XML):Boolean;
-		//TODO: Flash-artiger wäre eine name Property
 		function get id():String;
 		function get type():String;
 		function get title():String;
 		function get description():String;
-		function get isDynamic():Boolean;
+		
+		function get isSetUp():Boolean;
+		
 		function get spaceModel():ISpaceModel;
-		function get legend():ILegend;
-		//function get interactive():Boolean;
-		function get scalable():Boolean;
 		function setSpaceModel(spacemodel:ISpaceModel):void;
+		
+		function get legend():ILegend;
 		
 		function setup(sprite:Sprite):void;
 		
@@ -55,7 +54,5 @@ package org.omoa.framework {
 		
 		function cleanup(sprite:Sprite):void;
 		
-		function get isSetUp():Boolean;
-
 	}
 }

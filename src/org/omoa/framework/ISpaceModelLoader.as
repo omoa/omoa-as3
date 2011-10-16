@@ -29,7 +29,7 @@ package org.omoa.framework {
 	public interface ISpaceModelLoader extends ISpaceModel {
 		function setId( value:String ):void;
 		function load( url:String, parameters:Object=null ):void;
-		function initialise( data:* ):void;
+		function initialize( data:* ):void;
 	}
 	
 }

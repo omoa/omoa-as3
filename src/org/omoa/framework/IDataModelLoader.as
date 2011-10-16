@@ -32,7 +32,7 @@ package org.omoa.framework {
 
 		function setId(value:String):void;
 		function load(url:String, parameters:Object = null):void;
-		function initialise(data:*):void;
+		function initialize(data:*):void;
 
 	}
 }

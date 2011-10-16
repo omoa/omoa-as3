@@ -91,7 +91,7 @@ package org.omoa.spacemodel.loader {
 			loaderDbf.removeEventListener(IOErrorEvent.IO_ERROR, error );
 			dbf = loaderDbf.data as ByteArray;
 			if (shp) {
-				initialise( null );
+				initialize( null );
 			}
 			loaderDbf = null;
 		}
@@ -101,12 +101,12 @@ package org.omoa.spacemodel.loader {
 			loaderShp.removeEventListener(IOErrorEvent.IO_ERROR, error );
 			shp = loaderShp.data as ByteArray;
 			if (dbf) {
-				initialise( null );
+				initialize( null );
 			}
 			loaderShp = null;
 		}
 		
-		override public function initialise(data:*):void {
+		override public function initialize(data:*):void {
 			DbfHeader;
 			var shpRaw:ByteArray
 			var dbfRaw:ByteArray;

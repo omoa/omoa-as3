@@ -42,18 +42,18 @@ package org.omoa.datamodel.loader {
 			super();
 			if (id && spaceModel && attributeKey) {
 				_id = id;
-				initialize(spaceModel, attributeKey);
+				init(spaceModel, attributeKey);
 			}
 		}
 		
 		override public function load(url:String, parameters:Object = null):void {
-			initialise(parameters);
+			initialize(parameters);
 		}
 		
-		override public function initialise(data:*):void {
+		override public function initialize(data:*):void {
 			if (data is Object) {
 				if (data.spaceModel && data.attributeKey && data.spaceModel is ISpaceModel) {
-					initialize( data.spaceModel as ISpaceModel, data.attributeKey );
+					init( data.spaceModel as ISpaceModel, data.attributeKey );
 					_isComplete = true;
 					dispatchEvent( new Event( Event.COMPLETE ));
 				}
@@ -61,7 +61,7 @@ package org.omoa.datamodel.loader {
 		}
 		
 		//TODO: implement for multiple value Dimension, not just one
-		private function initialize(spaceModel:ISpaceModel, attributeKey:String ):void {
+		private function init(spaceModel:ISpaceModel, attributeKey:String ):void {
 			var codes:Array = new Array();
 			var attributes:Array = new Array();
 			var numberCount:int = 0;

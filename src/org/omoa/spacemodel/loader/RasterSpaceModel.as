@@ -79,7 +79,7 @@ package org.omoa.spacemodel.loader {
 		 * 
 		 * @param	data Is expected to be an Object.
 		 */
-		public function initialise(data:*):void {
+		public function initialize(data:*):void {
 			if (data) {
 				if (data.bounds) {
 					_bounds = data.bounds as BoundingBox;

@@ -31,7 +31,7 @@ package org.omoa.framework {
 
 	public interface IStyle extends ISymbolPropertyManipulator {
 
-		function initialize(styleXML:XML):Boolean;
+		function initialize(settings:Object):Boolean;
 		function apply(styleObject:*):void;
 
 	}

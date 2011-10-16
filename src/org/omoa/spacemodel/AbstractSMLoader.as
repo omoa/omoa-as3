@@ -54,7 +54,7 @@ package org.omoa.spacemodel {
 		/**
 		 * Implemented by subclass.
 		 */
-		public function initialise( data:* ):void {
+		public function initialize( data:* ):void {
 			throw new Error( "Needs to be implemented by a Loader-Subclass." );
 		}
 		
