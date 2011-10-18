@@ -69,14 +69,16 @@ package org.omoa.layer {
 		}
 
 		public function addSymbol(symbol:ISymbol):void {
-			if (true) {
-				_symbols.push( symbol );
-				if (symbol.interactive) {
-					_interactive = true;
-				}
-			} else {
-				//TODO: make this history
-				throw new Error( "For now, you need to add Symbols before setup is executed. Sorry.");
+			_symbols.push( symbol );
+			if (symbol.interactive) {
+				_interactive = true;
+			}
+			// if we have been setup already, we need to
+			// do it for the new symbol too
+			for (var layerSprite:Object in layerSpriteToSymbol) {
+				setup( layerSprite as Sprite );
+				//TODO: The new Symbol won't display. How do we request a render?
+				// Throw everything away and start over?
 			}
 		}
 		
