@@ -46,7 +46,6 @@ package org.omoa.layer {
 		protected var _type:String = "AbstractLayer";
 		protected var _title:String;
 		protected var _description:String;
-		protected var _isSetUp:Boolean = false;
 
 		public function AbstractLayer(id:String, spaceModel:ISpaceModel) {
 			_id = id;
@@ -69,7 +68,7 @@ package org.omoa.layer {
 			return _description;
 		}
 		
-		public function get isSetUp():Boolean { return _isSetUp; }
+		public function isSetup(sprite:Sprite):Boolean{return false};
 
 		public function setSpaceModel(spacemodel:ISpaceModel):void {
 			_spaceModel = spacemodel;

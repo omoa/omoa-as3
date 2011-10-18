@@ -166,16 +166,14 @@ package org.omoa {
 					_map.addLayer( layer );
 				}
 				
-				// TODO: set all Layersprites to mouseChildren=true?
-				
 				_layerContainer.addChild( layerSprite );
 				
 				if (layer.spaceModel.isComplete) {
-					trace( layer.id + ": layer setup at addLayer()");
+					// set up layer now
 					layer.setup( layerSprite );
 					renderLayer( layer.id );
 				} else {
-					trace( layer.id + ": layer setup defered");
+					// defer layer setup until ISpaceModel is ready
 					layer.spaceModel.addEventListener(Event.COMPLETE, setupLayer, false, 100 );
 				}
 				
@@ -227,19 +225,22 @@ package org.omoa {
 			renderOverlays();
 		}
 		
+		/**
+		 * Initializing all layers with a certain ISpaceModel. The
+		 * listener has been registered in addLayer.
+		 * 
+		 * @param	e	
+		 */
 		private function setupLayer(e:Event):void {
 			var spaceModel:ISpaceModel = e.target as ISpaceModel;
 			var layer:ILayer;
 			var layerSprite:Sprite;
-			
-			// trace( "SpaceModel intialized: " + spaceModel.id );
 			
 			if (spaceModel) {
 				spaceModel.removeEventListener( Event.COMPLETE, setupLayer );
 				for each ( layer in _layers) {
 					if (layer.spaceModel == spaceModel) {
 						layerSprite = _layerContainer.getChildByName(layer.id) as Sprite;
-						trace( layer.id + ": defered layer setup");
 						layer.setup( layerSprite );
 						renderLayer( layer.id );
 					}
@@ -425,11 +426,9 @@ package org.omoa {
 			//var totalT:Number = new Date().time;
 			_layerContainer.cacheAsBitmap = false;
 			for each (layer in _layers) {
-				if (layer.isSetUp) {
-					layerSprite = _layerContainer.getChildByName(layer.id) as Sprite
-					if (layerSprite && layerSprite.visible) {
-						layer.rescale( layerSprite, _bg.getRect( stage ), viewportBounds, layerTransformation );
-					}
+				layerSprite = _layerContainer.getChildByName(layer.id) as Sprite
+				if (layer.isSetup(layerSprite) && layerSprite.visible) {
+					layer.rescale( layerSprite, _bg.getRect( stage ), viewportBounds, layerTransformation );
 				}
 			}
 			renderOverlays();
@@ -447,11 +446,9 @@ package org.omoa {
 			//var totalT:Number = new Date().time;
 			_layerContainer.cacheAsBitmap = false;
 			for each (layer in _layers) {
-				if (layer.isSetUp) {
-					layerSprite = _layerContainer.getChildByName(layer.id) as Sprite
-					if (layerSprite && layerSprite.visible) {
-						layer.recenter( layerSprite, _bg.getRect( stage ), viewportBounds, layerTransformation );
-					}
+				layerSprite = _layerContainer.getChildByName(layer.id) as Sprite
+				if (layer.isSetup(layerSprite) && layerSprite.visible) {
+					layer.recenter( layerSprite, _bg.getRect( stage ), viewportBounds, layerTransformation );
 				}
 			}
 			renderOverlays();
@@ -471,11 +468,9 @@ package org.omoa {
 			//var totalT:Number = new Date().time;
 			_layerContainer.cacheAsBitmap = false;
 			for each ( layer in _layers) {
-				if (layer.isSetUp) {
-					layerSprite = _layerContainer.getChildByName(layer.id) as Sprite;
-					if (layerSprite && layerSprite.visible) {
-						layer.render( layerSprite, _bg.getRect( stage ), viewportBounds, layerTransformation );
-					}
+				layerSprite = _layerContainer.getChildByName(layer.id) as Sprite;
+				if (layer.isSetup(layerSprite) && layerSprite.visible) {
+					layer.render( layerSprite, _bg.getRect( stage ), viewportBounds, layerTransformation );
 				}
 			}
 			_layerContainer.cacheAsBitmap = true;
@@ -493,7 +488,7 @@ package org.omoa {
 			_layerContainer.cacheAsBitmap = false;
 			if (layer) {
 				layerSprite = _layerContainer.getChildByName( layerID ) as Sprite;
-				if (layerSprite && layerSprite.visible) {
+				if (layer.isSetup(layerSprite) && layerSprite.visible) {
 					layer.render( layerSprite, _bg.getRect( stage ), viewportBounds, layerTransformation );
 					calculateBounds();
 					rescale();

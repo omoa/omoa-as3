@@ -39,14 +39,13 @@ package org.omoa.framework {
 		function get title():String;
 		function get description():String;
 		
-		function get isSetUp():Boolean;
-		
 		function get spaceModel():ISpaceModel;
 		function setSpaceModel(spacemodel:ISpaceModel):void;
 		
 		function get legend():ILegend;
 		
 		function setup(sprite:Sprite):void;
+		function isSetup(sprite:Sprite):Boolean;
 		
 		function render(sprite:Sprite, displayExtent:Rectangle, viewportBounds:BoundingBox, transformation:Matrix):void;
 		function rescale(sprite:Sprite, displayExtent:Rectangle, viewportBounds:BoundingBox, transformation:Matrix):void;

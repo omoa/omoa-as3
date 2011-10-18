@@ -69,7 +69,7 @@ package org.omoa.layer {
 		}
 
 		public function addSymbol(symbol:ISymbol):void {
-			if (!_isSetUp) {
+			if (true) {
 				_symbols.push( symbol );
 				if (symbol.interactive) {
 					_interactive = true;
@@ -78,6 +78,10 @@ package org.omoa.layer {
 				//TODO: make this history
 				throw new Error( "For now, you need to add Symbols before setup is executed. Sorry.");
 			}
+		}
+		
+		override public function isSetup(sprite:Sprite):Boolean {
+			return Boolean(layerSpriteToSymbol[sprite]);
 		}
 		
 		override public function setup(sprite:Sprite):void {
@@ -165,7 +169,6 @@ package org.omoa.layer {
 				symbolCount++;
 				
 			}
-			_isSetUp = true;
 		}
 		
 		override public function render(sprite:Sprite, displayExtent:Rectangle, viewportBounds:BoundingBox, transformation:Matrix):void {
@@ -180,6 +183,11 @@ package org.omoa.layer {
 			}
 			
 			var symbolToSymbolSprite:Dictionary = layerSpriteToSymbol[sprite] as Dictionary;
+			if (!symbolToSymbolSprite) {
+				// TODO: This shouldn't happen: Setup hasn't been called yet. Bailing out.
+				return;
+			}
+			
 			for each (symbol in _symbols) {
 				iterator.reset();
 				
@@ -221,13 +229,13 @@ package org.omoa.layer {
 				iterator = _spaceModel.iterator();
 			}
 			
+			var symbolToSymbolSprite:Dictionary = layerSpriteToSymbol[sprite] as Dictionary;
+			if (!symbolToSymbolSprite) {
+				// TODO: This shouldn't happen: Setup hasn't been called yet. Bailing out.
+				return;
+			}
+			
 			for each (symbol in _symbols) {
-				var symbolToSymbolSprite:Dictionary = layerSpriteToSymbol[sprite] as Dictionary;
-				if (!symbolToSymbolSprite) {
-					// TODO: This shouldn't happen: Setup hasn't been called yet. Bailing out.
-					trace( "SymbolLayer.rescale(): ERROR, no Dictionary for Symbol existing." );
-					break;
-				}
 				
 				var symbolSprite:Sprite = symbolToSymbolSprite[symbol];
 				if (!symbolSprite) {
@@ -277,8 +285,13 @@ package org.omoa.layer {
 				iterator = _spaceModel.iterator();
 			}
 			
+			var symbolToSymbolSprite:Dictionary = layerSpriteToSymbol[sprite] as Dictionary;
+			if (!symbolToSymbolSprite) {
+				// TODO: This shouldn't happen: Setup hasn't been called yet. Bailing out.
+				return;
+			}
+			
 			for each (symbol in _symbols) {
-				var symbolToSymbolSprite:Dictionary = layerSpriteToSymbol[sprite] as Dictionary;
 				var symbolSprite:Sprite = symbolToSymbolSprite[symbol];
 				
 				if (!symbolSprite) {

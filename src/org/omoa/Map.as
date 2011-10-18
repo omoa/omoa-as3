@@ -708,8 +708,7 @@ package org.omoa {
 			}
 		}
 		
-		public function linkModels(model:* = null):void {
-			//TODO: make private?
+		private function linkModels(model:* = null):void {
 			
 			var spaceModel:ISpaceModel;
 			var dataModel:IDataModel;
@@ -726,9 +725,7 @@ package org.omoa {
 					spaceModel.linkDataModel( dataModel );
 				}
 			} else if (model is IDataModel) {
-				trace( "linking " + model.id );
 				dataModel = model as IDataModel;
-				trace( "linking " + dataModel.id );
 				for each (spaceModel in spaceModels) {
 					spaceModel.linkDataModel( dataModel );
 				}

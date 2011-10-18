@@ -135,41 +135,6 @@ package org.omoa.spacemodel {
 			return keys;
 		}
 		
-		/**
-		 * Dupliziert ein SME. Wird verschwinden.
-		 */
-		public function duplicateTransformed( matrix:Matrix ):SpaceModelEntity {
-			//TODO: Das ist Mist
-			var sme:SpaceModelEntity;
-			if (matrix) {
-				sme = new SpaceModelEntity( _dataDescriptions )
-				sme.id = id;
-				sme.name = name;
-				sme.attributes = attributes;
-				sme.center = matrix.transformPoint( center );
-				sme.bounds = new BoundingBox(0,0,1,1);
-				sme.bounds.topLeft = matrix.transformPoint( bounds.topLeft );
-				sme.bounds.bottomRight = matrix.transformPoint( bounds.bottomRight );
-				var gp:GraphicsPath = path as GraphicsPath;
-				if (gp) {
-					var v:Vector.<Number> = gp.data.slice(0, gp.data.length );// new Vector.<Number>( gp.data.length );
-					var l:int = gp.data.length / 2;
-					var p:Point = new Point();
-					var index:int;
-					for (var i:int = 0; i < l; i++) {
-						index = i * 2;
-						//p.x = gp.data[index];
-						//p.y = gp.data[int(index + 1)];
-						//p = matrix.transformPoint( p );
-						v[index] = v[index] * matrix.a;
-						v[int(index + 1)] = v[int(index + 1)] * matrix.d;
-					}
-					sme.path = new GraphicsPath( gp.commands, v, gp.winding );
-				}
-			}
-			return sme;
-		}
-		
 		public function toString():String {
 			var out:String;
 			out = name + " (" + id + ")\r";

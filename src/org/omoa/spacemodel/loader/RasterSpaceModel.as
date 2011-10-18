@@ -24,6 +24,7 @@ package org.omoa.spacemodel.loader {
 	import flash.display.Loader;
 	import flash.display.LoaderInfo;
 	import flash.events.Event;
+	import flash.geom.Rectangle;
 	import flash.net.URLRequest;
 	import flash.utils.ByteArray;
 	import flash.utils.Dictionary;
@@ -102,11 +103,11 @@ package org.omoa.spacemodel.loader {
 							_bounds = tile.bounds as BoundingBox;
 						}
 						//TODO: Calculate SpaceModel bounds from tiles.
-						/* BUG
+						
 						if (!data.bounds) {
-							_bounds.fromRectangle( _bounds.union( tile.bounds ) );
+							_bounds.fromRectangle( _bounds.union( tile.bounds as Rectangle) );
 						}
-						*/
+						
 						addRasterTile( tile.url as String,
 									   tile.bounds as BoundingBox,
 									   min, max );

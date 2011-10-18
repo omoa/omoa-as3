@@ -90,8 +90,11 @@ package org.omoa.layer {
 			}
 			
 			layerspriteToEntityDictionary[sprite] = entityToEntitySprite;
-			_isSetUp = true;
 			
+		}
+		
+		override public function isSetup(sprite:Sprite):Boolean {
+			return Boolean(layerspriteToEntityDictionary[sprite]);
 		}
 		
 		private function applyMatrix( sprite:Sprite, matrix:Matrix ):void {
