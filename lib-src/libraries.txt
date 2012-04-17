@@ -3,3 +3,7 @@ Shp-Reader by Edwin van Rijkom
   org.vanrijkom.dbf.*
   http://code.google.com/p/vanrijkom-flashlibs/
   LGPL 2.1
+  
+ActionJSON / decodeJSON by Maximilian Herkender
+  https://github.com/mherkender/actionjson/blob/master/as3/com/brokenfunction/json/decodeJson.as
+  Apache 2.0

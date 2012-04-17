@@ -82,6 +82,10 @@ package org.omoa.framework {
 			_maxx = rect.right;
 			_maxy = rect.bottom;
 		}
+		
+		override public function toString():String {
+			return "(x1=" + _minx + ", y1=" + _miny + ", x2=" + _maxx + ", y2=" + _maxy + ")";
+		}
 
 	}
 }
