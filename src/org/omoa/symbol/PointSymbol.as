@@ -120,7 +120,7 @@ package org.omoa.symbol {
 			var center:Point = spaceEntity.center;
 			
 			//trace( center );
-			trace( spaceEntity.center.x + "/" + spaceEntity.center.y + "/" + size );
+			//trace( spaceEntity.center.x + "/" + spaceEntity.center.y + "/" + size );
 			if (size!=0) {
 				if (fill.alpha > 0) {
 					sprite.graphics.beginFill( fill.color, fill.alpha );

@@ -75,6 +75,8 @@ package org.omoa.spacemodel.loader {
 			if (jsonString) {
 				json = decodeJson( jsonString, true );
 				parseFeature( json );
+				json = null;
+				jsonString = null;
 				_complete = true;
 				dispatchEvent( new Event( Event.COMPLETE ) );
 			}
@@ -133,8 +135,11 @@ package org.omoa.spacemodel.loader {
 							case 'Point':
 								_type = GeometryType.GEOMETRY_POINT; //TODO: improve
 								center = new Point(coordinates[0], coordinates[1]);
+								var fuzz:Number = center.x * 0.0000001;
 								if (!sme.bounds) {
-									bounds = new BoundingBox( center.x, center.y, center.x, center.y );
+									bounds = new BoundingBox( center.x, center.y, center.x+fuzz, center.y+fuzz );
+								} else {
+									bounds = sme.bounds;
 								}
 								break;
 							
@@ -205,42 +210,6 @@ package org.omoa.spacemodel.loader {
 								}
 								break;
 							
-							/*
-							case 'Point':
-								latlng = this.coordsToLatLng(coords);
-								return pointToLayer ? pointToLayer(latlng) : new L.Marker(latlng);
-
-							case 'MultiPoint':
-								for (i = 0, len = coords.length; i < len; i++) {
-									latlng = this.coordsToLatLng(coords[i]);
-									layer = pointToLayer ? pointToLayer(latlng) : new L.Marker(latlng);
-									layers.push(layer);
-								}
-								return new L.FeatureGroup(layers);
-
-							case 'LineString':
-								latlngs = this.coordsToLatLngs(coords);
-								return new L.Polyline(latlngs);
-
-							case 'Polygon':
-								latlngs = this.coordsToLatLngs(coords, 1);
-								return new L.Polygon(latlngs);
-
-							case 'MultiLineString':
-								latlngs = this.coordsToLatLngs(coords, 1);
-								return new L.MultiPolyline(latlngs);
-
-							case "MultiPolygon":
-								latlngs = this.coordsToLatLngs(coords, 2);
-								return new L.MultiPolygon(latlngs);
-
-							case "GeometryCollection":
-								for (i = 0, len = geometry.geometries.length; i < len; i++) {
-									layer = this.geometryToLayer(geometry.geometries[i], pointToLayer);
-									layers.push(layer);
-								}
-								return new L.FeatureGroup(layers);
-							*/
 							case "GeometryCollection":
 								throw new Error('Can not handle GeometryCollection features.');
 								break;
@@ -256,11 +225,14 @@ package org.omoa.spacemodel.loader {
 						if (!sme.bounds) {
 							sme.bounds = bounds;
 						}
+						var b:Rectangle;
 						if (_bounds) {
-							var b:Rectangle = _bounds as Rectangle;
-							_bounds.fromRectangle(b.union(sme.bounds as Rectangle));
+							b = sme.bounds as Rectangle;
+							_bounds.fromRectangle( _bounds.union(b) );
 						} else {
-							_bounds = sme.bounds;
+							b = sme.bounds as Rectangle;
+							_bounds = new BoundingBox(0, 0, 0, 0);
+							_bounds.fromRectangle(b);
 						}
 					}
 				} else {

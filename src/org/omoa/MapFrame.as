@@ -88,7 +88,7 @@ package org.omoa {
 			
 			_layerContainer = new Sprite();
 			_layerContainer.mouseChildren = true;
-			_layerContainer.cacheAsBitmap = true;
+			//_layerContainer.cacheAsBitmap = true;
 			_layerContainerWrapper.addChild( _layerContainer);
 			
 			_frameDecoration = new Sprite();
@@ -424,7 +424,7 @@ package org.omoa {
 			var layer:ILayer;
 			
 			//var totalT:Number = new Date().time;
-			_layerContainer.cacheAsBitmap = false;
+			//_layerContainer.cacheAsBitmap = false;
 			for each (layer in _layers) {
 				layerSprite = _layerContainer.getChildByName(layer.id) as Sprite
 				if (layer.isSetup(layerSprite) && layerSprite.visible) {
@@ -432,7 +432,7 @@ package org.omoa {
 				}
 			}
 			renderOverlays();
-			_layerContainer.cacheAsBitmap = true;
+			//_layerContainer.cacheAsBitmap = true;
 			//trace( name + "'s rescale took (ms): " + (new Date().time - totalT) );
 		}
 		
@@ -444,7 +444,7 @@ package org.omoa {
 			var layer:ILayer;
 			
 			//var totalT:Number = new Date().time;
-			_layerContainer.cacheAsBitmap = false;
+			//_layerContainer.cacheAsBitmap = false;
 			for each (layer in _layers) {
 				layerSprite = _layerContainer.getChildByName(layer.id) as Sprite
 				if (layer.isSetup(layerSprite) && layerSprite.visible) {
@@ -452,7 +452,7 @@ package org.omoa {
 				}
 			}
 			renderOverlays();
-			_layerContainer.cacheAsBitmap = true;
+			//_layerContainer.cacheAsBitmap = true;
 			//trace( name + "'s recenter took (ms): " + (new Date().time -totalT) );
 		}
 		
@@ -466,14 +466,14 @@ package org.omoa {
 			var layerSprite:Sprite;
 			
 			//var totalT:Number = new Date().time;
-			_layerContainer.cacheAsBitmap = false;
+			//_layerContainer.cacheAsBitmap = false;
 			for each ( layer in _layers) {
 				layerSprite = _layerContainer.getChildByName(layer.id) as Sprite;
 				if (layer.isSetup(layerSprite) && layerSprite.visible) {
 					layer.render( layerSprite, _bg.getRect( stage ), viewportBounds, layerTransformation );
 				}
 			}
-			_layerContainer.cacheAsBitmap = true;
+			//_layerContainer.cacheAsBitmap = true;
 			//trace( name + "'s render took (ms): " + (new Date().time -totalT) );
 		}
 		
@@ -485,7 +485,7 @@ package org.omoa {
 					break;
 				}
 			}
-			_layerContainer.cacheAsBitmap = false;
+			//_layerContainer.cacheAsBitmap = false;
 			if (layer) {
 				layerSprite = _layerContainer.getChildByName( layerID ) as Sprite;
 				if (layer.isSetup(layerSprite) && layerSprite.visible) {
@@ -494,7 +494,7 @@ package org.omoa {
 					rescale();
 				}
 			}
-			_layerContainer.cacheAsBitmap = true;
+			//_layerContainer.cacheAsBitmap = true;
 		}
 		
 		public function renderOverlays():void {
