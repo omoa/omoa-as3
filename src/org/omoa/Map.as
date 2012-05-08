@@ -33,6 +33,7 @@ package org.omoa {
 	import org.omoa.datamodel.AbstractDMLoader;
 	import org.omoa.framework.*;
 	import org.omoa.layer.AbstractLayer;
+	import org.omoa.layer.SymbolLayer;
 	import org.omoa.spacemodel.AbstractSMLoader;
 	import org.omoa.util.NavigationButtons;
 	
@@ -523,6 +524,23 @@ package org.omoa {
 				}
 			}
 			throw new Error( "Layer " + name + " does not exist." );
+			return null;
+		}
+		
+		/**
+		 * Returns a layer from the layer pool as SymbolLayer.
+		 * Convenience function.
+		 * 
+		 * @param	name The name of the layer.
+		 * @return The layer instance.
+		 */
+		public function symbolLayer(name:String):SymbolLayer {
+			var layer:ILayer = layer(name);
+			if (layer is SymbolLayer) {
+				return layer as SymbolLayer;
+			} else {
+				throw new Error( "SymbolLayer " + name + " does not exist." );
+			}
 			return null;
 		}
 		
