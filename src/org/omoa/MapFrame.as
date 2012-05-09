@@ -67,7 +67,7 @@ package org.omoa {
 		private var _overlayContainer:Sprite;
 		private var _debug:Shape;
 		
-		private var _scale:Number = 1;
+		private var _scale:Number = NaN;
 		private var _worldWidth:Number;
 		private var _worldHeight:Number;
 		
@@ -143,6 +143,21 @@ package org.omoa {
 		
 		private function whileDrag(e:MouseEvent):void {
 			_overlayContainer.visible = false;
+		}
+		
+		public function followDrag( x:Number, y:Number):void {
+			_layerContainer.x = x;
+			_layerContainer.y = y;
+		}
+		
+		public function stopFollowDrag():void {
+			_layerContainer.x = 0;
+			_layerContainer.y = 0;
+		}
+		
+		//TODO: There is an offset involved.
+		public function dragPosition():Point {
+			return _layerContainer.getRect(this).topLeft; 
 		}
 		
 		override public function stopDrag():void {
@@ -242,6 +257,9 @@ package org.omoa {
 					if (layer.spaceModel == spaceModel) {
 						layerSprite = _layerContainer.getChildByName(layer.id) as Sprite;
 						layer.setup( layerSprite );
+						if (isNaN(_scale)) {
+							resetBoundsAndScale();
+						}
 						renderLayer( layer.id );
 					}
 				}
@@ -270,28 +288,8 @@ package org.omoa {
 		 * Scale Manipulation
 		 * =========================================== */
 		
-		public function fitToFrame(e:Event=null):void {	
-			var b:Rectangle = new Rectangle();
-			var layer:ILayer;
-			
-			if (_layers.length > 0) {
-				for each (layer in _layers) {
-					if (layer.spaceModel.isComplete) {
-						b = b.union(layer.spaceModel.bounds as Rectangle);
-					}
-				}
-				bounds.fromRectangle(b);
-			} else {
-				return;
-			}
-			
-			_scale = Math.max( _bg.width / bounds.width, _bg.height / bounds.height ) * 1.0;
-			
-			center.x = bounds.minx + bounds.width * 0.5;
-			center.y = bounds.maxy - bounds.height * 0.5;
-			
-			_worldWidth = _bg.width / _scale;
-			_worldHeight = _bg.height / _scale;
+		public function fitToFrame(e:Event = null):void {	
+			resetBoundsAndScale();
 			
 			// Bounds nun dem Kartenausschnitt anpassen
 			calculateBounds();
@@ -332,8 +330,11 @@ package org.omoa {
 			_frameDecoration.graphics.drawRect(0, 0, widthNew-0.55, heightNew-0.55);
 			calculateBounds();
 			recenter();
-			logo.x = 5;
-			logo.y = heightNew - logo.height - 5;
+			
+			if (logo) {
+				logo.x = 5;
+				logo.y = heightNew - logo.height - 5;
+			}
 			
 			var r:Rectangle = _layerContainerWrapper.scrollRect;
 			r.x = 0;
@@ -342,8 +343,10 @@ package org.omoa {
 			r.height = heightNew;
 			_layerContainerWrapper.scrollRect = r;
 			
-			navigation.x = 5;
-			navigation.y = 5;
+			if (navigation) {
+				navigation.x = 5;
+				navigation.y = 5;
+			}
 		}
 		
 		public function moveNorth(e:Event = null):void {
@@ -410,6 +413,30 @@ package org.omoa {
 			layerTransformation.a = _scale;
 			layerTransformation.d = _scale * -1;
 			
+		}
+		
+		private function resetBoundsAndScale():void {
+			var b:Rectangle = new Rectangle();
+			var layer:ILayer;
+			
+			if (_layers.length > 0) {
+				for each (layer in _layers) {
+					if (layer.spaceModel.isComplete) {
+						b = b.union(layer.spaceModel.bounds as Rectangle);
+					}
+				}
+				bounds.fromRectangle(b);
+			} else {
+				return;
+			}
+			
+			_scale = Math.max( _bg.width / bounds.width, _bg.height / bounds.height ) * 1.0;
+			
+			center.x = bounds.minx + bounds.width * 0.5;
+			center.y = bounds.maxy - bounds.height * 0.5;
+			
+			_worldWidth = _bg.width / _scale;
+			_worldHeight = _bg.height / _scale;
 		}
 		
 		/* ===========================================
@@ -567,6 +594,7 @@ package org.omoa {
 			calculateBounds();
 			rescale();
 		}
+		
 
 	}
 }

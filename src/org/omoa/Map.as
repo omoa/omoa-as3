@@ -256,7 +256,11 @@ package org.omoa {
 			dragMapFrame = e.currentTarget as MapFrame;
 			
 			if (dragMapFrame) {
-				dragMapFrame.startDrag();
+				if (synchronizeMapFrames) {
+					dragMapFrame.startDrag();
+				} else {
+					dragMapFrame.startDrag();
+				}
 				dragMapFrame.addEventListener(MouseEvent.MOUSE_MOVE, whileDragging);
 				dragMapFrame.addEventListener(MouseEvent.MOUSE_UP, clickStartsTimer);
 			}
@@ -274,6 +278,17 @@ package org.omoa {
 			if (dragMapFrame) {
 				dragMapFrame.removeEventListener(MouseEvent.MOUSE_UP, clickStartsTimer);
 				//stage.quality = StageQuality.LOW;
+				if (synchronizeMapFrames) {
+					// This does not really work
+					/*
+					var p:Point = dragMapFrame.dragPosition();
+					for each (var mf:MapFrame in mapFrames) {
+						if (mf != dragMapFrame) {
+							mf.followDrag( p.x, p.y );
+						}
+					}
+					*/
+				}
 			}
 		}
 		
@@ -282,10 +297,22 @@ package org.omoa {
 		 */
 		private function stopDragging(e:MouseEvent):void {
 			// the drag action has ended.
+			var mf:MapFrame;
 			if (dragMapFrame) {
 				dragMapFrame.removeEventListener(MouseEvent.MOUSE_MOVE, whileDragging);
 				stage.removeEventListener(MouseEvent.MOUSE_UP, stopDragging);
-				dragMapFrame.stopDrag();
+				
+				if (synchronizeMapFrames) {
+					dragMapFrame.stopDrag();
+					for each (mf in mapFrames) {
+						if (mf != dragMapFrame) {
+							mf.stopFollowDrag();
+							mf.setCenterByMapCoordinates(  dragMapFrame.center.x, dragMapFrame.center.y );
+						}
+					}
+				} else {
+					dragMapFrame.stopDrag();
+				}
 				clickTimer.reset();
 				//stage.quality = StageQuality.HIGH;
 			}
