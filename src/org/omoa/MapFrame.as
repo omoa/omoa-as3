@@ -297,14 +297,24 @@ package org.omoa {
 			// force render
 			render();
 			renderOverlays();
+			
+			if (e) {
+				dispatchEvent( new Event(Event.CHANGE) );
+			}
 		}
 		
 		public function zoomIn(e:Event=null):void {
 			zoom(1.5);
+			if (e) {
+				dispatchEvent( new Event(Event.CHANGE) );
+			}
 		}
 		
 		public function zoomOut(e:Event=null):void {
 			zoom(0.75);
+			if (e) {
+				dispatchEvent( new Event(Event.CHANGE) );
+			}
 		}
 		
 		public function zoom(factor:Number=0.7):void {
@@ -350,19 +360,31 @@ package org.omoa {
 		}
 		
 		public function moveNorth(e:Event = null):void {
-			moveCenterByScreenCoordinates( 0, _bg.height * -0.33)
+			moveCenterByScreenCoordinates( 0, _bg.height * -0.33);
+			if (e) {
+				dispatchEvent( new Event(Event.SCROLL) );
+			}
 		}
 		
 		public function moveSouth(e:Event = null):void {
-			moveCenterByScreenCoordinates( 0, _bg.height * 0.33)
+			moveCenterByScreenCoordinates( 0, _bg.height * 0.33);
+			if (e) {
+				dispatchEvent( new Event(Event.SCROLL) );
+			}
 		}
 		
 		public function moveEast(e:Event = null):void {
-			moveCenterByScreenCoordinates( _bg.height * 0.33, 0)
+			moveCenterByScreenCoordinates( _bg.height * 0.33, 0);
+			if (e) {
+				dispatchEvent( new Event(Event.SCROLL) );
+			}
 		}
 		
 		public function moveWest(e:Event = null):void {
-			moveCenterByScreenCoordinates( _bg.height * -0.33, 0)
+			moveCenterByScreenCoordinates( _bg.height * -0.33, 0);
+			if (e) {
+				dispatchEvent( new Event(Event.SCROLL) );
+			}
 		}
 		
 		public function setCenterByScreenCoordinates( x:Number, y:Number ):void {
@@ -394,12 +416,21 @@ package org.omoa {
 			recenter();
 		}
 		
-		public function setCenterByMapCoordinates( x:Number, y:Number ):void {
+		public function setCenterByMapCoordinates( x:Number, y:Number, scale:Number = NaN ):void {
+			
 			center.x = x;
 			center.y = y;
 			calculateBounds();
-			//trace( "Clicked: " +x + ", " + y );
-			recenter();
+			
+			if (!isNaN(scale)) {
+				_scale = scale;
+				_worldWidth = _bg.width / _scale;
+				_worldHeight = _bg.height / _scale;
+				calculateBounds();
+				rescale();
+			} else {
+				recenter();
+			}
 		}
 		
 		private function calculateBounds():void {

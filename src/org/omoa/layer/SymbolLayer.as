@@ -82,6 +82,18 @@ package org.omoa.layer {
 			}
 		}
 		
+		public function countSymbols():int {
+			return _symbols.length;
+		}
+		
+		public function getSymbol(index:uint):ISymbol {
+			if (index > 0 && index < _symbols.length) {
+				return _symbols[index];
+			} else {
+				return null;
+			}
+		}
+		
 		override public function isSetup(sprite:Sprite):Boolean {
 			return Boolean(layerSpriteToSymbol[sprite]);
 		}

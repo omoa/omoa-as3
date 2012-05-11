@@ -78,10 +78,10 @@ package org.omoa.symbol {
 		}
 		
 		public function prepareRender(parentSprite:Sprite):void {
-			
+			// Implement this if you want.
 		}
 
-		public function render(target:DisplayObject, spaceEntity:SpaceModelEntity, transformation:Matrix):void {
+		public final function render(target:DisplayObject, spaceEntity:SpaceModelEntity, transformation:Matrix):void {
 			updateDynamicProperties( spaceEntity );
 			renderEntity(target, spaceEntity, transformation);
 		}

@@ -108,16 +108,17 @@ package org.omoa {
 				}
 			}
 			
-			mapFrames.push( mapFrame );
 			if (name) {
 				mapFrame.name = name;
 			} else if (!mapFrame.name) {
 				mapFrame.name = "MapFrame" + mapFrames.length;
 			}
 			
+			mapFrames.push( mapFrame );
+			
 			mapFrame.setMap( this );
 			
-			// add to display list, if not done already
+			// add to display list, if not done already (or somewhere else)
 			if (!mapFrame.parent) {
 				addChild( mapFrame );
 			}
@@ -126,6 +127,14 @@ package org.omoa {
 			
 			for (var index:int = 0; index < mapFrame.countLayers(); index++) {
 				addLayer( mapFrame.getLayer(index) );
+			}
+			
+			mapFrame.addEventListener( Event.SCROLL, mapFrameCenterChange);
+			mapFrame.addEventListener( Event.CHANGE, mapFrameChange);
+			
+			if (synchronizeMapFrames && mapFrames.length > 1) {
+				var preMF:MapFrame = mapFrames[mapFrames.length - 2];
+				mapFrame.setCenterByMapCoordinates( preMF.center.x, preMF.center.y, preMF.scale );
 			}
 		}
 		
@@ -148,11 +157,14 @@ package org.omoa {
 			
 			mf = new MapFrame(this);
 			mf.name = name;
+			addMapFrame( mf );
+			/*
 			mapFrames.push( mf );
 			
 			addChild( mf );
 			
 			_mapFrameAddInteractivity( mf );
+			*/
 			
 			layoutMapFrames();
 			
@@ -479,6 +491,32 @@ package org.omoa {
 				}
 			}
 		}
+		
+		
+		private function mapFrameChange(e:Event):void {
+			var sourceMapFrame:MapFrame = e.currentTarget as MapFrame;
+			if (sourceMapFrame && synchronizeMapFrames) {
+				for each (var mf:MapFrame in mapFrames) {
+					if (mf != sourceMapFrame) {
+						mf.setCenterByMapCoordinates( sourceMapFrame.center.x, sourceMapFrame.center.y, sourceMapFrame.scale );
+					}
+				}
+			}
+		}
+		
+		private function mapFrameCenterChange(e:Event):void {
+			var sourceMapFrame:MapFrame = e.currentTarget as MapFrame;
+			if (sourceMapFrame && synchronizeMapFrames) {
+				for each (var mf:MapFrame in mapFrames) {
+					if (mf != sourceMapFrame) {
+						mf.setCenterByMapCoordinates( sourceMapFrame.center.x, sourceMapFrame.center.y, sourceMapFrame.scale );
+					}
+				}
+			}
+		}
+		
+		
+		
 		
 		// ===================================================================
 		// Layer Management
