@@ -155,7 +155,7 @@ package org.omoa.spacemodel.loader {
 									center = sme.bounds.topLeft; 
 								} else {
 									bounds = new BoundingBox(0, 0, 0, 0);
-									GeometryFunctions.boundsFromPath( bounds, path );
+									GeometryFunctions.boundsFromPath( path, bounds );
 									center = new Point(coordinates[0][0], coordinates[0][1]); 
 								}
 								
@@ -173,7 +173,7 @@ package org.omoa.spacemodel.loader {
 									center = sme.bounds.topLeft; 
 								} else {
 									bounds = new BoundingBox(0, 0, 0, 0);
-									GeometryFunctions.boundsFromPath( bounds, path );
+									GeometryFunctions.boundsFromPath( path, bounds );
 									center = new Point(coordinates[0][0][0], coordinates[0][0][1]); 
 								}
 								break;
@@ -190,7 +190,7 @@ package org.omoa.spacemodel.loader {
 									center = sme.bounds.topLeft; 
 								} else {
 									bounds = new BoundingBox(0, 0, 0, 0);
-									GeometryFunctions.boundsFromPath( bounds, path );
+									GeometryFunctions.boundsFromPath( path, bounds );
 									center = new Point(coordinates[0][0], coordinates[0][1]); 
 								}
 								break;
@@ -210,7 +210,7 @@ package org.omoa.spacemodel.loader {
 									center = sme.bounds.topLeft; 
 								} else {
 									bounds = new BoundingBox(0, 0, 0, 0);
-									GeometryFunctions.boundsFromPath( bounds, path );
+									GeometryFunctions.boundsFromPath( path, bounds );
 									center = new Point(coordinates[0][0][0], coordinates[0][0][1]); 
 								}
 								break;
