@@ -24,7 +24,7 @@ package org.omoa.framework {
 	 * A Description stores a description of a value within a DataModel
 	 * or a subset of a DataModel; example of a Description: "GERMANY.FEMALE.1989.GDP". 
 	 * 
-	 * @author Sebastian Specht 2009-2011
+	 * @author Sebastian Specht
 	 */
 	
 	public class Description {
