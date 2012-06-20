@@ -22,7 +22,9 @@ package org.omoa.framework {
 
 	/**
 	 * A Description stores a description of a value within a DataModel
-	 * or a subset of a DataModel; example of a Description: "GERMANY.FEMALE.1989.GDP". 
+	 * or a subset of a DataModel; example of a Description: "GERMANY.FEMALE.1989.GDP"
+	 * (scalar value), "GERMANY.FEMALE.*.GDP" (one dimensional description)
+	 * or "GERMANY.*.*.GDP" (two dimensional description). 
 	 * 
 	 * @author Sebastian Specht
 	 */

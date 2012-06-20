@@ -22,71 +22,83 @@ package org.omoa.datamodel.iterator {
 	import org.omoa.datamodel.AbstractIterator;
 	import org.omoa.framework.Datum;
 	import org.omoa.framework.Description;
-	import org.omoa.framework.ModelDimension;
 	
 	/**
-	 * ...
+	 * Iterates over all possible values of a Description in the style of
+	 * "GERMANY.*.POPULATION" (where * repsresents all values from this
+	 * dimension, e.g. years of the time dimension.
+	 * 
 	 * @author Sebastian Specht
 	 */
-	public class SimpleIterator extends AbstractIterator 
-	{
-		private var _iterableDimensions:Vector.<ModelDimension>;
+	public class SimpleIterator extends AbstractIterator {
+		
 		private var _iterableDimensionOrder:Vector.<int>;
-		private var _length:Vector.<int>;
+		private var _maxIndex:Vector.<int>;
 		private var _index:Vector.<int>;
 		private var _iterableCount:int;
+		private var __index:int;
+		private var __length:int;
 		
 		public function SimpleIterator(description:Description) {
 			super(description);
-			//_iterableDimensions = new Vector.<ModelDimension>();
 			
 			_iterableDimensionOrder = new Vector.<int>();
-			_length = new Vector.<int>();
+			_maxIndex = new Vector.<int>();
 			_index = new Vector.<int>();
+			
+			__length = 1;
 			
 			for (var order:int = 1; order <= description.selectedDimensionCount(); order++) {
 				if (description.selectedIndex(order) == Description.WILDCARD_INDEX) {
-					//_iterableDimensions.push( description.selectedDimension(order));
 					_iterableDimensionOrder.push(order);
-					_length.push(description.selectedDimension(order).codeCount);
-					_index.push(1);
+					_maxIndex.push(description.selectedDimension(order).codeCount-2);
+					_index.push(0);
+					__length *= description.selectedDimension(order).codeCount - 1;
 				}
 			}
+			
 			_iterableCount = _iterableDimensionOrder.length;
+			reset();
 		}
 		
 		override public function next():Datum {
-			for (var i:int = 0; i < _iterableCount; i++ ) {
-				if (_index[i] < _length[i]) {
-					_datum.description.selectByIndex(_iterableDimensionOrder[i], _index[i]++);
-					_dm.updateDatum(_datum);
-					return _datum;
+			var index:int = 0;
+			var order:int = 0;
+			var increment:int = 1;
+			
+			//TODO: Is there a way to optimize this by a "break"
+			while (increment && order < _iterableCount) {
+				if (_index[order] < _maxIndex[order]) {
+					_index[order]++;
+					increment = 0;
+				} else {
+					_index[order] = 0;
 				}
+				_datum.description.selectByIndex(_iterableDimensionOrder[order], 1+_index[order]);
+				order++;
 			}
+			
+			_dm.updateDatum(_datum);
+			__index++;
+			
 			return _datum;
 		}
 		
 		override public function count():int {
-			var count:int = 1;
-			for each (var length:int in _length) {
-				count *= (length-1);
-			}
-			return count;
+			return __length;
 		}
 		
 		override public function reset():void {
-			for (var i:int = 0; i < _iterableCount; i++) {
-				_index[i] = 1;
+			__index = 0;
+			for (var i:int = 0; i < _iterableCount; i++ ) {
+				_datum.description.selectByIndex(_iterableDimensionOrder[i], 1);
+				_index[i] = 0;
 			}
+			_index[0] = -1;
 		}
 		
 		override public function hasNext():Boolean {
-			for (var i:int = 0; i < _iterableCount; i++ ) {
-				if (_index[i] < _length[i]) {
-					return true;
-				}
-			}
-			return false;
+			return __index < __length;
 		}
 		
 	}

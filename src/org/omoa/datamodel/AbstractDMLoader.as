@@ -22,14 +22,15 @@ package org.omoa.datamodel {
 	
 	import flash.events.EventDispatcher;
 	import flash.utils.getDefinitionByName;
-	import org.omoa.framework.Description;
-	import org.omoa.framework.Datum;
 	import org.omoa.datamodel.loader.SMEAttributeDataModel;
 	import org.omoa.datamodel.loader.Text;
-	import org.omoa.framework.ModelDimension;
+	import org.omoa.datamodel.loader.XmlIfl;
+	import org.omoa.framework.Datum;
+	import org.omoa.framework.Description;
 	import org.omoa.framework.IDataModel;
 	import org.omoa.framework.IDataModelIterator;
 	import org.omoa.framework.IDataModelLoader;
+	import org.omoa.framework.ModelDimension;
 	
 	/**
 	* Subclasses need to initialise the storage core - the <code>model</code> property - 
@@ -82,6 +83,7 @@ package org.omoa.datamodel {
 			// we need to "mention" the classes for inclusion at compile time
 			Text;
 			SMEAttributeDataModel;
+			XmlIfl;
 			
 			var loaderClass:Class;
 			var loader:IDataModelLoader;
