@@ -30,7 +30,7 @@ package org.omoa.datamodel.iterator {
 	 * 
 	 * @author Sebastian Specht
 	 */
-	public class SimpleIterator extends AbstractIterator {
+	public class SimpleDatumIterator extends AbstractIterator {
 		
 		private var _iterableDimensionOrder:Vector.<int>;
 		private var _maxIndex:Vector.<int>;
@@ -39,7 +39,7 @@ package org.omoa.datamodel.iterator {
 		private var __index:int;
 		private var __length:int;
 		
-		public function SimpleIterator(description:Description) {
+		public function SimpleDatumIterator(description:Description) {
 			super(description);
 			
 			_iterableDimensionOrder = new Vector.<int>();
