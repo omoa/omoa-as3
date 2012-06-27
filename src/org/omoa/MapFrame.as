@@ -55,6 +55,7 @@ package org.omoa {
 		
 		public var logo:OmoaLogo;
 		public var navigation:NavigationButtons;
+		public var borderColor:Number = 0x000000;
 		
 		private var _layers:Vector.<ILayer> = new Vector.<ILayer>();
 		private var _overlays:Vector.<IOverlay> = new Vector.<IOverlay>();
@@ -336,8 +337,10 @@ package org.omoa {
 			_worldHeight = heightNew / _scale;
 			
 			_frameDecoration.graphics.clear();
-			_frameDecoration.graphics.lineStyle(1, 0, 1, true);
-			_frameDecoration.graphics.drawRect(0, 0, widthNew-0.55, heightNew-0.55);
+			if (!isNaN(borderColor)) {
+				_frameDecoration.graphics.lineStyle(1, borderColor, 1, true);
+				_frameDecoration.graphics.drawRect(0, 0, widthNew - 0.55, heightNew - 0.55);
+			}
 			calculateBounds();
 			recenter();
 			

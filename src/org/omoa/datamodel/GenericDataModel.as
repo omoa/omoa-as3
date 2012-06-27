@@ -93,7 +93,8 @@ package org.omoa.datamodel {
 			var result:Object = data;
 			var i:int;
 			
-			for (i = 1; i <= datum.description.selectedDimensionCount(); i++) {
+			//for (i = 1; i <= datum.description.selectedDimensionCount(); i++) {
+			for (i = 1; i < datum.description.valueDimensionOrder(); i++) {
 				result = result[ datum.description.selectedCode(i)];
 			}
 			if (datum.description.representsScalar) {

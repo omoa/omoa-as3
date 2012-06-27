@@ -117,12 +117,14 @@ package org.omoa.datamodel.loader {
 					
 				}
 			}
-			
+			model = new GenericDataModel(_id);
+			/*
 			if (hasNonNumericValues) {
 				model = new GenericDataModel(_id);
 			} else {
 				model = new DataModel(_id);
 			}
+			*/
 			
 			if (url){
 				loader = new URLLoader();

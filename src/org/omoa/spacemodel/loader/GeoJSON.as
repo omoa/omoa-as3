@@ -112,6 +112,8 @@ package org.omoa.spacemodel.loader {
 					}
 					if (JSONode.properties.hasOwnProperty("name")) {
 						sme.name = JSONode.properties.name;
+					} else if (JSONode.properties.hasOwnProperty("NAME")) {
+						sme.name = JSONode.properties.NAME;
 					} else {
 						sme.name = sme.id;
 					}
