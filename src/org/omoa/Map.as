@@ -284,7 +284,7 @@ package org.omoa {
 		private function whileDragging(e:MouseEvent):void {
 			// this is a definitely drag action.
 			// stop drag behaviour...
-			stage.addEventListener(MouseEvent.MOUSE_UP, stopDragging);
+			stage.addEventListener(MouseEvent.MOUSE_UP, stopDragging, true );
 			
 			// ...and remove the normal "click" behaviour
 			if (dragMapFrame) {
@@ -310,9 +310,12 @@ package org.omoa {
 		private function stopDragging(e:MouseEvent):void {
 			// the drag action has ended.
 			var mf:MapFrame;
+			stage.removeEventListener(MouseEvent.MOUSE_UP, stopDragging);
+			
 			if (dragMapFrame) {
+				e.stopImmediatePropagation();
 				dragMapFrame.removeEventListener(MouseEvent.MOUSE_MOVE, whileDragging);
-				stage.removeEventListener(MouseEvent.MOUSE_UP, stopDragging);
+				//stage.removeEventListener(MouseEvent.MOUSE_UP, stopDragging);
 				
 				if (synchronizeMapFrames) {
 					dragMapFrame.stopDrag();
@@ -328,8 +331,8 @@ package org.omoa {
 				clickTimer.reset();
 				//stage.quality = StageQuality.HIGH;
 			}
-			e.stopPropagation();
-			e.stopImmediatePropagation();
+			//e.stopPropagation();
+			//e.stopImmediatePropagation();
 			dragMapFrame = null;
 			//TODO: Syncronize mapframes?
 		}
