@@ -67,17 +67,8 @@ package org.omoa.datamodel {
 		override public function getDatum(description:Description):Datum {
 			var datum:Datum = new Datum();
 			datum.description = description;
-			var result:Object = data;
-			var i:int;
 			
-			for (i = 1; i < description.selectedDimensionCount(); i++) {
-				result = result[ description.selectedCode(i)];
-			}
-			if (description.representsScalar) {
-				datum.value = result[datum.description.selectedCode(datum.description.valueDimensionOrder())];
-			} else {
-				//datum.value = result;
-			}
+			updateDatum( datum );
 			return datum;
 		}
 		
@@ -93,13 +84,19 @@ package org.omoa.datamodel {
 			var result:Object = data;
 			var i:int;
 			
-			for (i = 1; i <= datum.description.selectedDimensionCount(); i++) {
-				result = result[ datum.description.selectedCode(i)];
+			for (i = 1; i < datum.description.valueDimensionOrder(); i++) {
+				if (result) {
+					result = result[ datum.description.selectedCode(i)];
+				} else {
+					break;
+				}
 			}
-			if (datum.description.representsScalar) {
-				datum.value = result[datum.description.selectedCode(datum.description.valueDimensionOrder())];
-			} else {
-				//datum.value = result;
+			if (result) {
+				if (datum.description.representsScalar) {
+					datum.value = result[datum.description.selectedCode(datum.description.valueDimensionOrder())];
+				} else {
+					datum.value = result;
+				}
 			}
 		}
 

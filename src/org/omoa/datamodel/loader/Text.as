@@ -117,12 +117,14 @@ package org.omoa.datamodel.loader {
 					
 				}
 			}
-			
+			model = new GenericDataModel(_id);
+			/*
 			if (hasNonNumericValues) {
 				model = new GenericDataModel(_id);
 			} else {
 				model = new DataModel(_id);
 			}
+			*/
 			
 			if (url){
 				loader = new URLLoader();
@@ -260,6 +262,9 @@ package org.omoa.datamodel.loader {
 			
 			//trace( propertyColumns );
 			var value:Datum = new Datum();
+			if (!valueColumns) {
+				valueColumns = new Array();
+			}
 			
 			for each (dim in _parameters.values){
 				id = dim.id;
@@ -286,12 +291,14 @@ package org.omoa.datamodel.loader {
 				
 				value.description = model.createDescription();
 				value.description.selectByCode(value.description.valueDimensionOrder(), id);
-				
+				valueColumns.push( dim ); 
 				//trace ( value.toString() );
 				
 				// Im Moment rechnen wir nur mit einer value dimension
-				break;
+				//break;
 			}
+			
+			
 			
 			//store data
 			

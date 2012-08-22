@@ -77,7 +77,7 @@ package org.omoa.spacemodel {
 				return new SimpleIterator( _entities.slice(0, _entities.length) );
 			}
 			try {
-				var iteratorClass:Class = getDefinitionByName( "org.omoa.spacemodel.iterator" + type ) as Class;
+				var iteratorClass:Class = getDefinitionByName( "org.omoa.spacemodel.iterator." + type ) as Class;
 				if (!iteratorClass) {
 					iteratorClass = getDefinitionByName( type ) as Class;
 				}

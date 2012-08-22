@@ -78,10 +78,10 @@ package org.omoa.symbol {
 		}
 		
 		public function prepareRender(parentSprite:Sprite):void {
-			
+			// Implement this if you want.
 		}
 
-		public function render(target:DisplayObject, spaceEntity:SpaceModelEntity, transformation:Matrix):void {
+		public final function render(target:DisplayObject, spaceEntity:SpaceModelEntity, transformation:Matrix):void {
 			updateDynamicProperties( spaceEntity );
 			renderEntity(target, spaceEntity, transformation);
 		}
@@ -95,14 +95,12 @@ package org.omoa.symbol {
 				propertyDescription = property.manipulator.dataDescription;
 				if (propertyDescription) {
 					entityDescription = spaceEntity.getDescription( propertyDescription.model.id );
-					//trace( spaceEntity.id + " and " + propertyDescription.model.id + " = " + entityDescription );
 					if (entityDescription) {
 						if (!property.datum) {
 							property.datum = propertyDescription.model.getDatum( propertyDescription );
 						}
 						entityDescription.combine( property.datum.description, propertyDescription ); 
-						entityDescription.model.updateDatum( property.datum );
-						//trace( property.datum );
+						property.datum.update();
 					} else {
 						property.datum = null;
 					}

@@ -31,6 +31,7 @@ package org.omoa.spacemodel.loader {
 	import org.omoa.framework.BoundingBox;
 	import org.omoa.framework.GeometryType;
 	import org.omoa.spacemodel.*;
+	import org.omoa.util.GeometryFunctions;
 	
 	/**
 	 * ...
@@ -111,6 +112,8 @@ package org.omoa.spacemodel.loader {
 					}
 					if (JSONode.properties.hasOwnProperty("name")) {
 						sme.name = JSONode.properties.name;
+					} else if (JSONode.properties.hasOwnProperty("NAME")) {
+						sme.name = JSONode.properties.NAME;
 					} else {
 						sme.name = sme.id;
 					}
@@ -149,11 +152,12 @@ package org.omoa.spacemodel.loader {
 								path = new GraphicsPath();
 								parseRing( path, coordinates);
 								
-								//TODO: improve
 								if (sme.bounds) {
+									//TODO: improve
 									center = sme.bounds.topLeft; 
 								} else {
-									bounds = null;
+									bounds = new BoundingBox(0, 0, 0, 0);
+									GeometryFunctions.boundsFromPath( path, bounds );
 									center = new Point(coordinates[0][0], coordinates[0][1]); 
 								}
 								
@@ -166,11 +170,12 @@ package org.omoa.spacemodel.loader {
 									parseRing( path, ring);
 								}
 								
-								//TODO: improve
 								if (sme.bounds) {
+									//TODO: improve
 									center = sme.bounds.topLeft; 
 								} else {
-									bounds = null;
+									bounds = new BoundingBox(0, 0, 0, 0);
+									GeometryFunctions.boundsFromPath( path, bounds );
 									center = new Point(coordinates[0][0][0], coordinates[0][0][1]); 
 								}
 								break;
@@ -182,11 +187,12 @@ package org.omoa.spacemodel.loader {
 									parseRing( path, ring);
 								}
 								
-								//TODO: improve
 								if (sme.bounds) {
+									//TODO: improve
 									center = sme.bounds.topLeft; 
 								} else {
-									bounds = null;
+									bounds = new BoundingBox(0, 0, 0, 0);
+									GeometryFunctions.boundsFromPath( path, bounds );
 									center = new Point(coordinates[0][0], coordinates[0][1]); 
 								}
 								break;
@@ -201,11 +207,12 @@ package org.omoa.spacemodel.loader {
 									}
 								}
 								
-								//TODO: improve
 								if (sme.bounds) {
+									//TODO: improve
 									center = sme.bounds.topLeft; 
 								} else {
-									bounds = null;
+									bounds = new BoundingBox(0, 0, 0, 0);
+									GeometryFunctions.boundsFromPath( path, bounds );
 									center = new Point(coordinates[0][0][0], coordinates[0][0][1]); 
 								}
 								break;
@@ -236,7 +243,7 @@ package org.omoa.spacemodel.loader {
 						}
 					}
 				} else {
-					// raise Error?
+					// has no Geometry - raise Error?
 				}
 				addEntity(sme);
 				//}
