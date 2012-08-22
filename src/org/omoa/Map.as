@@ -158,13 +158,6 @@ package org.omoa {
 			mf = new MapFrame(this);
 			mf.name = name;
 			addMapFrame( mf );
-			/*
-			mapFrames.push( mf );
-			
-			addChild( mf );
-			
-			_mapFrameAddInteractivity( mf );
-			*/
 			
 			layoutMapFrames();
 			
@@ -174,7 +167,7 @@ package org.omoa {
 		/**
 		 * Adds event handlers to a MapFrame.
 		 */
-		private function _mapFrameAddInteractivity( mf:MapFrame ):void {
+		protected function _mapFrameAddInteractivity( mf:MapFrame ):void {
 			mf.buttonMode = true;
 			mf.mouseChildren = true;
 			
@@ -236,6 +229,9 @@ package org.omoa {
 		 * another DisplayObjectContainer and do the layout for yourself.
 		 */
 		public function layoutMapFrames():void {
+			_layoutMapFrames();
+		}
+		protected function _layoutMapFrames():void {
 			var mf:MapFrame;
 			var mfCountChild:int = 0;
 			for each (mf in mapFrames) {
