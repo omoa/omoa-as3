@@ -31,12 +31,8 @@ package org.omoa.framework {
 	public class Datum {
 
 		public var value:* = NaN;
-		
-		public var array:Object = null;
 
 		public var description:Description = null;
-
-		//public var valueDimension:ModelDimension = null;
 
 		public function Datum() {
 		}
