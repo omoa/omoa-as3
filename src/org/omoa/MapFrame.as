@@ -55,6 +55,7 @@ package org.omoa {
 		
 		public var logo:OmoaLogo;
 		public var navigation:NavigationButtons;
+		public var borderColor:Number = 0x000000;
 		
 		private var _layers:Vector.<ILayer> = new Vector.<ILayer>();
 		private var _overlays:Vector.<IOverlay> = new Vector.<IOverlay>();
@@ -67,7 +68,7 @@ package org.omoa {
 		private var _overlayContainer:Sprite;
 		private var _debug:Shape;
 		
-		private var _scale:Number = 1;
+		private var _scale:Number = NaN;
 		private var _worldWidth:Number;
 		private var _worldHeight:Number;
 		
@@ -143,6 +144,21 @@ package org.omoa {
 		
 		private function whileDrag(e:MouseEvent):void {
 			_overlayContainer.visible = false;
+		}
+		
+		public function followDrag( x:Number, y:Number):void {
+			_layerContainer.x = x;
+			_layerContainer.y = y;
+		}
+		
+		public function stopFollowDrag():void {
+			_layerContainer.x = 0;
+			_layerContainer.y = 0;
+		}
+		
+		//TODO: There is an offset involved.
+		public function dragPosition():Point {
+			return _layerContainer.getRect(this).topLeft; 
 		}
 		
 		override public function stopDrag():void {
@@ -242,6 +258,9 @@ package org.omoa {
 					if (layer.spaceModel == spaceModel) {
 						layerSprite = _layerContainer.getChildByName(layer.id) as Sprite;
 						layer.setup( layerSprite );
+						if (isNaN(_scale)) {
+							resetBoundsAndScale();
+						}
 						renderLayer( layer.id );
 					}
 				}
@@ -270,28 +289,8 @@ package org.omoa {
 		 * Scale Manipulation
 		 * =========================================== */
 		
-		public function fitToFrame(e:Event=null):void {	
-			var b:Rectangle = new Rectangle();
-			var layer:ILayer;
-			
-			if (_layers.length > 0) {
-				for each (layer in _layers) {
-					if (layer.spaceModel.isComplete) {
-						b = b.union(layer.spaceModel.bounds as Rectangle);
-					}
-				}
-				bounds.fromRectangle(b);
-			} else {
-				return;
-			}
-			
-			_scale = Math.max( _bg.width / bounds.width, _bg.height / bounds.height ) * 1.0;
-			
-			center.x = bounds.minx + bounds.width * 0.5;
-			center.y = bounds.maxy - bounds.height * 0.5;
-			
-			_worldWidth = _bg.width / _scale;
-			_worldHeight = _bg.height / _scale;
+		public function fitToFrame(e:Event = null):void {	
+			resetBoundsAndScale();
 			
 			// Bounds nun dem Kartenausschnitt anpassen
 			calculateBounds();
@@ -299,14 +298,24 @@ package org.omoa {
 			// force render
 			render();
 			renderOverlays();
+			
+			if (e) {
+				dispatchEvent( new Event(Event.CHANGE) );
+			}
 		}
 		
 		public function zoomIn(e:Event=null):void {
 			zoom(1.5);
+			if (e) {
+				dispatchEvent( new Event(Event.CHANGE) );
+			}
 		}
 		
 		public function zoomOut(e:Event=null):void {
 			zoom(0.75);
+			if (e) {
+				dispatchEvent( new Event(Event.CHANGE) );
+			}
 		}
 		
 		public function zoom(factor:Number=0.7):void {
@@ -328,12 +337,17 @@ package org.omoa {
 			_worldHeight = heightNew / _scale;
 			
 			_frameDecoration.graphics.clear();
-			_frameDecoration.graphics.lineStyle(1, 0, 1, true);
-			_frameDecoration.graphics.drawRect(0, 0, widthNew-0.55, heightNew-0.55);
+			if (!isNaN(borderColor)) {
+				_frameDecoration.graphics.lineStyle(1, borderColor, 1, true);
+				_frameDecoration.graphics.drawRect(0, 0, widthNew - 0.55, heightNew - 0.55);
+			}
 			calculateBounds();
 			recenter();
-			logo.x = 5;
-			logo.y = heightNew - logo.height - 5;
+			
+			if (logo) {
+				logo.x = 5;
+				logo.y = heightNew - logo.height - 5;
+			}
 			
 			var r:Rectangle = _layerContainerWrapper.scrollRect;
 			r.x = 0;
@@ -342,24 +356,38 @@ package org.omoa {
 			r.height = heightNew;
 			_layerContainerWrapper.scrollRect = r;
 			
-			navigation.x = 5;
-			navigation.y = 5;
+			if (navigation) {
+				navigation.x = 5;
+				navigation.y = 5;
+			}
 		}
 		
 		public function moveNorth(e:Event = null):void {
-			moveCenterByScreenCoordinates( 0, _bg.height * -0.33)
+			moveCenterByScreenCoordinates( 0, _bg.height * -0.33);
+			if (e) {
+				dispatchEvent( new Event(Event.SCROLL) );
+			}
 		}
 		
 		public function moveSouth(e:Event = null):void {
-			moveCenterByScreenCoordinates( 0, _bg.height * 0.33)
+			moveCenterByScreenCoordinates( 0, _bg.height * 0.33);
+			if (e) {
+				dispatchEvent( new Event(Event.SCROLL) );
+			}
 		}
 		
 		public function moveEast(e:Event = null):void {
-			moveCenterByScreenCoordinates( _bg.height * 0.33, 0)
+			moveCenterByScreenCoordinates( _bg.height * 0.33, 0);
+			if (e) {
+				dispatchEvent( new Event(Event.SCROLL) );
+			}
 		}
 		
 		public function moveWest(e:Event = null):void {
-			moveCenterByScreenCoordinates( _bg.height * -0.33, 0)
+			moveCenterByScreenCoordinates( _bg.height * -0.33, 0);
+			if (e) {
+				dispatchEvent( new Event(Event.SCROLL) );
+			}
 		}
 		
 		public function setCenterByScreenCoordinates( x:Number, y:Number ):void {
@@ -391,12 +419,21 @@ package org.omoa {
 			recenter();
 		}
 		
-		public function setCenterByMapCoordinates( x:Number, y:Number ):void {
+		public function setCenterByMapCoordinates( x:Number, y:Number, scale:Number = NaN ):void {
+			
 			center.x = x;
 			center.y = y;
 			calculateBounds();
-			//trace( "Clicked: " +x + ", " + y );
-			recenter();
+			
+			if (!isNaN(scale)) {
+				_scale = scale;
+				_worldWidth = _bg.width / _scale;
+				_worldHeight = _bg.height / _scale;
+				calculateBounds();
+				rescale();
+			} else {
+				recenter();
+			}
 		}
 		
 		private function calculateBounds():void {
@@ -410,6 +447,30 @@ package org.omoa {
 			layerTransformation.a = _scale;
 			layerTransformation.d = _scale * -1;
 			
+		}
+		
+		private function resetBoundsAndScale():void {
+			var b:Rectangle = new Rectangle();
+			var layer:ILayer;
+			
+			if (_layers.length > 0) {
+				for each (layer in _layers) {
+					if (layer.spaceModel.isComplete) {
+						b = b.union(layer.spaceModel.bounds as Rectangle);
+					}
+				}
+				bounds.fromRectangle(b);
+			} else {
+				return;
+			}
+			
+			_scale = Math.max( _bg.width / bounds.width, _bg.height / bounds.height ) * 1.0;
+			
+			center.x = bounds.minx + bounds.width * 0.5;
+			center.y = bounds.maxy - bounds.height * 0.5;
+			
+			_worldWidth = _bg.width / _scale;
+			_worldHeight = _bg.height / _scale;
 		}
 		
 		/* ===========================================
@@ -567,6 +628,7 @@ package org.omoa {
 			calculateBounds();
 			rescale();
 		}
+		
 
 	}
 }

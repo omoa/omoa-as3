@@ -134,7 +134,7 @@ package org.omoa.symbol {
 						sprite.graphics.drawCircle( 0, 0, size );
 						break;
 					case VAL_SHAPE_SQUARE:
-						sprite.graphics.drawRect( 0, 0, size * 2, size * 2);
+						sprite.graphics.drawRect( -size, -size, size * 2, size * 2);
 						break;
 				}
 				if (fill.alpha > 0) {

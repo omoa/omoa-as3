@@ -33,6 +33,7 @@ package org.omoa {
 	import org.omoa.datamodel.AbstractDMLoader;
 	import org.omoa.framework.*;
 	import org.omoa.layer.AbstractLayer;
+	import org.omoa.layer.SymbolLayer;
 	import org.omoa.spacemodel.AbstractSMLoader;
 	import org.omoa.util.NavigationButtons;
 	
@@ -107,16 +108,17 @@ package org.omoa {
 				}
 			}
 			
-			mapFrames.push( mapFrame );
 			if (name) {
 				mapFrame.name = name;
 			} else if (!mapFrame.name) {
 				mapFrame.name = "MapFrame" + mapFrames.length;
 			}
 			
+			mapFrames.push( mapFrame );
+			
 			mapFrame.setMap( this );
 			
-			// add to display list, if not done already
+			// add to display list, if not done already (or somewhere else)
 			if (!mapFrame.parent) {
 				addChild( mapFrame );
 			}
@@ -125,6 +127,14 @@ package org.omoa {
 			
 			for (var index:int = 0; index < mapFrame.countLayers(); index++) {
 				addLayer( mapFrame.getLayer(index) );
+			}
+			
+			mapFrame.addEventListener( Event.SCROLL, mapFrameCenterChange);
+			mapFrame.addEventListener( Event.CHANGE, mapFrameChange);
+			
+			if (synchronizeMapFrames && mapFrames.length > 1) {
+				var preMF:MapFrame = mapFrames[mapFrames.length - 2];
+				mapFrame.setCenterByMapCoordinates( preMF.center.x, preMF.center.y, preMF.scale );
 			}
 		}
 		
@@ -147,11 +157,7 @@ package org.omoa {
 			
 			mf = new MapFrame(this);
 			mf.name = name;
-			mapFrames.push( mf );
-			
-			addChild( mf );
-			
-			_mapFrameAddInteractivity( mf );
+			addMapFrame( mf );
 			
 			layoutMapFrames();
 			
@@ -161,7 +167,7 @@ package org.omoa {
 		/**
 		 * Adds event handlers to a MapFrame.
 		 */
-		private function _mapFrameAddInteractivity( mf:MapFrame ):void {
+		protected function _mapFrameAddInteractivity( mf:MapFrame ):void {
 			mf.buttonMode = true;
 			mf.mouseChildren = true;
 			
@@ -223,6 +229,9 @@ package org.omoa {
 		 * another DisplayObjectContainer and do the layout for yourself.
 		 */
 		public function layoutMapFrames():void {
+			_layoutMapFrames();
+		}
+		protected function _layoutMapFrames():void {
 			var mf:MapFrame;
 			var mfCountChild:int = 0;
 			for each (mf in mapFrames) {
@@ -255,7 +264,11 @@ package org.omoa {
 			dragMapFrame = e.currentTarget as MapFrame;
 			
 			if (dragMapFrame) {
-				dragMapFrame.startDrag();
+				if (synchronizeMapFrames) {
+					dragMapFrame.startDrag();
+				} else {
+					dragMapFrame.startDrag();
+				}
 				dragMapFrame.addEventListener(MouseEvent.MOUSE_MOVE, whileDragging);
 				dragMapFrame.addEventListener(MouseEvent.MOUSE_UP, clickStartsTimer);
 			}
@@ -267,12 +280,23 @@ package org.omoa {
 		private function whileDragging(e:MouseEvent):void {
 			// this is a definitely drag action.
 			// stop drag behaviour...
-			stage.addEventListener(MouseEvent.MOUSE_UP, stopDragging);
+			stage.addEventListener(MouseEvent.MOUSE_UP, stopDragging, true );
 			
 			// ...and remove the normal "click" behaviour
 			if (dragMapFrame) {
 				dragMapFrame.removeEventListener(MouseEvent.MOUSE_UP, clickStartsTimer);
 				//stage.quality = StageQuality.LOW;
+				if (synchronizeMapFrames) {
+					// This does not really work
+					/*
+					var p:Point = dragMapFrame.dragPosition();
+					for each (var mf:MapFrame in mapFrames) {
+						if (mf != dragMapFrame) {
+							mf.followDrag( p.x, p.y );
+						}
+					}
+					*/
+				}
 			}
 		}
 		
@@ -281,15 +305,30 @@ package org.omoa {
 		 */
 		private function stopDragging(e:MouseEvent):void {
 			// the drag action has ended.
+			var mf:MapFrame;
+			stage.removeEventListener(MouseEvent.MOUSE_UP, stopDragging, true);
+			
 			if (dragMapFrame) {
+				e.stopImmediatePropagation();
 				dragMapFrame.removeEventListener(MouseEvent.MOUSE_MOVE, whileDragging);
-				stage.removeEventListener(MouseEvent.MOUSE_UP, stopDragging);
-				dragMapFrame.stopDrag();
+				//stage.removeEventListener(MouseEvent.MOUSE_UP, stopDragging);
+				
+				if (synchronizeMapFrames) {
+					dragMapFrame.stopDrag();
+					for each (mf in mapFrames) {
+						if (mf != dragMapFrame) {
+							mf.stopFollowDrag();
+							mf.setCenterByMapCoordinates(  dragMapFrame.center.x, dragMapFrame.center.y );
+						}
+					}
+				} else {
+					dragMapFrame.stopDrag();
+				}
 				clickTimer.reset();
 				//stage.quality = StageQuality.HIGH;
 			}
-			e.stopPropagation();
-			e.stopImmediatePropagation();
+			//e.stopPropagation();
+			//e.stopImmediatePropagation();
 			dragMapFrame = null;
 			//TODO: Syncronize mapframes?
 		}
@@ -452,6 +491,32 @@ package org.omoa {
 			}
 		}
 		
+		
+		private function mapFrameChange(e:Event):void {
+			var sourceMapFrame:MapFrame = e.currentTarget as MapFrame;
+			if (sourceMapFrame && synchronizeMapFrames) {
+				for each (var mf:MapFrame in mapFrames) {
+					if (mf != sourceMapFrame) {
+						mf.setCenterByMapCoordinates( sourceMapFrame.center.x, sourceMapFrame.center.y, sourceMapFrame.scale );
+					}
+				}
+			}
+		}
+		
+		private function mapFrameCenterChange(e:Event):void {
+			var sourceMapFrame:MapFrame = e.currentTarget as MapFrame;
+			if (sourceMapFrame && synchronizeMapFrames) {
+				for each (var mf:MapFrame in mapFrames) {
+					if (mf != sourceMapFrame) {
+						mf.setCenterByMapCoordinates( sourceMapFrame.center.x, sourceMapFrame.center.y, sourceMapFrame.scale );
+					}
+				}
+			}
+		}
+		
+		
+		
+		
 		// ===================================================================
 		// Layer Management
 
@@ -523,6 +588,23 @@ package org.omoa {
 				}
 			}
 			throw new Error( "Layer " + name + " does not exist." );
+			return null;
+		}
+		
+		/**
+		 * Returns a layer from the layer pool as SymbolLayer.
+		 * Convenience function.
+		 * 
+		 * @param	name The name of the layer.
+		 * @return The layer instance.
+		 */
+		public function symbolLayer(name:String):SymbolLayer {
+			var layer:ILayer = layer(name);
+			if (layer is SymbolLayer) {
+				return layer as SymbolLayer;
+			} else {
+				throw new Error( "SymbolLayer " + name + " does not exist." );
+			}
 			return null;
 		}
 		

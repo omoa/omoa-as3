@@ -31,6 +31,7 @@ package org.omoa.spacemodel.loader {
 	import org.omoa.framework.BoundingBox;
 	import org.omoa.framework.GeometryType;
 	import org.omoa.spacemodel.*;
+	import org.omoa.util.GeometryFunctions;
 	import org.vanrijkom.dbf.*;
 	import org.vanrijkom.shp.*;
 	
@@ -175,8 +176,9 @@ package org.omoa.spacemodel.loader {
 							poly = record.shape as ShpPolygon;
 							bbox = new BoundingBox( poly.box.left, poly.box.top, poly.box.width, poly.box.height );
 							//TODO: Use proper algorithm for center point
-							center = bbox.topLeft.clone();
-							center.offset( bbox.width * 0.5, bbox.height * 0.5);
+							//center = bbox.topLeft.clone();
+							//center.offset( bbox.width * 0.5, bbox.height * 0.5);
+							
 							path = new GraphicsPath();
 							for (ringIndex in poly.rings) {
 								first = true;
@@ -189,6 +191,8 @@ package org.omoa.spacemodel.loader {
 									}
 								}
 							}
+							center = new Point();
+							GeometryFunctions.centroid( path, center );
 						break;
 						case ShpType.SHAPE_POINT:
 							_type = GeometryType.GEOMETRY_POINT;
