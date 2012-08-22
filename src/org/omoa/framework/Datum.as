@@ -44,6 +44,15 @@ package org.omoa.framework {
 		public function toString():String {
 			return description.toString() + "=" + value;
 		}
+		
+		/**
+		 * Updates the value property with the data from the model.
+		 */
+		public function update():void {
+			if (description) {
+				description.model.updateDatum(this);
+			}
+		}
 
 	}
 }
