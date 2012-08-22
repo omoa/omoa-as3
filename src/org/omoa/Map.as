@@ -306,7 +306,7 @@ package org.omoa {
 		private function stopDragging(e:MouseEvent):void {
 			// the drag action has ended.
 			var mf:MapFrame;
-			stage.removeEventListener(MouseEvent.MOUSE_UP, stopDragging);
+			stage.removeEventListener(MouseEvent.MOUSE_UP, stopDragging, true);
 			
 			if (dragMapFrame) {
 				e.stopImmediatePropagation();
