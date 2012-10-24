@@ -55,6 +55,7 @@ package org.omoa.framework {
 		function render(target:DisplayObject, spaceEntity:SpaceModelEntity, transformation:Matrix):void;
 		//function renderEntity(target:DisplayObject, spaceEntity:SpaceModelEntity, transformation:Matrix, positionTransform:Matrix, scaleTransform:Matrix):void;
 		//function renderEntity(target:DisplayObject, spaceEntity:SpaceModelEntity, transformation:Matrix):void;
+		function afterRender(parentSprite:Sprite):void;
 		
 		function get needsTransformation():Boolean;
 		
