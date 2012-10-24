@@ -17,7 +17,7 @@ package extendomoa
 	{
 		public const COLOR:String = "color";
 		
-		private var color:uint = 0xff0000;
+		protected var color:uint = 0xff0000;
 		
 		public function MySymbol() 
 		{

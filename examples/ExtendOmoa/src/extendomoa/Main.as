@@ -58,6 +58,7 @@ package extendomoa
 		private function smComplete(e:Event):void 
 		{
 			addMySymbol();
+			addMyEntitySymbol();
 		}
 		
 		private function addMySymbol():void 
@@ -72,6 +73,17 @@ package extendomoa
 			layer.addSymbol( mySymbol );
 		}
 		
+		private function addMyEntitySymbol():void 
+		{
+			// We create an instance of our own symbol class...
+			var mySymbol:MyEntitySymbol = new MyEntitySymbol();
+			
+			// ... set the COLOR property ...
+			mySymbol.setProperty( mySymbol.COLOR, new Value( 0x000000 ) );
+			
+			// ... and add the symbol to the layer.
+			layer.addSymbol( mySymbol );
+		}
 	}
 	
 }
