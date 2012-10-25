@@ -20,7 +20,7 @@ package extendomoa
 			
 			_entities = true;
 			_interactive = false;
-			_transform = true; 	//true
+			_transform = false; 	//true
 			_rescale = true;	//
 			_recenter = true;	//true
 		}
@@ -47,23 +47,24 @@ package extendomoa
 			
 			s.graphics.beginFill( color, 0.2);
 			
+			var w:Number = spaceEntity.bounds.width * transformation.a;
+			var h:Number = spaceEntity.bounds.height * transformation.a;
+			
 			s.graphics.drawRoundRect(
-				spaceEntity.bounds.width*-0.5, spaceEntity.bounds.height*-0.5,
-				spaceEntity.bounds.width, spaceEntity.bounds.height,
+				w * -0.5, h * -0.5,
+				w, h,
 				10, 10 );
 			
 			s.graphics.endFill();
 			
-			var p:Point = transformation.transformPoint( spaceEntity.center );
-			target.x = p.x;
-			target.y = p.y;	
+			
+			recenter(target, spaceEntity, null, null, transformation);
+			
 		}
 		
 		
 		override public function rescale(target:DisplayObject, spaceEntity:SpaceModelEntity, displayExtent:Rectangle, viewportBounds:BoundingBox, transformation:Matrix):void {
-			var p:Point = transformation.transformPoint( spaceEntity.center );
-			target.x = p.x;
-			target.y = p.y;
+			recenter(target, spaceEntity, displayExtent, viewportBounds, transformation);
 		}
 		
 		override public function recenter(target:DisplayObject, spaceEntity:SpaceModelEntity, displayExtent:Rectangle, viewportBounds:BoundingBox, transformation:Matrix):void {
