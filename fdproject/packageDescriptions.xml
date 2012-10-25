@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<overviews>
+	<packages>
+		<package name="org.omoa">
+			<shortDescription>
+			<![CDATA[
+				This is the root package: &lt;b&gt;If you want to USE omoa start here.&lt;/b&gt;
+			]]>
+			</shortDescription>
+			<description>
+			<![CDATA[
+				This is the root package: &lt;b&gt;If you want to USE omoa start here.&lt;/b&gt;
+			]]>
+			</description>
+		</package>
+		<package name="org.omoa.framework">
+			<shortDescription>
+			<![CDATA[
+				This is the omoa extension package: &lt;b&gt;Read this if you want to EXTEND omoa.&lt;/b&gt;
+			]]>
+			</shortDescription>
+			<description>
+			<![CDATA[
+				This is the omoa extension package: &lt;b&gt;Read this if you want to EXTEND omoa.&lt;/b&gt;
+			]]>
+			</description>
+		</package>
+		<package name="org.omoa.classification">
+			<shortDescription>
+			<![CDATA[
+				In the classification package you'll find classes that fetch data from a DataModel and 
+				turn them into styles, size or color values.
+			]]>
+			</shortDescription>
+			<description>
+			<![CDATA[
+				In the classification package you'll find classes that fetch data from a DataModel and 
+				turn them into styles, size or color values.
+			]]>
+			</description>
+		</package>
+		<package name="org.omoa.datamodel">
+			<shortDescription>
+			<![CDATA[
+				The datamodel package contains everything that is involved with non-spatial data: 
+				DataModel, ModelDimension, import filters et cetera.
+			]]>
+			</shortDescription>
+			<description>
+			<![CDATA[
+				The datamodel package contains everything that is involved with non-spatial data: 
+				DataModel, ModelDimension, import filters et cetera.
+			]]>
+			</description>
+		</package>
+		<package name="org.omoa.event">
+			<shortDescription>
+			<![CDATA[
+				Contains event classes that are specific to omoa.
+			]]>
+			</shortDescription>
+			<description>
+			<![CDATA[
+				Event classes that are specific to omoa.
+			]]>
+			</description>
+		</package>
+		<package name="org.omoa.layer">
+			<shortDescription>
+			<![CDATA[
+				Contains the layer implementations. The maps in a MapFrame consist of layers.
+			]]>
+			</shortDescription>
+			<description>
+			<![CDATA[
+				Contains the layer implementations. The maps in a MapFrame consist of layers.
+			]]>
+			</description>
+		</package>
+		<package name="org.omoa.overlay">
+			<shortDescription>
+			<![CDATA[
+				Not unlike layers overlays can visualize spatial data. The are visualized on top of
+				the map view.
+			]]>
+			</shortDescription>
+			<description>
+			<![CDATA[
+				Not unlike layers overlays can visualize spatial data. The are visualized on top of
+				the map view.
+			]]>
+			</description>
+		</package>
+		<package name="org.omoa.projection">
+			<shortDescription>
+			<![CDATA[
+				The projection package contains the map projection classes... it's quite empty since
+				omoa does not support real time projection at the moment.
+			]]>
+			</shortDescription>
+			<description>
+			<![CDATA[
+				The projection package contains the map projection classes... it's quite empty since
+				omoa does not support real time projection at the moment.
+			]]>
+			</description>
+		</package>
+		<package name="org.omoa.spacemodel">
+			<shortDescription>
+			<![CDATA[
+				Contains the classes that are needed to load, store and process spatial data.
+			]]>
+			</shortDescription>
+			<description>
+			<![CDATA[
+				Contains the classes that are needed to load, store and process spatial data.
+			]]>
+			</description>
+		</package>
+		<package name="org.omoa.symbol">
+			<shortDescription>
+			<![CDATA[
+				Contains the symbolization classes that are use, for example, by the symbol layer.
+				Symbols visualize spatial data.
+			]]>
+			</shortDescription>
+			<description>
+			<![CDATA[
+				Contains the symbolization classes that are use, for example, by the symbol layer.
+				Symbols visualize spatial data.
+			]]>
+			</description>
+		</package>
+	</packages>
+</overviews>
