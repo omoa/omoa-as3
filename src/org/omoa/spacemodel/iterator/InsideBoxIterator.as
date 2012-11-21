@@ -36,6 +36,12 @@ package org.omoa.spacemodel.iterator {
 	{
 		private var _originalEntities:Vector.<SpaceModelEntity>;
 		
+		public static const CONTAINS_CENTER:int = 0;
+		public static const CONTAINS_BOUNDS:int = 1;
+		public static const INTERSECTS_BOUNDS:int = 2;
+		
+		public var strategy:int = 0;
+		
 		public function InsideBoxIterator(entities:Vector.<SpaceModelEntity> = null) 
 		{
 			_originalEntities = entities.slice(0, entities.length);
@@ -47,15 +53,26 @@ package org.omoa.spacemodel.iterator {
 			
 			_entities.splice(0, _entities.length);
 			
-			for each (sme in _originalEntities) {
-				// TODO: by configuration or by subclassing?
-				//if (boundingBox.containsRect(sme.bounds as Rectangle)) {
-				if (boundingBox.containsPoint(sme.center)) {
-					_entities.push( sme );
-				} /* else if (boundingBox.intersects(sme.bounds as Rectangle)) {
-					_entities.push( sme );
-				} */
+			if (strategy == CONTAINS_CENTER) {
+				for each (sme in _originalEntities) {
+					if (boundingBox.containsPoint(sme.center)) {
+						_entities.push( sme );
+					}
+				}
+			} else if (strategy == CONTAINS_BOUNDS) {
+				for each (sme in _originalEntities) {
+					if (boundingBox.containsRect(sme.bounds as Rectangle)) {
+						_entities.push( sme );
+					}
+				}
+			} else if (strategy == INTERSECTS_BOUNDS) {
+				for each (sme in _originalEntities) {
+					if (boundingBox.intersects(sme.bounds as Rectangle)) {
+						_entities.push( sme );
+					}
+				}
 			}
+			
 			
 			reset();
 		}
