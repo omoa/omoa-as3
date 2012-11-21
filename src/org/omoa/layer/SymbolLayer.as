@@ -226,6 +226,8 @@ package org.omoa.layer {
 					}
 				}
 				
+				symbol.afterRender(symbolSprite);
+				
 				if (symbol.needsTransformation) {
 					symbolSprite.transform.matrix = transformation;
 				}
