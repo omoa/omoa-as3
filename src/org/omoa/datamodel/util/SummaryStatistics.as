@@ -60,6 +60,20 @@ package org.omoa.datamodel.util
 			return NaN;
 		}
 		
+		
+		public static function minimum(i:IDataModelIterator):Number {
+			
+			i.reset();
+			var min:Number = i.next().value;
+			while (i.hasNext()) {
+				var wert:Number = i.next().value;
+				if (wert < min) {
+					min = wert;
+				}
+			}
+			return min;
+		}
+		
 	}
 
 }
