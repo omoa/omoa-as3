@@ -47,7 +47,7 @@ package yourthirdmap {
 			
 			// We are adding the background raster image.
 			var rasterSM:ISpaceModelLoader = map.createSpaceModel("cities", null, null, "RasterSpaceModel" ) as ISpaceModelLoader;
-			rasterSM.initialise( {  bounds: new BoundingBox( -180, -90, 180, 90),
+			rasterSM.initialize( {  bounds: new BoundingBox( -180, -90, 180, 90),
 									tiles: [
 										{ url: "MU_5400_T.png", bounds: new BoundingBox( -180, -90, 180, 90) }
 										]
@@ -153,7 +153,7 @@ package yourthirdmap {
 			 * Annual population growth rate (%)
 			 */
 			var settings:Object = {
-				linebreak:"\n",
+				linebreak:"\r\n",
 				separator:"\t",
 				hasHeader:true,
 				values: [

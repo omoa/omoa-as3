@@ -131,8 +131,6 @@ package org.omoa.symbol {
 					} else {
 						classification.selectElement( null );
 					}
-				} else {
-					trace( "Keine Classification" );
 				}
 				setStaticProperty( property );
 			}
