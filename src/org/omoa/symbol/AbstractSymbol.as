@@ -86,6 +86,10 @@ package org.omoa.symbol {
 			renderEntity(target, spaceEntity, transformation);
 		}
 		
+		public function afterRender(parentSprite:Sprite):void {
+			// Implement this if you want.
+		}
+		
 		public function updateValues( spaceEntity:SpaceModelEntity, property:SymbolProperty ):void {
 			var property:SymbolProperty;
 			var propertyDescription:Description;
@@ -127,8 +131,6 @@ package org.omoa.symbol {
 					} else {
 						classification.selectElement( null );
 					}
-				} else {
-					trace( "Keine Classification" );
 				}
 				setStaticProperty( property );
 			}
