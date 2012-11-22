@@ -57,6 +57,10 @@ package org.omoa {
 		public var navigation:NavigationButtons;
 		public var borderColor:Number = 0x000000;
 		
+		public static const SCALE_FIT:String = "fit";
+		public static const SCALE_FILL:String = "fill";
+		public var scale_reset_strategy:String = SCALE_FILL;
+		
 		private var _layers:Vector.<ILayer> = new Vector.<ILayer>();
 		private var _overlays:Vector.<IOverlay> = new Vector.<IOverlay>();
 		private var _map:Map;
@@ -464,7 +468,11 @@ package org.omoa {
 				return;
 			}
 			
-			_scale = Math.max( _bg.width / bounds.width, _bg.height / bounds.height ) * 1.0;
+			if (scale_reset_strategy == SCALE_FILL) {
+				_scale = Math.max( _bg.width / bounds.width, _bg.height / bounds.height ) * 1.0;
+			} else {
+				_scale = Math.min( _bg.width / bounds.width, _bg.height / bounds.height ) * 1.0;
+			}
 			
 			center.x = bounds.minx + bounds.width * 0.5;
 			center.y = bounds.maxy - bounds.height * 0.5;
