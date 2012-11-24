@@ -52,17 +52,17 @@ package org.omoa.framework {
 		function get needsInteractivity():Boolean;
 		
 		function prepareRender(parentSprite:Sprite):void;
-		function render(target:DisplayObject, spaceEntity:SpaceModelEntity, transformation:Matrix):void;
-		//function renderEntity(target:DisplayObject, spaceEntity:SpaceModelEntity, transformation:Matrix, positionTransform:Matrix, scaleTransform:Matrix):void;
-		//function renderEntity(target:DisplayObject, spaceEntity:SpaceModelEntity, transformation:Matrix):void;
+		function render(target:DisplayObject, spaceEntity:SpaceModelEntity, displayExtent:Rectangle, viewportBounds:BoundingBox, transformation:Matrix):void;
 		function afterRender(parentSprite:Sprite):void;
 		
 		function get needsTransformation():Boolean;
 		
 		function get needsRescale():Boolean;
+		function get needsRenderOnRescale():Boolean;
 		function rescale(target:DisplayObject, spaceEntity:SpaceModelEntity, displayExtent:Rectangle, viewportBounds:BoundingBox, transformation:Matrix):void;
 		
 		function get needsRecenter():Boolean;
+		function get needsRenderOnRecenter():Boolean;
 		function recenter(target:DisplayObject, spaceEntity:SpaceModelEntity, displayExtent:Rectangle, viewportBounds:BoundingBox, transformation:Matrix):void;
 		
 		function updateValues(spaceEntity:SpaceModelEntity, property:SymbolProperty):void;

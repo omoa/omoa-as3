@@ -112,7 +112,7 @@ package org.omoa.symbol {
 		}
 		
 		
-		override protected function renderEntity(target:DisplayObject, spaceEntity:SpaceModelEntity, transformation:Matrix):void {
+		override protected function renderEntity(target:DisplayObject, spaceEntity:SpaceModelEntity, displayExtent:Rectangle, viewportBounds:BoundingBox, transformation:Matrix):void {
 			var sprite:Sprite = target as Sprite;
 			sprite.graphics.clear();
 			//var center:Point = spaceEntity.center;

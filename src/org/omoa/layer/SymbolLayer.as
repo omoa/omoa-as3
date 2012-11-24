@@ -216,13 +216,13 @@ package org.omoa.layer {
 					while (iterator.hasNext()) {
 						spaceEntity = iterator.next();
 						entityDisplayObject = entityDictionary[spaceEntity];
-						symbol.render( entityDisplayObject, spaceEntity, transformation );
+						symbol.render( entityDisplayObject, spaceEntity, displayExtent, viewportBounds, transformation );
 					}
 				} else {
 					// render symbols with one DisplayObject for all entites
 					while (iterator.hasNext()) {
 						spaceEntity = iterator.next();
-						symbol.render( symbolSprite, spaceEntity, transformation );
+						symbol.render( symbolSprite, spaceEntity, displayExtent, viewportBounds, transformation );
 					}
 				}
 				
@@ -264,6 +264,10 @@ package org.omoa.layer {
 					symbolSprite.transform.matrix = transformation;
 				}
 				
+				if (symbol.needsRenderOnRescale) {
+					symbol.prepareRender(symbolSprite);
+				}
+				
 				if (symbol.needsEntities) {
 					// rescale symbols with one DisplayObject per entity
 					var entityDisplayObject:DisplayObject;
@@ -271,21 +275,40 @@ package org.omoa.layer {
 					
 					if (symbol.needsRescale) {
 						iterator.reset();
-						while (iterator.hasNext()) {
-							spaceEntity = iterator.next();
-							entityDisplayObject = entityDictionary[spaceEntity];
-							symbol.rescale( entityDisplayObject, spaceEntity, displayExtent, viewportBounds, transformation );
+						if (symbol.needsRenderOnRescale) {
+							while (iterator.hasNext()) {
+								spaceEntity = iterator.next();
+								entityDisplayObject = entityDictionary[spaceEntity];
+								symbol.render( entityDisplayObject, spaceEntity, displayExtent, viewportBounds, transformation );
+							}
+						} else {
+							while (iterator.hasNext()) {
+								spaceEntity = iterator.next();
+								entityDisplayObject = entityDictionary[spaceEntity];
+								symbol.rescale( entityDisplayObject, spaceEntity, displayExtent, viewportBounds, transformation );
+							}
 						}
 					}
 				} else {
 					// rescale symbols with one DisplayObject for all entites
 					if (symbol.needsRescale) {
 						iterator.reset();
-						while (iterator.hasNext()) {
-							spaceEntity = iterator.next();
-							symbol.rescale( symbolSprite, spaceEntity, displayExtent, viewportBounds, transformation );
+						if (symbol.needsRenderOnRescale) {
+							while (iterator.hasNext()) {
+								spaceEntity = iterator.next();
+								symbol.render( symbolSprite, spaceEntity, displayExtent, viewportBounds, transformation );
+							}
+						} else {
+							while (iterator.hasNext()) {
+								spaceEntity = iterator.next();
+								symbol.rescale( symbolSprite, spaceEntity, displayExtent, viewportBounds, transformation );
+							}
 						}
 					}
+				}
+				
+				if (symbol.needsRenderOnRescale) {
+					symbol.afterRender(symbolSprite);
 				}
 			}
 		}
@@ -320,6 +343,10 @@ package org.omoa.layer {
 					symbolSprite.transform.matrix = transformation;
 				}
 				
+				if (symbol.needsRenderOnRecenter) {
+					symbol.prepareRender(symbolSprite);
+				}
+				
 				if (symbol.needsEntities) {
 					// recenter symbols with one DisplayObject per entity
 					var entityDisplayObject:DisplayObject;
@@ -327,21 +354,40 @@ package org.omoa.layer {
 					
 					if (symbol.needsRecenter) {
 						iterator.reset();
-						while (iterator.hasNext()) {
-							spaceEntity = iterator.next();
-							entityDisplayObject = entityDictionary[spaceEntity];
-							symbol.recenter( entityDisplayObject, spaceEntity, displayExtent, viewportBounds, transformation );
+						if (symbol.needsRenderOnRecenter) {
+							while (iterator.hasNext()) {
+								spaceEntity = iterator.next();
+								entityDisplayObject = entityDictionary[spaceEntity];
+								symbol.render( entityDisplayObject, spaceEntity, displayExtent, viewportBounds, transformation );
+							}	
+						} else {
+							while (iterator.hasNext()) {
+								spaceEntity = iterator.next();
+								entityDisplayObject = entityDictionary[spaceEntity];
+								symbol.recenter( entityDisplayObject, spaceEntity, displayExtent, viewportBounds, transformation );
+							}
 						}
 					}
 				} else {
 					// recenter symbols with one DisplayObject for all Entites
 					if (symbol.needsRecenter) {
 						iterator.reset();
-						while (iterator.hasNext()) {
-							spaceEntity = iterator.next();
-							symbol.recenter( symbolSprite, spaceEntity, displayExtent, viewportBounds, transformation );
+						if (symbol.needsRenderOnRecenter) {
+							while (iterator.hasNext()) {
+								spaceEntity = iterator.next();
+								symbol.render( symbolSprite, spaceEntity, displayExtent, viewportBounds, transformation );
+							}
+						} else {
+							while (iterator.hasNext()) {
+								spaceEntity = iterator.next();
+								symbol.recenter( symbolSprite, spaceEntity, displayExtent, viewportBounds, transformation );
+							}
 						}
 					}
+				}
+				
+				if (symbol.needsRenderOnRecenter) {
+					symbol.afterRender(symbolSprite);
 				}
 			}
 

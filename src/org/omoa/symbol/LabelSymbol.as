@@ -109,7 +109,7 @@ package org.omoa.symbol {
 			return container;
 		}
 		
-		override protected function renderEntity(target:DisplayObject, spaceEntity:SpaceModelEntity, transformation:Matrix):void {
+		override protected function renderEntity(target:DisplayObject, spaceEntity:SpaceModelEntity, displayExtent:Rectangle, viewportBounds:BoundingBox, transformation:Matrix):void {
 			var container:Sprite = target as Sprite;
 			container.cacheAsBitmap = true;
 			var tf:TextField = container.getChildAt(0) as TextField;
