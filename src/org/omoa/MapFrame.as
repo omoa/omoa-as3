@@ -57,6 +57,29 @@ package org.omoa {
 		public var navigation:NavigationButtons;
 		public var borderColor:Number = 0x000000;
 		
+		public static const SCALE_FIT:String = "fit";
+		public static const SCALE_FILL:String = "fill";
+		/**
+		 * Defines the way in which the method <code>fitToFrame()</code> interacts
+		 * with the map scale. MapFrame.SCALE_FIT shows the whole map extent while 
+		 * MapFrame.SCALE_FILL zooms in a bit. The calculated scale is used as
+		 * a "reference scale" e.g. for minZoomFactor / maxZoomFactor. 
+		 */
+		public var scale_reset_strategy:String = SCALE_FILL;
+		
+		
+		/**
+		 * Defines minimum zoom factor of the map with regard to the internal
+		 * reference scale (minZoomFactor * referenceScale).
+		 */
+		public var minZoomFactor:Number = 0.9;
+		/**
+		 * Defines maximum zoom factor of the map with regard to the internal
+		 * reference scale (maxZoomFactor * referenceScale).
+		 */
+		public var maxZoomFactor:Number = 3.0;
+		
+		
 		private var _layers:Vector.<ILayer> = new Vector.<ILayer>();
 		private var _overlays:Vector.<IOverlay> = new Vector.<IOverlay>();
 		private var _map:Map;
@@ -69,6 +92,9 @@ package org.omoa {
 		private var _debug:Shape;
 		
 		private var _scale:Number = NaN;
+		private var _referenceScale:Number = NaN;
+		private var _minimum_scale:Number = NaN;
+		private var _maximum_scale:Number = NaN;
 		private var _worldWidth:Number;
 		private var _worldHeight:Number;
 		
@@ -320,6 +346,12 @@ package org.omoa {
 		
 		public function zoom(factor:Number=0.7):void {
 			_scale *= factor;
+			if (_scale < _minimum_scale) {
+				_scale = _minimum_scale;
+			}
+			if (_scale > _maximum_scale) {
+				_scale = _maximum_scale;
+			}
 			_worldWidth = _bg.width / _scale;
 			_worldHeight = _bg.height / _scale;
 			calculateBounds();
@@ -464,7 +496,16 @@ package org.omoa {
 				return;
 			}
 			
-			_scale = Math.max( _bg.width / bounds.width, _bg.height / bounds.height ) * 1.0;
+			if (scale_reset_strategy == SCALE_FILL) {
+				_scale = Math.max( _bg.width / bounds.width, _bg.height / bounds.height ) * 1.0;
+			} else {
+				_scale = Math.min( _bg.width / bounds.width, _bg.height / bounds.height ) * 1.0;
+			}
+			
+			_referenceScale = _scale;
+			
+			_minimum_scale = _scale * minZoomFactor;
+			_maximum_scale = _scale * maxZoomFactor;
 			
 			center.x = bounds.minx + bounds.width * 0.5;
 			center.y = bounds.maxy - bounds.height * 0.5;
