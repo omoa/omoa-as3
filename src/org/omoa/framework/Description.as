@@ -177,11 +177,17 @@ package org.omoa.framework {
 		public function combine( target:Description, gapFiller:Description):void {
 			var order:int;
 			var thisIndex:int;
+			var fillIndex:int;
 			if (_model == gapFiller.model) {
 				for (order = 1; order < valueOrder; order++) {
 					thisIndex = selectedIndex(order);
 					if (thisIndex == UNDEFINED_INDEX || thisIndex == WILDCARD_INDEX) {
-						target.selectByIndex( order, gapFiller.selectedIndex(order) );
+						fillIndex = gapFiller.selectedIndex(order);
+						if (fillIndex != WILDCARD_INDEX) {
+						// TODO	
+						}
+						target.selectByIndex( order, fillIndex );
+						//trace( this + " /// " + gapFiller + " /// " + target );
 					} else {
 						target.selectByIndex( order, thisIndex );
 					}
