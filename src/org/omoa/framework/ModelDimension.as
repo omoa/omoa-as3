@@ -78,12 +78,14 @@ package org.omoa.framework {
 				}
 			}
 			
+			_labels = new Vector.<String>();
+			_labels[0] = UNDEFINED;
 			if (labels) {
-				_labels = new Vector.<String>();
-				_labels[0] = UNDEFINED;
-				_labels.push( labels );
+				for each( var label:String in labels) {
+					_labels.push( label );
+				}
 			} else {
-				_labels = _codes;
+				_labels = _codes.concat();
 			}
 			
 			_isValue = isValueDimension;
@@ -112,11 +114,14 @@ package org.omoa.framework {
 		}
 
 		public function get labels():Vector.<String> {
-			return null;
+			return _labels.concat();
 		}
 		
 		public function label( index:int ):String {
-			return _labels[index];
+			if (index > -1 && index < _labels.length) {
+				return _labels[index];
+			}
+			return UNDEFINED;
 		}
 
 		public function get type():String {
