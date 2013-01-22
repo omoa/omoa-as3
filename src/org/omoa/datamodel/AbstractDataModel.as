@@ -95,8 +95,8 @@ package org.omoa.datamodel {
 		}
 
 		public function valueDimension(index:int = 0):ModelDimension {
-			if (index > -1 && index < propertyDimensions.length) {
-				return propertyDimensions[index];
+			if (index > -1 && index < valueDimensions.length) {
+				return valueDimensions[index];
 			}
 			return null;
 		}
