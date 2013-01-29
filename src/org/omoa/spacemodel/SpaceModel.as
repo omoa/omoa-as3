@@ -171,9 +171,9 @@ package org.omoa.spacemodel {
 						//trace( "*** Linking " + model.id +":" + dimension.classificationID + " with " + _id);
 						for each (entity in entities) {
 							description = model.createDescription( entity.id );
-							if ( description.representsSomething) {
+							//if ( description.representsSomething) {
 								entity.addDescription( description );
-							}
+							//}
 						}
 					}
 				}
