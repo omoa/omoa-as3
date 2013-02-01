@@ -137,13 +137,15 @@ package org.omoa.datamodel.loader {
 		private function loadComplete(e:Event):void {
 			if (loader){
 				initialize(loader.data);
+				_isComplete = true;
 				dispatchEvent(new Event(Event.COMPLETE));
 			}
 		}
 		
 		private function error(e:Event):void {
-			trace("CsvLoader: Load error" + e);
-			dispatchEvent(new ErrorEvent(ErrorEvent.ERROR, false, false, ("CsvLoader: Load error " + e)));
+			//trace("CsvLoader: Load error" + e);
+			//dispatchEvent(new ErrorEvent(ErrorEvent.ERROR, false, false, ("CsvLoader: Load error " + e)));
+			throw new Error(e.toString());
 		}
 		
 		private function parseType(value:*):String {
