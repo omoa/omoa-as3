@@ -798,18 +798,24 @@ package org.omoa {
 			if (!model) {
 				for each (spaceModel in spaceModels) {
 					for each (dataModel in dataModels) {
-						spaceModel.linkDataModel( dataModel );
+						if (dataModel.isComplete) {
+							spaceModel.linkDataModel( dataModel );
+						}
 					}
 				}
 			} else if (model is ISpaceModel) {
 				spaceModel = model as ISpaceModel;
 				for each (dataModel in dataModels) {
-					spaceModel.linkDataModel( dataModel );
+					if (dataModel.isComplete) {
+						spaceModel.linkDataModel( dataModel );
+					}
 				}
 			} else if (model is IDataModel) {
 				dataModel = model as IDataModel;
 				for each (spaceModel in spaceModels) {
-					spaceModel.linkDataModel( dataModel );
+					if (spaceModel.isComplete) {
+						spaceModel.linkDataModel( dataModel );
+					}
 				}
 			}
 		}

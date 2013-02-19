@@ -52,7 +52,7 @@ package yoursecondmap {
 			
 			
 			var rasterSM:ISpaceModelLoader = map.createSpaceModel("cities", null, null, "RasterSpaceModel" ) as ISpaceModelLoader;
-			rasterSM.initialise( {  bounds: new BoundingBox( -180, -90, 180, 90),
+			rasterSM.initialize( {  bounds: new BoundingBox( -180, -90, 180, 90),
 									tiles: [
 										{ url: "HYP_2700W.jpg", bounds: new BoundingBox( -180, -90, 0, 90) },
 										{ url: "HYP_2700E.jpg", bounds: new BoundingBox(0, -90, 180, 90) },
@@ -67,7 +67,8 @@ package yoursecondmap {
 			
 			// We are adding the countries.
 			var sm:ISpaceModel = map.createSpaceModel( "WorldAdmin0",
-									"ne_50m_admin_0_countries",
+									//"ne_50m_admin_0_countries",
+									"110m_admin_0_countries",
 									{ id:"ISO_A3", name:"NAME_SM", modelID:"WorldAdmin0" } );
 			var layer:SymbolLayer = map.createLayer( "Admin0_bg", sm ) as SymbolLayer;
 			var s:VectorSymbol = new VectorSymbol();
@@ -77,8 +78,8 @@ package yoursecondmap {
 			map.mapframe("mapframe1").addLayer(layer);
 			
 			// We are adding rivers...
-			//map.createSpaceModel( "rivers", "110m-rivers-lake-centerlines");
-			map.createSpaceModel( "rivers", "50m-rivers-lake-centerlines");
+			map.createSpaceModel( "rivers", "110m-rivers-lake-centerlines");
+			//map.createSpaceModel( "rivers", "50m-rivers-lake-centerlines");
 			map.createLayer( "rivers", map.spacemodel("rivers") );
 			var riverSymbol:VectorSymbol = new VectorSymbol();
 			riverSymbol.setProperty( riverSymbol.FILLALPHA, new Value(0) );
@@ -88,8 +89,8 @@ package yoursecondmap {
 			map.mapframe("mapframe1").addLayer( map.layer("rivers"));
 			
 			// ...and lakes.
-			//map.createSpaceModel( "lakes", "110m-lakes" );
-			map.createSpaceModel( "lakes", "50m-lakes" );
+			map.createSpaceModel( "lakes", "110m-lakes" );
+			//map.createSpaceModel( "lakes", "50m-lakes" );
 			map.createLayer("lakes", map.spacemodel("lakes") );
 			var lake:VectorSymbol = new VectorSymbol();
 			lake.setProperty( lake.OUTLINECOLOR, new Value(0x3b76ac) );
@@ -97,7 +98,8 @@ package yoursecondmap {
 			SymbolLayer(map.layer("lakes")).addSymbol(lake);
 			map.mapframe("mapframe1").addLayer( map.layer("lakes"));
 			
-			map.createSpaceModel( "coast", "50m_coastline" );
+			map.createSpaceModel( "coast", "110m_land" );
+			//map.createSpaceModel( "coast", "50m_coastline" );
 			map.createLayer("coast", map.spacemodel("coast") );
 			var coast:VectorSymbol = new VectorSymbol();
 			coast.setProperty( coast.OUTLINECOLOR, new Value(0x3b76ac) );

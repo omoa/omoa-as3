@@ -56,6 +56,9 @@ package org.omoa.symbol {
 		protected var _transform:Boolean = true;
 		protected var _recenter:Boolean = false;
 		protected var _rescale:Boolean = false;
+		
+		protected var _renderOnRescale:Boolean = false;
+		protected var _renderOnRecenter:Boolean = false;
 
 
 		public function AbstractSymbol() {
@@ -81,9 +84,9 @@ package org.omoa.symbol {
 			// Implement this if you want.
 		}
 
-		public final function render(target:DisplayObject, spaceEntity:SpaceModelEntity, transformation:Matrix):void {
+		public final function render(target:DisplayObject, spaceEntity:SpaceModelEntity, displayExtent:Rectangle, viewportBounds:BoundingBox, transformation:Matrix):void {
 			updateDynamicProperties( spaceEntity );
-			renderEntity(target, spaceEntity, transformation);
+			renderEntity(target, spaceEntity, displayExtent, viewportBounds, transformation);
 		}
 		
 		public function afterRender(parentSprite:Sprite):void {
@@ -131,14 +134,12 @@ package org.omoa.symbol {
 					} else {
 						classification.selectElement( null );
 					}
-				} else {
-					trace( "Keine Classification" );
 				}
 				setStaticProperty( property );
 			}
 		}
 		
-		protected function renderEntity(target:DisplayObject, spaceEntity:SpaceModelEntity, transformation:Matrix):void {
+		protected function renderEntity(target:DisplayObject, spaceEntity:SpaceModelEntity, displayExtent:Rectangle, viewportBounds:BoundingBox, transformation:Matrix):void {
 			throw new Error( "AbstractSymbol.renderEntity() needs to be implemented in Subclass" );
 		}
 
@@ -201,6 +202,16 @@ package org.omoa.symbol {
 		override public function addEventListener(type:String, listener:Function, useCapture:Boolean = false, priority:int = 0, useWeakReference:Boolean = false):void 
 		{
 			super.addEventListener(type, listener, useCapture, priority, useWeakReference);
+		}
+		
+		public function get needsRenderOnRescale():Boolean 
+		{
+			return _renderOnRescale;
+		}
+		
+		public function get needsRenderOnRecenter():Boolean 
+		{
+			return _renderOnRecenter;
 		}
 
 	}
