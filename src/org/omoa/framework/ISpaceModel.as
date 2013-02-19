@@ -20,6 +20,7 @@ along with OMOA.  If not, see <http://www.gnu.org/licenses/>.
 	
 package org.omoa.framework {
 
+	import flash.events.Event;
 	import flash.events.IEventDispatcher;
 	import org.omoa.spacemodel.SpaceModelEntity;
 	
@@ -59,5 +60,7 @@ package org.omoa.framework {
 		function linkDataModel( model:IDataModel, dataDescription:Description = null ):void;
 
 		function findById(id:String):SpaceModelEntity;
+		
+		function createPropertyDimension(withLabels:Boolean = false):ModelDimension;
 	}
 }

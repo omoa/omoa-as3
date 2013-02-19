@@ -74,7 +74,7 @@ package org.omoa.util
 							currentPath.cubicCurveTo( points[i++], points[i++], points[i++], points[i++], points[i++], points[i++] );
 							break;
 						case GraphicsPathCommand.WIDE_LINE_TO:
-							currentPath.( points[i++], points[i++] );
+							currentPath.wideLineTo( points[i++], points[i++] );
 							i++; i++;
 							// TODO: Test
 							break;

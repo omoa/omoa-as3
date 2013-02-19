@@ -335,7 +335,7 @@ package org.omoa.layer {
 				
 				if (!symbolSprite) {
 					// TODO: This shouldn't happen: Setup hasn't been called yet. Bailing out.
-					trace( "SymbolLayer.rescale(): ERROR, no Sprite vor Symbol existing." );
+					trace( "SymbolLayer.recenter(): ERROR, no Sprite vor Symbol existing." );
 					break;
 				}
 				
