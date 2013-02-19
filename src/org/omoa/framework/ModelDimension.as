@@ -29,6 +29,10 @@ package org.omoa.framework {
 	 * @author Sebastian Specht
 	 */
 	
+	 // TODO This needs a serious rework in conjunction with the Description. UNDEFINED and WILDCARD need to be defined at a central place. Additionally,
+	 // they should not be part of the Dimension Codes but instead be part of Description.
+	 // TODO Introduce errors for ValueDimension that define codes and PropertyDimensions that do not define codes.
+	 // TODO Enable ValueDimension to handle NOMINAL and ORDINAL data.
 	public class ModelDimension {
 		
 		public static const UNDEFINED:String = "_";
@@ -78,12 +82,14 @@ package org.omoa.framework {
 				}
 			}
 			
+			_labels = new Vector.<String>();
 			if (labels) {
-				_labels = new Vector.<String>();
 				_labels[0] = UNDEFINED;
-				_labels.push( labels );
+				for each( var label:String in labels) {
+					_labels.push( label );
+				}
 			} else {
-				_labels = _codes;
+				_labels = _codes.concat();
 			}
 			
 			_isValue = isValueDimension;
@@ -112,11 +118,14 @@ package org.omoa.framework {
 		}
 
 		public function get labels():Vector.<String> {
-			return null;
+			return _labels.concat();
 		}
 		
 		public function label( index:int ):String {
-			return _labels[index];
+			if (index > -1 && index < _labels.length) {
+				return _labels[index];
+			}
+			return UNDEFINED;
 		}
 
 		public function get type():String {

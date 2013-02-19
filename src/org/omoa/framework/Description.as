@@ -29,6 +29,8 @@ package org.omoa.framework {
 	 * @author Sebastian Specht
 	 */
 	
+	 // TODO This needs a serious rework in conjunction with the ModelDimension. UNDEFINED and WILDCARD need to be defined at a central place. Additionally,
+	 // ModelDimension they should not be part of the Dimension Codes.
 	public class Description {
 		
 		public static const UNDEFINED:String = "_";
@@ -75,25 +77,30 @@ package org.omoa.framework {
 			return _model;
 		}
 		
+		
+		/** Returns true, unless the selection contains UNDEFINED ("_") 
+		 * or WILDCARD ("*") values.
+		 */
 		public function get representsScalar():Boolean {
-			var scalar:int = 1;
 			for (var i:int = 1; i < selectionLength; i++) {
 				if (selection[i] < 1) {
 					return false;
 				}
-				scalar *= selection[i];
 			}
-			return scalar > 0;
+			return true;
 		}
 		
+		
+		/** Returns true, unless the selections contains an UNDEFINED value ("_").
+		 * 
+		 */
 		public function get representsSomething():Boolean {
-			var something:Boolean = false;
 			for (var i:int = 1; i < selectionLength; i++) {
-				if (selection[i] != 0) {
-					return true;
+				if (selection[i] == 0) {
+					return false;
 				}
 			}
-			return something;
+			return true;
 		}
 
 		public function selectedDimensionCount():int {
@@ -121,10 +128,17 @@ package org.omoa.framework {
 					}
 				}
 			} else if (order == valueOrder) {
-				selection[valueOrder] = valueDimIdIndex[code];
-				if (!selection[valueOrder]) {
-					hasCode = false;
+				if (code == UNDEFINED) {
+					selection[valueOrder] = UNDEFINED_INDEX;
+				} else if (code == WILDCARD) {
+					selection[valueOrder] = WILDCARD_INDEX;
+				} else {
+					selection[valueOrder] = valueDimIdIndex[code];
+					if (!selection[valueOrder]) {
+						hasCode = false;
+					}
 				}
+				
 			}
 			hasValueIndex = false;
 			valueIndex = 0;
@@ -177,11 +191,17 @@ package org.omoa.framework {
 		public function combine( target:Description, gapFiller:Description):void {
 			var order:int;
 			var thisIndex:int;
+			var fillIndex:int;
 			if (_model == gapFiller.model) {
 				for (order = 1; order < valueOrder; order++) {
 					thisIndex = selectedIndex(order);
 					if (thisIndex == UNDEFINED_INDEX || thisIndex == WILDCARD_INDEX) {
-						target.selectByIndex( order, gapFiller.selectedIndex(order) );
+						fillIndex = gapFiller.selectedIndex(order);
+						if (fillIndex != WILDCARD_INDEX) {
+						// TODO	
+						}
+						target.selectByIndex( order, fillIndex );
+						//trace( this + " /// " + gapFiller + " /// " + target );
 					} else {
 						target.selectByIndex( order, thisIndex );
 					}
@@ -196,7 +216,13 @@ package org.omoa.framework {
 		public function toString():String {
 			var codes:Array = new Array();
 			for (var i:int = 1; i < valueOrder; i++) {
-				codes[i-1] = _propertyDimensions[i-1].code( selection[i] );
+				if (selection[i] === UNDEFINED_INDEX) {
+					codes.push( UNDEFINED );
+				} else if (selection[i] === WILDCARD_INDEX) {
+					codes.push( WILDCARD );
+				} else {
+					codes[i-1] = _propertyDimensions[i-1].code( selection[i] );
+				}
 			}
 			if (selection[valueOrder] === UNDEFINED_INDEX) {
 				codes.push( UNDEFINED );

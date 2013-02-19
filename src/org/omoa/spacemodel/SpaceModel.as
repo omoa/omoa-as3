@@ -13,6 +13,7 @@ package org.omoa.spacemodel {
 	import org.omoa.framework.IProjection;
 	import org.omoa.framework.ISpaceModel;
 	import org.omoa.framework.ISpaceModelIterator;
+	import org.omoa.framework.ModelDimensionType;
 	import org.omoa.projection.AbstractProjection;
 	
 
@@ -170,12 +171,50 @@ package org.omoa.spacemodel {
 						//trace( "*** Linking " + model.id +":" + dimension.classificationID + " with " + _id);
 						for each (entity in entities) {
 							description = model.createDescription( entity.id );
-							if ( description.representsSomething) {
+							//if ( description.representsSomething) {
 								entity.addDescription( description );
-							}
+							//}
 						}
 					}
 				}
+			}
+		}
+		
+		/**
+		 * Creates a PropertyDimension (ModelDimension) from the model for use with an IDataModel.
+		 * 
+		 * @param	withLabels	Set true, when you need the entity names as code labels. Default is false.
+		 * @return A ModelDimension or null, when the SpaceModel is not yet initialized.
+		 */
+		public function createPropertyDimension(withLabels:Boolean = false):ModelDimension {
+			if (_complete) {
+				var codes:Array = new Array();
+				var labels:Array = null;
+				var sme:SpaceModelEntity;
+				var iterator:ISpaceModelIterator = iterator();
+				
+				while (iterator.hasNext()) {
+					sme = iterator.next();
+					codes.push(sme.id);
+				}
+				
+				if (withLabels) {
+					labels = new Array();
+					iterator.reset();
+					while (iterator.hasNext()) {
+						sme = iterator.next();
+						labels.push(sme.name);
+					}
+				}
+				
+				return new ModelDimension(  id,
+											"Entities of " + id + " SpaceModel",
+											"["+ModelDimensionType.ENTITY_ID+"]",
+											ModelDimensionType.ENTITY_ID,
+											codes,
+											labels );
+			} else {
+				return null;
 			}
 		}
 
