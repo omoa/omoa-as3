@@ -356,6 +356,25 @@ package org.omoa {
 			_worldHeight = _bg.height / _scale;
 			calculateBounds();
 			rescale();
+			dispatchEvent( new Event(Event.CHANGE) );
+		}
+		
+		public function zoomToFactor(zoomFactor:Number=1.0):void {
+			_scale = _referenceScale * zoomFactor;
+			if (_scale < _minimum_scale) {
+				_scale = _minimum_scale;
+			}
+			if (_scale > _maximum_scale) {
+				_scale = _maximum_scale;
+			}
+			_worldWidth = _bg.width / _scale;
+			_worldHeight = _bg.height / _scale;
+			calculateBounds();
+			rescale();
+		}
+		
+		public function get zoomFactor():Number {
+			return _scale / _referenceScale;
 		}
 		
 		/* ===========================================
