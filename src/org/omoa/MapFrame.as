@@ -162,7 +162,7 @@ package org.omoa {
 		}
 		
 		override public function startDrag(lockCenter:Boolean = false, bounds:Rectangle = null):void {
-			//_layerContainer.cacheAsBitmap = true;
+			_layerContainer.cacheAsBitmap = true;
 			_layerContainer.startDrag(lockCenter, bounds);
 
 			addEventListener(MouseEvent.MOUSE_MOVE, whileDrag);
@@ -192,7 +192,7 @@ package org.omoa {
 			_overlayContainer.visible = true;
 			_layerContainer.stopDrag();
 			
-			//_layerContainer.cacheAsBitmap = false;
+			_layerContainer.cacheAsBitmap = false;
 			moveCenterByScreenCoordinates( _layerContainer.x*-1, _layerContainer.y*-1 );
 			_layerContainer.x = 0;
 			_layerContainer.y = 0;
@@ -310,6 +310,30 @@ package org.omoa {
 			return layerSprite;
 		}
 		
+		public function isLayerVisible( layerID:String ):Boolean {
+			var layerSprite:Sprite;
+			layerSprite = _layerContainer.getChildByName( layerID ) as Sprite;
+			if (layerSprite) {
+				return layerSprite.visible;
+			}
+			return false;
+		}
+		
+		public function setLayerVisibility( layerID:String, visible:Boolean = true ):void {
+			var layerSprite:Sprite;
+			layerSprite = _layerContainer.getChildByName( layerID ) as Sprite;
+			if (layerSprite && layerSprite.visible!=visible) {
+				if (visible) {
+					var layer:ILayer = _map.layer(layerID);
+					if (layer && layer.isSetup(layerSprite)) {
+						layer.rescale( layerSprite, _bg.getRect( stage ), viewportBounds, layerTransformation );
+						layer.recenter( layerSprite, _bg.getRect( stage ), viewportBounds, layerTransformation );
+					}
+				}
+				layerSprite.visible = visible;
+			}
+			
+		}
 		
 		/* ===========================================
 		 * Scale Manipulation
@@ -356,6 +380,26 @@ package org.omoa {
 			_worldHeight = _bg.height / _scale;
 			calculateBounds();
 			rescale();
+			dispatchEvent( new Event(Event.CHANGE) );
+			trace( _layerContainer.width + " x " + _layerContainer.height);
+		}
+		
+		public function zoomToFactor(zoomFactor:Number=1.0):void {
+			_scale = _referenceScale * zoomFactor;
+			if (_scale < _minimum_scale) {
+				_scale = _minimum_scale;
+			}
+			if (_scale > _maximum_scale) {
+				_scale = _maximum_scale;
+			}
+			_worldWidth = _bg.width / _scale;
+			_worldHeight = _bg.height / _scale;
+			calculateBounds();
+			rescale();
+		}
+		
+		public function get zoomFactor():Number {
+			return _scale / _referenceScale;
 		}
 		
 		/* ===========================================

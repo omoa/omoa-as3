@@ -244,7 +244,7 @@ package org.omoa {
 				// only layout mapframes that are children of the map sprite
 				if (mf.parent == this) {
 					mf.y = mapframeMargin;
-					mf.x = 1 + mapframeMargin + mfWidth * count + mapframeMargin * count;
+					mf.x = mapframeMargin + mfWidth * count + mapframeMargin * count;
 					
 					mf.resize( mfWidth, _height - 2 * mapframeMargin );
 					
@@ -326,10 +326,10 @@ package org.omoa {
 				}
 				clickTimer.reset();
 				//stage.quality = StageQuality.HIGH;
+				dragMapFrame = null;
 			}
 			//e.stopPropagation();
 			//e.stopImmediatePropagation();
-			dragMapFrame = null;
 			//TODO: Syncronize mapframes?
 		}
 		
@@ -340,9 +340,11 @@ package org.omoa {
 			// the mouse button has been released, but the 			
 			// mouse has not moved: remove the drag-handlers
 			stage.removeEventListener(MouseEvent.MOUSE_UP, stopDragging);
-			dragMapFrame.stopDrag();
-			dragMapFrame.removeEventListener(MouseEvent.MOUSE_MOVE, whileDragging);
-			dragMapFrame = null;
+			if (dragMapFrame) {
+				dragMapFrame.stopDrag();
+				dragMapFrame.removeEventListener(MouseEvent.MOUSE_MOVE, whileDragging);
+				dragMapFrame = null;
+			}
 			
 			if (e.currentTarget is MapFrame && !(e.target.parent is NavigationButtons) ) {	
 				// timer-based double click logic
