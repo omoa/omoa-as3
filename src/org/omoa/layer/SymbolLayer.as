@@ -35,6 +35,7 @@ package org.omoa.layer {
 	import org.omoa.spacemodel.SpaceModelEntity;
 	
 	[Event(name = SymbolEvent.CLICK, type = "org.omoa.event.SymbolEvent")]
+	[Event(name = SymbolEvent.POINT, type = "org.omoa.event.SymbolEvent")]
 	
 	/**
 	 * This layer visualizes a SpaceModel through one or more Symbols. 
@@ -107,6 +108,8 @@ package org.omoa.layer {
 			if (_interactive) {
 				sprite.mouseChildren = true;
 				sprite.addEventListener( MouseEvent.MOUSE_UP, symbolClick );
+				sprite.addEventListener( MouseEvent.MOUSE_OVER, symbolPoint );
+				sprite.addEventListener( MouseEvent.MOUSE_OUT, symbolPoint );
 			} else {
 				sprite.mouseChildren = false;
 			}
@@ -417,6 +420,18 @@ package org.omoa.layer {
 			if (se.entity) {
 				dispatchEvent( se );
 			}
+		}
+		
+		private function symbolPoint(e:MouseEvent):void {
+			var se:SymbolEvent = new SymbolEvent( SymbolEvent.POINT, e.bubbles, e.cancelable,
+												e.localX, e.localY, e.target as InteractiveObject,
+												e.ctrlKey, e.altKey, e.shiftKey, e.buttonDown, e.delta);
+			
+			if (e.target && e.type == MouseEvent.MOUSE_OVER) {
+				se.entity = spaceModel.findById(e.target.name);
+			}
+				
+			dispatchEvent( se );
 		}
 
 	}

@@ -35,6 +35,7 @@ package org.omoa.event {
 	public class SymbolEvent extends MouseEvent {
 		
 		public static const CLICK:String = MouseEvent.CLICK;
+		public static const POINT:String = "point";
 		
 		/**
 		 * The related spatial entity of the Event.
