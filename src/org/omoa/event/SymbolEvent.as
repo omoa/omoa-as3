@@ -21,6 +21,7 @@ along with OMOA.  If not, see <http://www.gnu.org/licenses/>.
 package org.omoa.event {
 
 	import flash.display.InteractiveObject;
+	import flash.events.Event;
 	import flash.events.MouseEvent;
 	import org.omoa.spacemodel.SpaceModelEntity;
 	
@@ -34,8 +35,8 @@ package org.omoa.event {
 	
 	public class SymbolEvent extends MouseEvent {
 		
-		public static const CLICK:String = MouseEvent.CLICK;
-		public static const POINT:String = "point";
+		public static const CLICK:String = "symbol_click";
+		public static const POINT:String = "symbol_point";
 		
 		/**
 		 * The related spatial entity of the Event.
@@ -44,6 +45,20 @@ package org.omoa.event {
 		
 		public function SymbolEvent(type:String, bubbles:Boolean = true, cancelable:Boolean = false, localX:Number = 0, localY:Number = 0, relatedObject:InteractiveObject = null, ctrlKey:Boolean = false, altKey:Boolean = false, shiftKey:Boolean = false, buttonDown:Boolean = false, delta:int = 0) {
 			super(type, bubbles, cancelable, localX, localY, relatedObject, ctrlKey, altKey, shiftKey, buttonDown, delta);
+		}
+		
+		override public function clone():Event{
+            var c:SymbolEvent = new SymbolEvent(type, bubbles, cancelable, localX, localY, relatedObject, ctrlKey, altKey, shiftKey, buttonDown, delta);
+            c.entity = this.entity;
+            return c;
+        }
+		
+		override public function toString():String {
+			var s:String = '[SymbolEvent ';
+			if (entity) {
+				s += 'entity="' + entity.name +" ("+entity.id+')" ';
+			}
+			return   s + super.toString() + ']';
 		}
 		
 	}
