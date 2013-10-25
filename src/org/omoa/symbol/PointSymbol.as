@@ -61,7 +61,7 @@ package org.omoa.symbol {
 		private var size:Number = 1;
 		private var shape:String = VAL_SHAPE_CIRCLE;
 		
-		public function PointSymbol() {
+		public function PointSymbol(id:String=null) {
 			_symbolProperties = new Vector.<SymbolProperty>(7, true);
 			
 			_symbolProperties[0] = new SymbolProperty();
@@ -92,7 +92,7 @@ package org.omoa.symbol {
 			_symbolProperties[6].name = SHAPE;
 			_symbolProperties[6].type = SymbolPropertyType.VALUE;
 			
-			super();
+			super(id);
 			
 			stroke.fill = strokefill;
 			stroke.scaleMode = LineScaleMode.NONE;

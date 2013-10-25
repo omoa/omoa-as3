@@ -40,6 +40,8 @@ package org.omoa.framework {
 
 	public interface ISymbol extends IEventDispatcher {
 		
+		function get id():String;
+		
 		function getPropertyNames():Array;
 		function getProperty(propertyName:String):SymbolProperty;
 		function setProperty(propertyName:String, manipulator:ISymbolPropertyManipulator):void;

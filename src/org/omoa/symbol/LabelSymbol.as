@@ -54,7 +54,7 @@ package org.omoa.symbol {
 		private var distance:Number = 0;
 		private var alignment:Number = 3;
 		
-		public function LabelSymbol() {
+		public function LabelSymbol(id:String=null) {
 			_symbolProperties = new Vector.<SymbolProperty>(5, true);
 			
 			_symbolProperties[0] = new SymbolProperty();
@@ -77,7 +77,7 @@ package org.omoa.symbol {
 			_symbolProperties[4].name = DISTANCE;
 			_symbolProperties[4].type = SymbolPropertyType.VALUE;
 			
-			super();
+			super(id);
 			
 			_entities = true;
 			_interactive = false;

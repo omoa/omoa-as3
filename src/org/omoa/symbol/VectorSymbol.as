@@ -57,7 +57,7 @@ package org.omoa.symbol {
 		private var noStroke:GraphicsStroke = new GraphicsStroke();
 		private var noFill:GraphicsEndFill = new GraphicsEndFill();
 		
-		public function VectorSymbol() {			
+		public function VectorSymbol(id:String=null) {			
 			_symbolProperties = new Vector.<SymbolProperty>(5, true);
 			
 			_symbolProperties[0] = new SymbolProperty();
@@ -79,7 +79,7 @@ package org.omoa.symbol {
 			_symbolProperties[4] = new SymbolProperty();
 			_symbolProperties[4].name = OUTLINEWIDTH;
 			_symbolProperties[4].type = SymbolPropertyType.VALUE;
-			super();
+			super(id);
 			
 			stroke.fill = strokefill;
 			stroke.scaleMode = LineScaleMode.NONE;

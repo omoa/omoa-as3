@@ -28,13 +28,13 @@ package org.omoa {
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
 	import flash.geom.Transform;
+	import org.omoa.framework.BoundingBox;
 	import org.omoa.framework.ILayer;
 	import org.omoa.framework.IOverlay;
 	import org.omoa.framework.IProjection;
 	import org.omoa.framework.ISpaceModel;
 	import org.omoa.Map;
 	import org.omoa.projection.AbstractProjection;
-	import org.omoa.framework.BoundingBox;
 	import org.omoa.util.NavigationButtons;
 	import org.omoa.util.OmoaLogo;
 	
@@ -198,6 +198,10 @@ package org.omoa {
 			_layerContainer.y = 0;
 		}
 		
+		/* ===========================================
+		 * Layer Manipulation
+		 * =========================================== */
+		
 		public function addLayer(layer:ILayer):void {
 			if (projection.isIdentical(layer.spaceModel.projection)) {
 				var layerSprite:Sprite = new Sprite();
@@ -226,46 +230,36 @@ package org.omoa {
 			
 		}
 		
-		public function addOverlay(overlay:IOverlay):void {
-			var overlaySprite:Sprite = new Sprite();
-			overlaySprite.name = overlay.id;
-			_overlayContainer.addChild( overlaySprite );
-			_overlays.push( overlay );
-			if (overlay.spaceModel) {
-				if (overlay.spaceModel.isComplete) {
-					overlay.setup( overlaySprite );
-				} else {
-					overlay.spaceModel.addEventListener(Event.COMPLETE, eventOverlaySMComplete, false, 500 );
-				}
-			} else {
-				// has no SpaceModel, which is OK
-				overlay.setup( overlaySprite );
+		public function removeLayer( layerID:String ):ILayer {
+			var layer:ILayer = _map.layer(layerID);
+			if (!layer) {
+				return null;
 			}
-			renderOverlays();
+			
+			var layerSprite:Sprite = _layerContainer.getChildByName( layerID ) as Sprite;
+			if (layerSprite) {
+				layer.cleanup( layerSprite );
+				
+				// This may be a bit paranoid...
+				while (layerSprite.numChildren > 0) {
+					layerSprite.removeChildAt( layerSprite.numChildren - 1 );
+				}
+				
+				_layerContainer.removeChild( layerSprite );	
+				
+				if (layer.spaceModel.hasEventListener(Event.COMPLETE)) {
+					layer.spaceModel.removeEventListener( Event.COMPLETE, setupLayer );
+				}
+				
+							
+				layerSprite = null;
+			}
+			
+			_layers.splice( _layers.indexOf(layer), 1 );
+			
+			return layer;			
 		}
 		
-		private function eventOverlaySMComplete(e:Event):void {
-			var sm:ISpaceModel = e.target as ISpaceModel;
-			for each (var overlay:IOverlay in _overlays) {
-				if (overlay.spaceModel == sm) {
-					overlay.spaceModel.removeEventListener(Event.COMPLETE, eventOverlaySMComplete);
-					overlay.setup( _overlayContainer.getChildByName( overlay.id ) as Sprite );
-					break;
-				}
-			}
-		}
-		
-		public function removeOverlay(overlay:IOverlay):void {
-			var overlaySprite:Sprite = _overlayContainer.getChildByName(overlay.id) as Sprite;
-			if (_overlays.indexOf(overlay) > -1) {
-				if (overlaySprite) {
-					overlay.deconstruct(overlaySprite);
-					_overlayContainer.removeChild(overlaySprite);
-				}
-				_overlays.splice( _overlays.indexOf(overlay), 1);
-			}
-			renderOverlays();
-		}
 		
 		/**
 		 * Initializing all layers with a certain ISpaceModel. The
@@ -333,6 +327,51 @@ package org.omoa {
 				layerSprite.visible = visible;
 			}
 			
+		}
+		
+		/* ===========================================
+		 * Overlay Manipulation
+		 * =========================================== */
+		
+		public function addOverlay(overlay:IOverlay):void {
+			var overlaySprite:Sprite = new Sprite();
+			overlaySprite.name = overlay.id;
+			_overlayContainer.addChild( overlaySprite );
+			_overlays.push( overlay );
+			if (overlay.spaceModel) {
+				if (overlay.spaceModel.isComplete) {
+					overlay.setup( overlaySprite );
+				} else {
+					overlay.spaceModel.addEventListener(Event.COMPLETE, eventOverlaySMComplete, false, 500 );
+				}
+			} else {
+				// has no SpaceModel, which is OK
+				overlay.setup( overlaySprite );
+			}
+			renderOverlays();
+		}
+		
+		private function eventOverlaySMComplete(e:Event):void {
+			var sm:ISpaceModel = e.target as ISpaceModel;
+			for each (var overlay:IOverlay in _overlays) {
+				if (overlay.spaceModel == sm) {
+					overlay.spaceModel.removeEventListener(Event.COMPLETE, eventOverlaySMComplete);
+					overlay.setup( _overlayContainer.getChildByName( overlay.id ) as Sprite );
+					break;
+				}
+			}
+		}
+		
+		public function removeOverlay(overlay:IOverlay):void {
+			var overlaySprite:Sprite = _overlayContainer.getChildByName(overlay.id) as Sprite;
+			if (_overlays.indexOf(overlay) > -1) {
+				if (overlaySprite) {
+					overlay.deconstruct(overlaySprite);
+					_overlayContainer.removeChild(overlaySprite);
+				}
+				_overlays.splice( _overlays.indexOf(overlay), 1);
+			}
+			renderOverlays();
 		}
 		
 		/* ===========================================

@@ -35,6 +35,7 @@ package org.omoa {
 	import org.omoa.layer.AbstractLayer;
 	import org.omoa.layer.SymbolLayer;
 	import org.omoa.spacemodel.AbstractSMLoader;
+	import org.omoa.symbol.AbstractSymbol;
 	import org.omoa.util.NavigationButtons;
 	
 	/**
@@ -50,6 +51,7 @@ package org.omoa {
 		public var mapframeMargin:int = 10;
 
 		protected var layers:Vector.<ILayer> = new Vector.<ILayer>();
+		protected var symbols:Vector.<ISymbol> = new Vector.<ISymbol>();
 		protected var spaceModels:Vector.<ISpaceModel> = new Vector.<ISpaceModel>();
 		protected var dataModels:Vector.<IDataModel> = new Vector.<IDataModel>();
 		
@@ -628,6 +630,69 @@ package org.omoa {
 		public function getLayer(index:uint):ILayer {
 			if (index < layers.length) {
 				return layers[index];
+			}
+			return null;
+		}
+		
+		// ===================================================================
+		// Symbol Management
+
+		public function createSymbol(name:String, symbolClassName:String="VectorSymbol"):ISymbol {
+			var symbolClass:Class;
+			var symbol:ISymbol;
+			
+			// check uniqueness of name
+			for each (symbol in symbols) {
+				if (symbol.id == name) {
+					throw new Error(" Symbol name '" + name + "' is not unique.");
+				}
+			}
+			
+			symbol = AbstractSymbol.create( name, symbolClassName );
+			
+			if (symbol) {
+				symbols.push(symbol);
+			} else {
+				throw new Error(" Symbol '" + name + "' not created.");
+			}
+			
+			return symbol;
+		}
+		
+		/**
+		 * Returns a symbol from the symbol pool as ISymbol.
+		 * 
+		 * @param	name The name of the symbol.
+		 * @return The symbol instance.
+		 */
+		public function symbol(name:String):ISymbol {
+			for each (var symbol:ISymbol in symbols) {
+				if (symbol.id == name) {
+					return symbol;
+				}
+			}
+			throw new Error( "Symbol " + name + " does not exist." );
+			return null;
+		}
+		
+		/**
+		 * Returns the number of symbols in the symbol pool.
+		 * 
+		 * @return
+		 */
+		public function countSymbols():uint {
+			return symbols.length;
+		}
+		
+		/**
+		 * Returns a symbol by index.
+		 * 
+		 * @param	index The index of the symbol in the symbol pool.
+		 * @return  The layer.
+		 */
+		public function getSymbol(index:uint):ISymbol {
+			if (index < symbols.length) {
+				return symbols[index];
 			}
 			return null;
 		}

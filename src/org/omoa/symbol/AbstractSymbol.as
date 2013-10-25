@@ -25,6 +25,7 @@ package org.omoa.symbol {
 	import flash.events.EventDispatcher;
 	import flash.geom.Matrix;
 	import flash.geom.Rectangle;
+	import flash.utils.getDefinitionByName;
 	import org.omoa.classification.AbstractClassification;
 	import org.omoa.framework.Description;
 	import org.omoa.framework.Datum;
@@ -43,6 +44,8 @@ package org.omoa.symbol {
 	 */
 
 	public class AbstractSymbol extends EventDispatcher implements ISymbol {
+		
+		protected var _id:String;
 
 		protected var _symbolProperties:Vector.<SymbolProperty>;
 		protected var _dynamicProperties:Vector.<SymbolProperty> = new Vector.<SymbolProperty>();
@@ -61,11 +64,20 @@ package org.omoa.symbol {
 		protected var _renderOnRecenter:Boolean = false;
 
 
-		public function AbstractSymbol() {
+		public function AbstractSymbol(id:String=null) {
 			for ( var i:int = 0; i < _symbolProperties.length; i++) {
 				_propertyNames[i] = _symbolProperties[i].name;
 				_propertyIndexes[_symbolProperties[i].name] = i;
 			}
+			if (id) {
+				_id = id;
+			} else {
+				_id = "symbol" + Math.round(Math.random() * 1000000);
+			}
+		}
+		
+		public function get id():String {
+			return _id;
 		}
 		
 		public function get needsEntities():Boolean {
@@ -212,6 +224,48 @@ package org.omoa.symbol {
 		public function get needsRenderOnRecenter():Boolean 
 		{
 			return _renderOnRecenter;
+		}
+		
+		/**
+		 * Creates an ISymbol instance.
+		 * 
+		 * @throws ReferenceError
+		 * 
+		 * @param	className	The name of the symbol class, for example "VectorSymbol". If you
+		 * 						want to create an instance of your own symbol subclass you need
+		 * 						to include the package names.
+		 * @param	name	This will set the name/id property of the symbol.
+		 * @return	Returns the ISymbol instance or throws an ReferenceError.
+		 */
+		public static function create(name:String, className:String):ISymbol {
+			
+			var symbolClass:Class;
+			var symbol:ISymbol;
+			
+			// we need to "mention" the classes for inclusion at compile time
+			DirectionsSymbol;
+			LabelSymbol;
+			PointSymbol;
+			PointSymbolEntity;
+			VectorSymbol;
+			VectorSymbolEntity;
+			
+			// create instance
+			try {
+				// try loading omoa symbols first
+				symbolClass = getDefinitionByName( "org.omoa.symbol." + className ) as Class;
+				if (!symbolClass) {
+					symbolClass = getDefinitionByName( className ) as Class;
+				}
+				if (symbolClass) {
+					symbol = new symbolClass( name );
+				}
+			} catch (e:ReferenceError) {
+				e.message = "Symbol class '" + className + "' could not be loaded. " + e.message;
+				throw e;
+			}
+			
+			return symbol;
 		}
 
 	}
