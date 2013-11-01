@@ -579,6 +579,12 @@ package org.omoa {
 			return layer;
 		}
 		
+		public function removeLayer(name:String):ILayer {
+			//TODO: implement removeLayer
+			throw new Error("TODO");
+			return null;
+		}
+		
 		/**
 		 * Returns a layer from the layer pool.
 		 * 
@@ -657,6 +663,12 @@ package org.omoa {
 			}
 			
 			return symbol;
+		}
+		
+		public function removeSymbol(name:String):ISymbol {
+			//TODO: implement removeSymbol
+			throw new Error("TODO");
+			return null;
 		}
 		
 		/**

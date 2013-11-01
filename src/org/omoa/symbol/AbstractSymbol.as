@@ -162,6 +162,10 @@ package org.omoa.symbol {
 		public function getProperty(propertyName:String):SymbolProperty {
 			return _symbolProperties[_propertyIndexes[propertyName]];
 		}
+		
+		public function hasPropertyName(propertyName:String):Boolean {
+			return (_propertyNames.indexOf(propertyName)>-1);
+		}
 
 		public function setProperty(propertyName:String, manipulator:ISymbolPropertyManipulator):void {
 			var property:SymbolProperty = _symbolProperties[_propertyIndexes[ propertyName ]];

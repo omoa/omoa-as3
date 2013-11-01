@@ -44,6 +44,7 @@ package org.omoa.framework {
 		
 		function getPropertyNames():Array;
 		function getProperty(propertyName:String):SymbolProperty;
+		function hasPropertyName(propertyName:String):Boolean;
 		function setProperty(propertyName:String, manipulator:ISymbolPropertyManipulator):void;
 		
 		

@@ -79,8 +79,18 @@ package org.omoa.layer {
 			for (var layerSprite:Object in layerSpriteToSymbol) {
 				setup( layerSprite as Sprite );
 				//TODO: The new Symbol won't display. How do we request a render?
-				// Throw everything away and start over?
 			}
+		}
+		
+		public function removeSymbol(name:String):ISymbol {
+			var s:ISymbol = this.symbol(name);
+			if (s) {
+				var index:int = _symbols.indexOf(s);
+				_symbols.splice(index, 1);
+				//s.cleanup();
+				throw new Error("Not implemented");
+			}
+			return s;
 		}
 		
 		public function countSymbols():int {
@@ -93,6 +103,15 @@ package org.omoa.layer {
 			} else {
 				return null;
 			}
+		}
+		
+		public function symbol(name:String):ISymbol {
+			for each (var symbol:ISymbol in _symbols) {
+				if (symbol.id==name) {
+					return symbol;
+				}
+			}
+			return null;
 		}
 		
 		override public function isSetup(sprite:Sprite):Boolean {
@@ -397,6 +416,7 @@ package org.omoa.layer {
 		}
 		
 		override public function cleanup(sprite:Sprite):void {
+			// Cleanup Layer(!)
 			throw new Error( "NOT IMPLEMENTED.");
 		}
 		
