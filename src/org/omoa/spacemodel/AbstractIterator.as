@@ -77,15 +77,16 @@ package org.omoa.spacemodel {
 				return new SimpleIterator( _entities.slice(0, _entities.length) );
 			}
 			try {
-				var iteratorClass:Class = getDefinitionByName( "org.omoa.spacemodel.iterator." + type ) as Class;
-				if (!iteratorClass) {
-					iteratorClass = getDefinitionByName( type ) as Class;
-				}
-				if (iteratorClass) {
-					return new iteratorClass( _entities.slice(0, _entities.length) );
-				}
+				var iteratorClass:Class = getDefinitionByName( "org.omoa.spacemodel.iterator." + type ) as Class;				
 			} catch (e:ReferenceError) {
-				return new NullIterator();
+				try {
+					iteratorClass = getDefinitionByName( type ) as Class;
+				} catch (e:ReferenceError) {
+					// Nothing we can do
+				}
+			}
+			if (iteratorClass) {
+				return new iteratorClass( _entities.slice(0, _entities.length) );
 			}
 			return new NullIterator();
 		}

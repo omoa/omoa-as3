@@ -738,6 +738,7 @@ package org.omoa {
 					spaceModel.addEventListener( Event.COMPLETE, eventSpaceModelComplete, false, 1000 );
 				} else {
 					linkModels(spaceModel);
+					//spaceModel.addEventListener( Event.CHANGE, eventSpaceModelChange );
 				}
 			}	
 		}
@@ -801,7 +802,17 @@ package org.omoa {
 			if (sm) {
 				sm.removeEventListener( Event.COMPLETE, eventSpaceModelComplete );
 				linkModels( sm );
+				//sm.addEventListener( Event.CHANGE, eventSpaceModelChange );
 			}
+		}
+		
+		private function eventSpaceModelChange(e:Event):void {
+			/*
+			var sm:ISpaceModel = e.target as ISpaceModel;
+			if (sm) {
+				trace( sm.id + " changed." );
+			}
+			*/
 		}
 
 		public function addDataModel(dataModel:IDataModel):void {

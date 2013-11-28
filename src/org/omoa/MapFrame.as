@@ -218,9 +218,10 @@ package org.omoa {
 					// set up layer now
 					layer.setup( layerSprite );
 					renderLayer( layer.id );
+					layer.spaceModel.addEventListener( Event.CHANGE, onSpaceModelChange );
 				} else {
 					// defer layer setup until ISpaceModel is ready
-					layer.spaceModel.addEventListener(Event.COMPLETE, setupLayer, false, 100 );
+					layer.spaceModel.addEventListener(Event.COMPLETE, onSpaceModelComplete, false, 100 );
 				}
 				
 			} else {
@@ -248,7 +249,11 @@ package org.omoa {
 				_layerContainer.removeChild( layerSprite );	
 				
 				if (layer.spaceModel.hasEventListener(Event.COMPLETE)) {
-					layer.spaceModel.removeEventListener( Event.COMPLETE, setupLayer );
+					layer.spaceModel.removeEventListener( Event.COMPLETE, onSpaceModelComplete );
+				}
+				
+				if (layer.spaceModel.hasEventListener(Event.CHANGE)) {
+					layer.spaceModel.removeEventListener( Event.CHANGE, onSpaceModelChange );
 				}
 				
 							
@@ -267,23 +272,27 @@ package org.omoa {
 		 * 
 		 * @param	e	
 		 */
-		private function setupLayer(e:Event):void {
+		private function onSpaceModelComplete(e:Event):void {
 			var spaceModel:ISpaceModel = e.target as ISpaceModel;
 			var layer:ILayer;
 			var layerSprite:Sprite;
 			
 			if (spaceModel) {
-				spaceModel.removeEventListener( Event.COMPLETE, setupLayer );
-				for each ( layer in _layers) {
-					if (layer.spaceModel == spaceModel) {
-						layerSprite = _layerContainer.getChildByName(layer.id) as Sprite;
-						layer.setup( layerSprite );
-						if (isNaN(_scale)) {
-							resetBoundsAndScale();
-						}
-						renderLayer( layer.id );
-					}
-				}
+				spaceModel.removeEventListener( Event.COMPLETE, onSpaceModelComplete );
+				setupLayers(spaceModel);
+				spaceModel.addEventListener( Event.CHANGE, onSpaceModelChange );
+				trace("listener added to "+spaceModel.id);
+			}
+		}
+		
+		public function onSpaceModelChange(e:Event):void {
+			var sm:ISpaceModel = e.target as ISpaceModel;
+			var layer:ILayer;
+			if (sm) {
+				trace( "SpaceModel " + sm.id + " changed. Running all depending layer setups." );
+				setupLayers(sm);
+			} else {
+				trace( "Das war nix.");
 			}
 		}
 		
@@ -644,6 +653,22 @@ package org.omoa {
 		// Aushilfsweise: Rendern auslösen (nach Daten-Änderung z.B.
 		public function reRender():void {
 			render();
+		}
+		
+		private function setupLayers(spaceModel:ISpaceModel):void {
+			var layer:ILayer;
+			var layerSprite:Sprite;
+			
+			for each ( layer in _layers) {
+				if (layer.spaceModel == spaceModel) {
+					layerSprite = _layerContainer.getChildByName(layer.id) as Sprite;
+					layer.setup( layerSprite );
+					if (isNaN(_scale)) {
+						resetBoundsAndScale();
+					}
+					renderLayer( layer.id );
+				}
+			}
 		}
 		
 		private function render():void {

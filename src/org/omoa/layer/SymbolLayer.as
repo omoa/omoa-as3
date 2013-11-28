@@ -119,10 +119,11 @@ package org.omoa.layer {
 		}
 		
 		override public function setup(sprite:Sprite):void {
-			var symbol:ISymbol;
-			
+			var symbol:ISymbol;	
 			var symbolToSymbolSprite:Dictionary;
 			var count:int;
+			
+			cleanup(sprite);
 			
 			if (_interactive) {
 				sprite.mouseChildren = true;
@@ -140,6 +141,8 @@ package org.omoa.layer {
 				// ...instead create a symbolToSymbolSprite Dictionary
 				symbolToSymbolSprite = new Dictionary(false);
 				layerSpriteToSymbol[sprite] = symbolToSymbolSprite;
+			} else {
+				// The layer was setup already and is probably re-setup
 			}
 			
 			var symbolCount:int = 0;
@@ -416,8 +419,37 @@ package org.omoa.layer {
 		}
 		
 		override public function cleanup(sprite:Sprite):void {
-			// Cleanup Layer(!)
-			throw new Error( "NOT IMPLEMENTED.");
+			var symbol:ISymbol;	
+			var symbolToSymbolSprite:Dictionary = layerSpriteToSymbol[sprite] as Dictionary;
+			var count:int;
+			
+			if (!symbolToSymbolSprite) {
+				return;
+			} else {
+				layerSpriteToSymbol[sprite] = null;
+			}
+			
+			if (sprite.hasEventListener( MouseEvent.MOUSE_UP )) {
+				sprite.removeEventListener( MouseEvent.MOUSE_UP, symbolClick );
+			}
+			if (sprite.hasEventListener( MouseEvent.MOUSE_OVER )) {
+				sprite.removeEventListener( MouseEvent.MOUSE_OVER, symbolPoint );
+			}
+			if (sprite.hasEventListener( MouseEvent.MOUSE_OUT )) {
+				sprite.removeEventListener( MouseEvent.MOUSE_OUT, symbolPoint );
+			}
+			
+			for each (symbol in _symbols) {
+				var symbolSprite:Sprite = symbolToSymbolSprite[symbol];
+				
+				if (symbolSprite) {
+					symbolSprite.removeChildren();
+					sprite.removeChild(symbolSprite);
+					symbolToSymbolSprite[symbol] = null;
+					symbolSpriteToEntityDictionary[symbolSprite] = null;
+				}
+				
+			}
 		}
 		
 		public function getEntityForSprite( displayObject:DisplayObject ):SpaceModelEntity {
