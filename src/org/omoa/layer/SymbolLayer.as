@@ -419,6 +419,7 @@ package org.omoa.layer {
 		}
 		
 		override public function cleanup(sprite:Sprite):void {
+			// Cleanup Layer(!)
 			var symbol:ISymbol;	
 			var symbolToSymbolSprite:Dictionary = layerSpriteToSymbol[sprite] as Dictionary;
 			var count:int;
@@ -427,6 +428,7 @@ package org.omoa.layer {
 				return;
 			} else {
 				layerSpriteToSymbol[sprite] = null;
+				delete layerSpriteToSymbol[sprite];
 			}
 			
 			if (sprite.hasEventListener( MouseEvent.MOUSE_UP )) {
@@ -446,7 +448,9 @@ package org.omoa.layer {
 					symbolSprite.removeChildren();
 					sprite.removeChild(symbolSprite);
 					symbolToSymbolSprite[symbol] = null;
+					delete symbolToSymbolSprite[symbol];
 					symbolSpriteToEntityDictionary[symbolSprite] = null;
+					delete symbolSpriteToEntityDictionary[symbolSprite];
 				}
 				
 			}

@@ -242,9 +242,7 @@ package org.omoa {
 				layer.cleanup( layerSprite );
 				
 				// This may be a bit paranoid...
-				while (layerSprite.numChildren > 0) {
-					layerSprite.removeChildAt( layerSprite.numChildren - 1 );
-				}
+				layerSprite.removeChildren();
 				
 				_layerContainer.removeChild( layerSprite );	
 				
@@ -281,7 +279,6 @@ package org.omoa {
 				spaceModel.removeEventListener( Event.COMPLETE, onSpaceModelComplete );
 				setupLayers(spaceModel);
 				spaceModel.addEventListener( Event.CHANGE, onSpaceModelChange );
-				trace("listener added to "+spaceModel.id);
 			}
 		}
 		
@@ -289,10 +286,7 @@ package org.omoa {
 			var sm:ISpaceModel = e.target as ISpaceModel;
 			var layer:ILayer;
 			if (sm) {
-				trace( "SpaceModel " + sm.id + " changed. Running all depending layer setups." );
 				setupLayers(sm);
-			} else {
-				trace( "Das war nix.");
 			}
 		}
 		
@@ -429,7 +423,6 @@ package org.omoa {
 			calculateBounds();
 			rescale();
 			dispatchEvent( new Event(Event.CHANGE) );
-			trace( _layerContainer.width + " x " + _layerContainer.height);
 		}
 		
 		public function zoomToFactor(zoomFactor:Number=1.0):void {
@@ -655,6 +648,11 @@ package org.omoa {
 			render();
 		}
 		
+		/**
+		 * Executes a setup on all layers with the corresponding space model.
+		 * 
+		 * @param	spaceModel
+		 */
 		private function setupLayers(spaceModel:ISpaceModel):void {
 			var layer:ILayer;
 			var layerSprite:Sprite;

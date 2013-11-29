@@ -142,6 +142,8 @@ package org.omoa.spacemodel.loader {
 					//attributes[ sme.id ] = new Object();
 					//entityIds.push(sme.id);
 					
+					sme.attributes = new Object();
+					
 					for each ( var attribute:XML in place.@ * ) {
 						attributeName = attribute.name().toString();
 						//if (attributeNamesExcludedFromDM.indexOf( attributeName )<1) {

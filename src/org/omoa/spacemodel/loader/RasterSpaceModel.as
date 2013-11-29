@@ -124,6 +124,7 @@ package org.omoa.spacemodel.loader {
 			sme.name = _id + "_" + entities.length;
 			sme.id = entities.length.toString();
 			sme.bounds = bounds;
+			sme.attributes = new Object();
 			sme.attributes[URL_ATTRIBUTE] = url;
 			sme.attributes[MIN_ATTRIBUTE] = minDisplayScale;
 			sme.attributes[MAX_ATTRIBUTE] = maxDisplayScale;
