@@ -91,17 +91,17 @@ package org.omoa.datamodel {
 			// create loader
 			try {
 				// try loading from omoa loaders package first
-				loaderClass = getDefinitionByName( "org.omoa.datamodel.loader." + className ) as Class;
-				if (!loaderClass) {
-					loaderClass = getDefinitionByName( className ) as Class;
-				}
-				if (loaderClass) {
-					loader = new loaderClass() as IDataModelLoader;
-					loader.setId(name);
-				}
+				loaderClass = getDefinitionByName( "org.omoa.datamodel.loader." + className ) as Class;				
 			} catch (e:ReferenceError) {
-				e.message = "DataModelLoader class '" + className + "' could not be loaded. " + e.message;
-				throw e;
+				try {
+					loaderClass = getDefinitionByName( className ) as Class;
+				} catch (e:ReferenceError) {
+					// nothing we can do
+				}
+			}
+			if (loaderClass) {
+				loader = new loaderClass() as IDataModelLoader;
+				loader.setId(name);
 			}
 			
 			return loader;

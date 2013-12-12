@@ -257,16 +257,16 @@ package org.omoa.symbol {
 			// create instance
 			try {
 				// try loading omoa symbols first
-				symbolClass = getDefinitionByName( "org.omoa.symbol." + className ) as Class;
-				if (!symbolClass) {
-					symbolClass = getDefinitionByName( className ) as Class;
-				}
-				if (symbolClass) {
-					symbol = new symbolClass( name );
-				}
+				symbolClass = getDefinitionByName( "org.omoa.symbol." + className ) as Class;				
 			} catch (e:ReferenceError) {
-				e.message = "Symbol class '" + className + "' could not be loaded. " + e.message;
-				throw e;
+				try {
+					symbolClass = getDefinitionByName( className ) as Class;
+				} catch (e:ReferenceError) {
+					// nothing we can do
+				}
+			}
+			if (symbolClass) {
+				symbol = new symbolClass( name );
 			}
 			
 			return symbol;
