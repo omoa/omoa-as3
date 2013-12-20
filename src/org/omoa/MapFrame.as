@@ -82,6 +82,7 @@ package org.omoa {
 		
 		private var _layers:Vector.<ILayer> = new Vector.<ILayer>();
 		private var _overlays:Vector.<IOverlay> = new Vector.<IOverlay>();
+		private var _invalidatedLayers:Object;
 		private var _map:Map;
 		
 		private var _bg:Shape;
@@ -224,11 +225,38 @@ package org.omoa {
 					layer.spaceModel.addEventListener(Event.COMPLETE, onSpaceModelComplete, false, 100 );
 				}
 				
+				layer.addEventListener(Event.CHANGE, onLayerInvalidate);
+				
 			} else {
 				throw new Error( "The Projection of the Layers SpaceModel " +
 				"does not match the Projection of the MapFrame." );
 			}
 			
+		}
+		
+		private function onLayerInvalidate(e:Event):void {
+			var layer:ILayer = e.target as ILayer;
+			
+			if (layer) {
+				invalidateLayer(layer.id);
+			}
+		}
+		
+		private function invalidateLayer(id:String):void {
+			if (!_invalidatedLayers) {
+				_invalidatedLayers = new Object();
+				addEventListener(Event.ENTER_FRAME, renderInvalidatedLayers);
+			}
+			_invalidatedLayers[id] = "invalid";
+		}
+		
+		private function renderInvalidatedLayers(e:Event):void {
+			removeEventListener(Event.ENTER_FRAME, renderInvalidatedLayers);
+			var id:String;
+			for (id in _invalidatedLayers) {
+				renderLayer(id);
+			}
+			_invalidatedLayers = null;
 		}
 		
 		public function removeLayer( layerID:String ):ILayer {
@@ -259,6 +287,8 @@ package org.omoa {
 			}
 			
 			_layers.splice( _layers.indexOf(layer), 1 );
+			
+			layer.removeEventListener(Event.CHANGE, onLayerInvalidate);
 			
 			return layer;			
 		}
@@ -323,6 +353,7 @@ package org.omoa {
 				if (visible) {
 					var layer:ILayer = _map.layer(layerID);
 					if (layer && layer.isSetup(layerSprite)) {
+						//invalidateLayer(layer.id);
 						layer.rescale( layerSprite, _bg.getRect( stage ), viewportBounds, layerTransformation );
 						layer.recenter( layerSprite, _bg.getRect( stage ), viewportBounds, layerTransformation );
 					}
@@ -450,6 +481,9 @@ package org.omoa {
 		public function resize(widthNew:Number, heightNew:Number):void {
 			_bg.width = widthNew;
 			_bg.height = heightNew;
+			if (isNaN(_scale)) {
+				resetBoundsAndScale();
+			}
 			_worldWidth = widthNew / _scale;
 			_worldHeight = heightNew / _scale;
 			
@@ -696,7 +730,7 @@ package org.omoa {
 			//_layerContainer.cacheAsBitmap = false;
 			if (layer) {
 				layerSprite = _layerContainer.getChildByName( layerID ) as Sprite;
-				if (layer.isSetup(layerSprite) && layerSprite.visible) {
+				if (layer.isSetup(layerSprite)) {
 					layer.render( layerSprite, _bg.getRect( stage ), viewportBounds, layerTransformation );
 					calculateBounds();
 					rescale();

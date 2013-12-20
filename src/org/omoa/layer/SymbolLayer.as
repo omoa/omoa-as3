@@ -23,6 +23,7 @@ package org.omoa.layer {
 	import flash.display.DisplayObject;
 	import flash.display.InteractiveObject;
 	import flash.display.Sprite;
+	import flash.events.Event;
 	import flash.events.MouseEvent;
 	import flash.geom.Matrix;
 	import flash.geom.Rectangle;
@@ -36,6 +37,7 @@ package org.omoa.layer {
 	
 	[Event(name = SymbolEvent.CLICK, type = "org.omoa.event.SymbolEvent")]
 	[Event(name = SymbolEvent.POINT, type = "org.omoa.event.SymbolEvent")]
+	[Event(name = Event.CHANGE, type = "flash.events.Event")]
 	
 	/**
 	 * This layer visualizes a SpaceModel through one or more Symbols. 
@@ -59,6 +61,8 @@ package org.omoa.layer {
 		private var entityDictionaries:Vector.<Dictionary>;
 		
 		private var _interactive:Boolean;
+		
+		private var _isInvalid:Boolean = false;
 
 		public function SymbolLayer(id:String, spaceModel:ISpaceModel) {
 			super(id, spaceModel);
@@ -80,6 +84,7 @@ package org.omoa.layer {
 				setup( layerSprite as Sprite );
 				//TODO: The new Symbol won't display. How do we request a render?
 			}
+			invalidate();
 		}
 		
 		public function removeSymbol(name:String):ISymbol {
@@ -112,6 +117,13 @@ package org.omoa.layer {
 				}
 			}
 			return null;
+		}
+		
+		private function invalidate():void {
+			if (!_isInvalid) {
+				_isInvalid = true;
+				dispatchEvent(new Event(Event.CHANGE));
+			}
 		}
 		
 		override public function isSetup(sprite:Sprite):Boolean {
