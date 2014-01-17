@@ -76,6 +76,7 @@ package org.omoa.spacemodel {
 			AsmaSpaceXml;
 			RasterSpaceModel;
 			GeoJSON;
+			TopoJSON;
 			
 			var loaderClass:Class;
 			var loader:ISpaceModelLoader;
