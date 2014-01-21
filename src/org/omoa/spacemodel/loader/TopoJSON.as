@@ -101,6 +101,7 @@ package org.omoa.spacemodel.loader
 						t_dy = json.transform.translate[1];
 					}
 					if (json.hasOwnProperty("arcs")) {
+						// process arcs
 						var arc:Array;
 						if (quantized) {
 							for each (arc in json.arcs) {
@@ -115,6 +116,7 @@ package org.omoa.spacemodel.loader
 						}
 					}
 					if (json.hasOwnProperty("objects")) {
+						// process GeometryCollections ("layers")
 						var firstIndex:int = 0;
 						var previousLength:int = 0;
 						for (var collectionID:String in json.objects) {
@@ -151,6 +153,7 @@ package org.omoa.spacemodel.loader
 								entityCollections[collectionID] = entities.slice(firstIndex);
 								firstIndex = entities.length
 								entityCollectionTypes[collectionID] = _type;
+								collectionIDs.push(collectionID);
 							}
 						}
 					}
@@ -242,6 +245,8 @@ package org.omoa.spacemodel.loader
 						bbox = new BoundingBox(attributes.bbox[0], attributes.bbox[1], 
 												attributes.bbox[2], attributes.bbox[3]);
 					}
+				} else {
+					attributes = [];
 				}
 				if (!id) {
 					id = "id" + entityCount();
@@ -306,10 +311,13 @@ package org.omoa.spacemodel.loader
 			trace("TopoJSON.linkDataModel() not implemented");
 		}
 		
-		public function createSpaceModel( collectionID:String ):ISpaceModel {
+		public function createSpaceModel( collectionID:String, overrideSpaceModelID:String = null ):ISpaceModel {
 			var smes:Vector.<SpaceModelEntity> = entityCollections[collectionID] as Vector.<SpaceModelEntity>;
 			if (smes) {
-				return new SpaceModelClone( collectionID, 
+				if (!overrideSpaceModelID) {
+					overrideSpaceModelID = collectionID;
+				}
+				return new SpaceModelClone( overrideSpaceModelID, 
 											new BoundingBox(_bounds.minx, _bounds.miny, _bounds.maxx, _bounds.maxy), 
 											entityCollectionTypes[collectionID], 
 											smes);
