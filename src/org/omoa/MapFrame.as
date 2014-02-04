@@ -485,11 +485,13 @@ package org.omoa {
 		 * =========================================== */
 		
 		public function resize(widthNew:Number, heightNew:Number):void {
+			var zF:Number = zoomFactor;
+			
 			_bg.width = widthNew;
 			_bg.height = heightNew;
-			if (isNaN(_scale)) {
-				resetBoundsAndScale();
-			}
+			
+			resetBoundsAndScale();
+				
 			_worldWidth = widthNew / _scale;
 			_worldHeight = heightNew / _scale;
 			
@@ -499,7 +501,6 @@ package org.omoa {
 				_frameDecoration.graphics.drawRect(0, 0, widthNew - 0.55, heightNew - 0.55);
 			}
 			calculateBounds();
-			recenter();
 			
 			if (logo) {
 				logo.x = 5;
@@ -517,6 +518,8 @@ package org.omoa {
 				navigation.x = 5;
 				navigation.y = 5;
 			}
+			
+			zoomToFactor(zF);
 		}
 		
 		public function moveNorth(e:Event = null):void {
@@ -624,7 +627,7 @@ package org.omoa {
 			
 		}
 		
-		private function resetBoundsAndScale():void {
+		public function resetBoundsAndScale():void {
 			var b:Rectangle = new Rectangle();
 			var layer:ILayer;
 			
@@ -640,21 +643,28 @@ package org.omoa {
 			}
 			
 			if (scale_reset_strategy == SCALE_FILL) {
-				_scale = Math.max( _bg.width / bounds.width, _bg.height / bounds.height ) * 1.0;
+				_referenceScale = Math.max( _bg.width / bounds.width, _bg.height / bounds.height ) * 1.0;
 			} else {
-				_scale = Math.min( _bg.width / bounds.width, _bg.height / bounds.height ) * 1.0;
+				_referenceScale = Math.min( _bg.width / bounds.width, _bg.height / bounds.height ) * 1.0;
 			}
 			
-			_referenceScale = _scale;
+			if (isNaN(_scale)) {
+				_scale = _referenceScale;
+			}
 			
-			_minimum_scale = _scale * minZoomFactor;
-			_maximum_scale = _scale * maxZoomFactor;
+			_minimum_scale = _referenceScale * minZoomFactor;
+			_maximum_scale = _referenceScale * maxZoomFactor;
 			
-			center.x = bounds.minx + bounds.width * 0.5;
-			center.y = bounds.maxy - bounds.height * 0.5;
+			if (center.x==0 && center.y==0) {
+				center.x = bounds.minx + bounds.width * 0.5;
+				center.y = bounds.maxy - bounds.height * 0.5;
+			}
 			
 			_worldWidth = _bg.width / _scale;
 			_worldHeight = _bg.height / _scale;
+			
+			//rescale();
+			//recenter();
 		}
 		
 		/* ===========================================

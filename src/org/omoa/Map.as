@@ -249,7 +249,7 @@ package org.omoa {
 					mf.x = mapframeMargin + mfWidth * count + mapframeMargin * count;
 					
 					mf.resize( mfWidth, _height - 2 * mapframeMargin );
-					
+					mf.resetBoundsAndScale();
 					count++;
 				}
 			}
