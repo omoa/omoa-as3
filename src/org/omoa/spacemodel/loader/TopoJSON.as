@@ -6,6 +6,8 @@ package org.omoa.spacemodel.loader
 	import flash.geom.Point;
 	import flash.net.URLLoader;
 	import flash.net.URLRequest;
+	import flash.system.System;
+	import flash.ui.MouseCursor;
 	import org.omoa.framework.BoundingBox;
 	import org.omoa.framework.Description;
 	import org.omoa.framework.GeometryType;
@@ -27,7 +29,8 @@ package org.omoa.spacemodel.loader
 	public class TopoJSON extends AbstractSMLoader {
 		
 		private var attributeFieldName:String = "";
-		private var attributeFieldId:String = "";
+		private var attributeFieldId:String = "ID";
+		private var compact:Boolean = false;
 		
 		private var json:Object;
 		private var loader:URLLoader
@@ -50,14 +53,21 @@ package org.omoa.spacemodel.loader
 		
 		override public function load( url:String, parameters:Object = null ):void {
 			if (parameters) {
-				if (parameters.id) {
-					attributeFieldId = parameters.id;
+				if (parameters.hasOwnProperty("id")) {
+					if (parameters.id != null) {
+						attributeFieldId = parameters.id;
+					} else {
+						attributeFieldId = null;
+					}
 				}
 				if (parameters.name) {
 					attributeFieldName = parameters.name;
 				}
 				if (parameters.modelID && !_id) {
 					_id = parameters.modelID;
+				}
+				if (parameters.hasOwnProperty("compact") && parameters.compact == true) {
+					compact = true;
 				}
 			}
 			
@@ -85,8 +95,9 @@ package org.omoa.spacemodel.loader
 			var jsonString:String = data as String;
 			
 			if (jsonString) {
+				trace( new Date().getTime() + " TopoJSON a1" );
 				json = decodeJson( jsonString, true );
-				
+				trace( new Date().getTime() + " TopoJSON a2" );
 				if (json.hasOwnProperty("type") && json.type == "Topology") {
 					// json Represents the root object
 					if (json.hasOwnProperty("bbox")) {
@@ -162,7 +173,9 @@ package org.omoa.spacemodel.loader
 				jsonString = null;
 				//TODO: Calculate center and BoundingBox for each sme
 				_complete = true;
+				trace( new Date().getTime() + " TopoJSON b" );
 				dispatchEvent( new Event( Event.COMPLETE ) );
+				trace( new Date().getTime() + " TopoJSON c" );
 			}
 		}
 		
@@ -232,8 +245,12 @@ package org.omoa.spacemodel.loader
 				if (json.hasOwnProperty("bbox")) {
 					bbox = new BoundingBox(json.bbox[0], json.bbox[1], json.bbox[2], json.bbox[3]);
 				}
-				if (json.hasOwnProperty("properties")) {
-					attributes = json.properties;
+				if (json.hasOwnProperty("properties") || json.hasOwnProperty("p")) {
+					if (!compact) {
+						attributes = json.properties;
+					} else {
+						attributes = json.p;
+					}
 					attributes.type = json.type;
 					if (!id && attributes.hasOwnProperty(attributeFieldId)) {
 						id = attributes[attributeFieldId];
@@ -254,7 +271,7 @@ package org.omoa.spacemodel.loader
 				if (!name) {
 					name = id;
 				}
-				if (json.hasOwnProperty("coordinates") || json.hasOwnProperty("arcs")) {
+				if (json.hasOwnProperty("arcs") || json.hasOwnProperty("coordinates") || json.hasOwnProperty("c")) {
 					sme = new SpaceModelEntity();
 					sme.id = id;
 					sme.name = name;
@@ -268,7 +285,13 @@ package org.omoa.spacemodel.loader
 							attributes.arcs = json.arcs;
 							break;
 						case "Point":
-							sme.center = new Point( json.coordinates[0], json.coordinates[1]);
+							var p:Array;
+							if (!compact) {
+								p = decodePosition( json.coordinates );
+							} else {
+								p = decodePosition( json.c );
+							}
+							sme.center = new Point( p[0], p[1]);
 							var fuzz:Number = sme.center.x * 0.0000001;
 							if (!sme.bounds) {
 								sme.bounds = new BoundingBox( sme.center.x, sme.center.y, sme.center.x+fuzz, sme.center.y+fuzz );

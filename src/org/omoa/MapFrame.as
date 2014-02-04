@@ -79,6 +79,12 @@ package org.omoa {
 		 */
 		public var maxZoomFactor:Number = 3.0;
 		
+		/**
+		 * When set (in map coordinates), this option defines the constraints of 
+		 * a map recenter operation (but not.
+		 */
+		public var viewportConstraints:BoundingBox = null;
+		
 		
 		private var _layers:Vector.<ILayer> = new Vector.<ILayer>();
 		private var _overlays:Vector.<IOverlay> = new Vector.<IOverlay>();
@@ -593,6 +599,24 @@ package org.omoa {
 			viewportBounds.maxx = center.x + _worldWidth * 0.5;
 			viewportBounds.maxy = center.y + _worldHeight * 0.5;
 			
+			if (viewportConstraints) {
+				if (!viewportConstraints.containsRect(viewportBounds)) {
+					if (viewportBounds.minx < viewportConstraints.minx) {
+						viewportBounds.minx = viewportConstraints.minx;
+					}
+					if (viewportBounds.maxx > viewportConstraints.maxx) {
+						viewportBounds.minx -= (viewportBounds.maxx - viewportConstraints.maxx);
+					}
+					if (viewportBounds.miny < viewportConstraints.miny) {
+						viewportBounds.miny = viewportConstraints.miny;
+					}
+					if (viewportBounds.maxy > viewportConstraints.maxy) {
+						viewportBounds.miny -= (viewportBounds.maxy - viewportConstraints.maxy);
+					}
+					center = viewportBounds.center;
+				}
+			}
+			
 			layerTransformation.tx = ((0 - center.x) - (viewportBounds.minx - center.x)) * _scale;
 			layerTransformation.ty = (center.y - (viewportBounds.miny - center.y)) * _scale;
 			layerTransformation.a = _scale;
@@ -695,9 +719,15 @@ package org.omoa {
 				if (layer.spaceModel == spaceModel) {
 					layerSprite = _layerContainer.getChildByName(layer.id) as Sprite;
 					layer.setup( layerSprite );
-					if (isNaN(_scale)) {
-						resetBoundsAndScale();
-					}
+				}
+			}
+			
+			if (isNaN(_scale)) {
+				resetBoundsAndScale();
+			}
+			
+			for each ( layer in _layers) {
+				if (layer.spaceModel == spaceModel) {
 					renderLayer( layer.id );
 				}
 			}
