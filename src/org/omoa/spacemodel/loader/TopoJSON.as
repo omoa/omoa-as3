@@ -3,11 +3,14 @@ package org.omoa.spacemodel.loader
 	import flash.display.GraphicsPath;
 	import flash.events.Event;
 	import flash.events.IOErrorEvent;
+	import flash.events.TimerEvent;
 	import flash.geom.Point;
+	import flash.geom.Rectangle;
 	import flash.net.URLLoader;
 	import flash.net.URLRequest;
 	import flash.system.System;
 	import flash.ui.MouseCursor;
+	import flash.utils.Timer;
 	import org.omoa.framework.BoundingBox;
 	import org.omoa.framework.Description;
 	import org.omoa.framework.GeometryType;
@@ -17,6 +20,7 @@ package org.omoa.spacemodel.loader
 	import com.brokenfunction.json.decodeJson;
 	import org.omoa.spacemodel.SpaceModelClone;
 	import org.omoa.spacemodel.SpaceModelEntity;
+	import org.omoa.util.GeometryFunctions;
 	
 	
 	/**
@@ -46,6 +50,7 @@ package org.omoa.spacemodel.loader
 		private var entityCollections:Object = new Object();
 		private var entityCollectionTypes:Object = new Object();
 		private var collectionIDs:Array = new Array();
+		private var t:Timer;
 		
 		public function TopoJSON() {
 			super();
@@ -171,12 +176,37 @@ package org.omoa.spacemodel.loader
 				}
 				json = null;
 				jsonString = null;
-				//TODO: Calculate center and BoundingBox for each sme
-				_complete = true;
-				trace( new Date().getTime() + " TopoJSON b" );
-				dispatchEvent( new Event( Event.COMPLETE ) );
-				trace( new Date().getTime() + " TopoJSON c" );
+				
+				//TODO: Calculate center for each sme
+				var sme:SpaceModelEntity = entities[0];
+				if (sme && !sme.bounds) {
+					// The file did not countain bounding boxes on an entity level
+					t = new Timer(50);
+					t.addEventListener(TimerEvent.TIMER, postprocessBounds);
+					t.start();
+				} else {
+					finalizeModel();
+				}
 			}
+		}
+		
+		private function postprocessBounds(e:Event):void {
+			t.removeEventListener(TimerEvent.TIMER, postprocessBounds);
+			t = null;
+			
+			for each (var sme:SpaceModelEntity in entities) {
+				sme.bounds = new BoundingBox(0, 1, 2, 3);
+				GeometryFunctions.boundsFromPath(sme.path as GraphicsPath, sme.bounds);
+			}
+			
+			finalizeModel();
+		}
+		
+		private function finalizeModel():void {
+			_complete = true;
+			trace( new Date().getTime() + " TopoJSON b" );
+			dispatchEvent( new Event( Event.COMPLETE ) );
+			trace( new Date().getTime() + " TopoJSON c" );
 		}
 		
 		private function decodeArc(arc:Array):Array {
@@ -336,12 +366,13 @@ package org.omoa.spacemodel.loader
 		
 		public function createSpaceModel( collectionID:String, overrideSpaceModelID:String = null ):ISpaceModel {
 			var smes:Vector.<SpaceModelEntity> = entityCollections[collectionID] as Vector.<SpaceModelEntity>;
-			if (smes) {
+			if (smes && smes.length>0) {
 				if (!overrideSpaceModelID) {
 					overrideSpaceModelID = collectionID;
 				}
+				var bounds:BoundingBox = new BoundingBox(_bounds.minx, _bounds.miny, _bounds.maxx, _bounds.maxy);				
 				return new SpaceModelClone( overrideSpaceModelID, 
-											new BoundingBox(_bounds.minx, _bounds.miny, _bounds.maxx, _bounds.maxy), 
+											bounds, 
 											entityCollectionTypes[collectionID], 
 											smes);
 			}

@@ -51,6 +51,7 @@ package org.omoa.framework {
 		function get bounds():BoundingBox;
 		function get geometryType():String;
 		function get isComplete():Boolean;
+		function get index():ISpaceModelIndex;
 		
 		function iterator(type:String = null):ISpaceModelIterator;
 		function attributes():IDataModel;
@@ -62,5 +63,7 @@ package org.omoa.framework {
 		function findById(id:String):SpaceModelEntity;
 		
 		function createPropertyDimension(withLabels:Boolean = false):ModelDimension;
+		
+		function setIndex(index:ISpaceModelIndex):void;
 	}
 }

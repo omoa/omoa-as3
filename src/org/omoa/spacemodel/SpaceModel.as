@@ -7,6 +7,7 @@ package org.omoa.spacemodel {
 	import flash.events.EventDispatcher;
 	import org.omoa.framework.BoundingBox;
 	import org.omoa.framework.Description;
+	import org.omoa.framework.ISpaceModelIndex;
 	import org.omoa.framework.ModelDimension;
 	import org.omoa.framework.GeometryType;
 	import org.omoa.framework.IDataModel;
@@ -28,6 +29,7 @@ package org.omoa.spacemodel {
 		protected var _id:String;
 		protected var _type:String = GeometryType.GEOMETRY_NONE;
 		protected var _bounds:BoundingBox;
+		protected var _index:ISpaceModelIndex;
 		protected var _projection:IProjection = new AbstractProjection();
 		protected var _attributes:IDataModel;
 		protected var _complete:Boolean = false;
@@ -48,6 +50,7 @@ package org.omoa.spacemodel {
 		 * @param	entity
 		 */
 		protected function addEntity(entity:SpaceModelEntity):void {
+			entity.model = this;
 			entities.push( entity );
 		}
 
@@ -56,6 +59,15 @@ package org.omoa.spacemodel {
 
 		public function get projection():IProjection {
 			return _projection;
+		}
+		
+		public function setIndex(index:ISpaceModelIndex):void {
+			_index = index;
+			_index.createIndex( entities.slice( 0, entities.length ) );
+		}
+		
+		public function get index():ISpaceModelIndex {
+			return _index;
 		}
 
 		/**

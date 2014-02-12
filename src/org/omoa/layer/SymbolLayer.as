@@ -30,10 +30,13 @@ package org.omoa.layer {
 	import flash.utils.Dictionary;
 	import org.omoa.event.SymbolEvent;
 	import org.omoa.framework.ISpaceModel;
+	import org.omoa.framework.ISpaceModelIndex;
 	import org.omoa.framework.ISpaceModelIterator;
 	import org.omoa.framework.ISymbol;
 	import org.omoa.framework.BoundingBox;
+	import org.omoa.spacemodel.iterator.SimpleIterator;
 	import org.omoa.spacemodel.SpaceModelEntity;
+	import peba.omoa.GridIndex;
 	
 	[Event(name = SymbolEvent.CLICK, type = "org.omoa.event.SymbolEvent")]
 	[Event(name = SymbolEvent.POINT, type = "org.omoa.event.SymbolEvent")]
@@ -63,6 +66,7 @@ package org.omoa.layer {
 		private var _interactive:Boolean;
 		
 		private var _isInvalid:Boolean = false;
+		private var index:GridIndex;
 
 		public function SymbolLayer(id:String, spaceModel:ISpaceModel) {
 			super(id, spaceModel);
@@ -140,12 +144,18 @@ package org.omoa.layer {
 			if (_interactive) {
 				sprite.mouseChildren = true;
 				sprite.addEventListener( MouseEvent.MOUSE_UP, symbolClick );
-				sprite.addEventListener( MouseEvent.MOUSE_OVER, symbolPoint );
-				sprite.addEventListener( MouseEvent.MOUSE_OUT, symbolPoint );
+				//sprite.addEventListener( MouseEvent.MOUSE_OVER, symbolPoint );
+				//sprite.addEventListener( MouseEvent.MOUSE_OUT, symbolPoint );
+				if (!index && spaceModel.entityCount() > 500) {
+					//index = spaceModel.iterator("peba.omoa.GridIndex") as GridIndex;
+				}
 			} else {
 				sprite.mouseChildren = false;
 			}
 			
+			if (!index) {
+				index = spaceModel.iterator("peba.omoa.GridIndex") as GridIndex;
+			}
 			
 			// this should fail...
 			symbolToSymbolSprite = layerSpriteToSymbol[sprite] as Dictionary;
@@ -354,11 +364,29 @@ package org.omoa.layer {
 			var iterator:ISpaceModelIterator;
 			var spaceEntity:SpaceModelEntity;
 			var symbol:ISymbol;
+			var indexOutside:SimpleIterator;
 			
-			if (customIterator) {
-				iterator = customIterator;
+			if (_spaceModel.index) {
+				trace( "Inside: " + _spaceModel.index.getCells( viewportBounds ) + ". Oder in Worten: ");
+				var i:ISpaceModelIterator = _spaceModel.index.iterator( viewportBounds );
+				var out:Array  = new Array();
+				while (i.hasNext()) {
+					out.push(i.next().name);
+				}
+				trace( out.join(", ") );
+				trace( "Outside: " + _spaceModel.index.getCellsOutside( viewportBounds ) );
+			}
+			
+			if (index) {
+				index.init(viewportBounds);
+				iterator = index.iterator();
+				indexOutside = index.outsideIterator();
 			} else {
-				iterator = _spaceModel.iterator();
+				if (customIterator) {
+					iterator = customIterator;
+				} else {
+					iterator = _spaceModel.iterator();
+				}
 			}
 			
 			var symbolToSymbolSprite:Dictionary = layerSpriteToSymbol[sprite] as Dictionary;
@@ -389,22 +417,41 @@ package org.omoa.layer {
 					var entityDisplayObject:DisplayObject;
 					var entityDictionary:Dictionary = symbolSpriteToEntityDictionary[symbolSprite];
 					
+					if (indexOutside) {
+						while (indexOutside.hasNext()) {
+							spaceEntity = indexOutside.next();
+							entityDisplayObject = entityDictionary[spaceEntity];
+							entityDisplayObject.visible = false;
+						}
+					}
+					
 					if (symbol.needsRecenter) {
 						iterator.reset();
 						if (symbol.needsRenderOnRecenter) {
 							while (iterator.hasNext()) {
 								spaceEntity = iterator.next();
 								entityDisplayObject = entityDictionary[spaceEntity];
+								entityDisplayObject.visible = true;
 								symbol.render( entityDisplayObject, spaceEntity, displayExtent, viewportBounds, transformation );
 							}	
 						} else {
 							while (iterator.hasNext()) {
 								spaceEntity = iterator.next();
 								entityDisplayObject = entityDictionary[spaceEntity];
+								entityDisplayObject.visible = true;
 								symbol.recenter( entityDisplayObject, spaceEntity, displayExtent, viewportBounds, transformation );
 							}
 						}
+					} else if (indexOutside) {
+						iterator.reset();
+						while (iterator.hasNext()) {
+							spaceEntity = iterator.next();
+							entityDisplayObject = entityDictionary[spaceEntity];
+							entityDisplayObject.visible = true;
+						}
 					}
+					
+					
 				} else {
 					// recenter symbols with one DisplayObject for all Entites
 					if (symbol.needsRecenter) {
@@ -426,6 +473,8 @@ package org.omoa.layer {
 				if (symbol.needsRenderOnRecenter) {
 					symbol.afterRender(symbolSprite);
 				}
+				
+				
 			}
 
 		}
@@ -484,10 +533,11 @@ package org.omoa.layer {
 			if (e.target) {
 				se.entity = spaceModel.findById(e.target.name);
 			}
-				
+			
 			if (se.entity) {
 				dispatchEvent( se );
 			}
+			
 		}
 		
 		private function symbolPoint(e:MouseEvent):void {

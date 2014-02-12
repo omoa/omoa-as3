@@ -169,7 +169,6 @@ package org.omoa {
 		}
 		
 		override public function startDrag(lockCenter:Boolean = false, bounds:Rectangle = null):void {
-			_layerContainer.cacheAsBitmap = true;
 			_layerContainer.startDrag(lockCenter, bounds);
 
 			addEventListener(MouseEvent.MOUSE_MOVE, whileDrag);
@@ -213,6 +212,8 @@ package org.omoa {
 			if (projection.isIdentical(layer.spaceModel.projection)) {
 				var layerSprite:Sprite = new Sprite();
 				layerSprite.name = layer.id;
+				layerSprite.mouseChildren = false;
+				layerSprite.mouseEnabled = false;
 				
 				_layers.push( layer );
 				if (_map) {
@@ -679,7 +680,9 @@ package org.omoa {
 			var layer:ILayer;
 			
 			//var totalT:Number = new Date().time;
-			//_layerContainer.cacheAsBitmap = false;
+			
+			invalidateCache();
+			
 			for each (layer in _layers) {
 				layerSprite = _layerContainer.getChildByName(layer.id) as Sprite
 				if (layer.isSetup(layerSprite) && layerSprite.visible) {
@@ -687,7 +690,7 @@ package org.omoa {
 				}
 			}
 			renderOverlays();
-			//_layerContainer.cacheAsBitmap = true;
+			
 			//trace( name + "'s rescale took (ms): " + (new Date().time - totalT) );
 		}
 		
@@ -699,7 +702,9 @@ package org.omoa {
 			var layer:ILayer;
 			
 			//var totalT:Number = new Date().time;
-			//_layerContainer.cacheAsBitmap = false;
+			
+			invalidateCache();
+			
 			for each (layer in _layers) {
 				layerSprite = _layerContainer.getChildByName(layer.id) as Sprite
 				if (layer.isSetup(layerSprite) && layerSprite.visible) {
@@ -707,7 +712,7 @@ package org.omoa {
 				}
 			}
 			renderOverlays();
-			//_layerContainer.cacheAsBitmap = true;
+			
 			//trace( name + "'s recenter took (ms): " + (new Date().time -totalT) );
 		}
 		
@@ -748,14 +753,16 @@ package org.omoa {
 			var layerSprite:Sprite;
 			
 			//var totalT:Number = new Date().time;
-			//_layerContainer.cacheAsBitmap = false;
+			
+			invalidateCache();
+			
 			for each ( layer in _layers) {
 				layerSprite = _layerContainer.getChildByName(layer.id) as Sprite;
 				if (layer.isSetup(layerSprite) && layerSprite.visible) {
 					layer.render( layerSprite, _bg.getRect( stage ), viewportBounds, layerTransformation );
 				}
 			}
-			//_layerContainer.cacheAsBitmap = true;
+			
 			//trace( name + "'s render took (ms): " + (new Date().time -totalT) );
 		}
 		
@@ -767,7 +774,9 @@ package org.omoa {
 					break;
 				}
 			}
-			//_layerContainer.cacheAsBitmap = false;
+			
+			invalidateCache();
+			
 			if (layer) {
 				layerSprite = _layerContainer.getChildByName( layerID ) as Sprite;
 				if (layer.isSetup(layerSprite)) {
@@ -776,7 +785,7 @@ package org.omoa {
 					rescale();
 				}
 			}
-			//_layerContainer.cacheAsBitmap = true;
+			
 		}
 		
 		public function renderOverlays():void {
@@ -790,6 +799,24 @@ package org.omoa {
 				}
 			}
 		}
+		
+		private function invalidateCache():void {
+			_layerContainer.cacheAsBitmap = false;
+			addEventListener(Event.ENTER_FRAME, recreateCache);
+		}
+		
+		private function recreateCache(e:Event):void 
+		{
+			removeEventListener(Event.ENTER_FRAME, recreateCache);
+			
+			var r:Rectangle = _layerContainer.getBounds(stage);
+			if (r.width*r.height<0xffffff) {
+				_layerContainer.cacheAsBitmap = true;
+			} else {
+				trace("Not caching a layerContainer with " + Math.sqrt(r.width * r.height) + " square px." + r);
+			}
+		}
+		
 		
 		override public function get width():Number { return super.width; }
 		

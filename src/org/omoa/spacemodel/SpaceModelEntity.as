@@ -26,6 +26,7 @@ package org.omoa.spacemodel {
 	import flash.geom.Matrix;
 	import flash.geom.Point;
 	import org.omoa.framework.BoundingBox;
+	import org.omoa.framework.ISpaceModel;
 	
 	import org.omoa.framework.Description;
 	//import org.omoa.framework.IDataModel;
@@ -51,6 +52,10 @@ package org.omoa.spacemodel {
 		 * Name of the entity.
 		 */
 		public var name:String;
+		/**
+		 * The model, the entity originates from.
+		 */
+		public var model:ISpaceModel;
 
 		/**
 		 * BoundingBox of the geometry
