@@ -5,7 +5,9 @@ package org.omoa.spacemodel.index
 	import org.omoa.spacemodel.SpaceModelEntity;
 	
 	/**
-	 * ...
+	 * Iterates over a list of SpaceModelEntities from an array of index cells,
+	 * therefore entites may appear multiple times.
+	 * 
 	 * @author SKS
 	 */
 	public class GridIndexIterator extends AbstractIterator 
@@ -28,8 +30,6 @@ package org.omoa.spacemodel.index
 			reset();
 		}
 		
-		/* INTERFACE org.omoa.framework.ISpaceModelIterator */
-		
 		override public function next():SpaceModelEntity {
 			return entities[entityIndex++];
 		}
@@ -49,8 +49,12 @@ package org.omoa.spacemodel.index
 			cellIndex = 0;
 			entityIndex = 0;
 			cellCount = cells.length;
-			entities = index.getEntities(cellIndex);
-			entityCount = entities.length;
+			if (cellCount) {
+				entities = index.getEntities(cells[cellIndex]);
+				entityCount = entities.length;
+			} else {
+				entityCount = 0;
+			}
 		}
 		
 		override public function hasNext():Boolean {
@@ -59,7 +63,7 @@ package org.omoa.spacemodel.index
 			} else {
 				cellIndex++;
 				if (cellIndex < cellCount) {
-					entities = index.getEntities( cellIndex );
+					entities = index.getEntities( cells[cellIndex] );
 					entityCount = entities.length;
 					if (entityCount > 0) {
 						entityIndex = 0;
@@ -76,8 +80,7 @@ package org.omoa.spacemodel.index
 			return "GridIndexIterator";
 		}
 		
-		override public function iterator(type:String = null):ISpaceModelIterator 
-		{
+		override public function iterator(type:String = null):ISpaceModelIterator {
 			// _entities must be filled first!
 			throw new Error("Not implememnted yet!");
 			return super.iterator( type );

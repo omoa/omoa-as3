@@ -20,6 +20,7 @@ along with OMOA.  If not, see <http://www.gnu.org/licenses/>.
 
 package org.omoa.layer {
 
+	import cocktail.core.html.TimeRanges;
 	import flash.display.DisplayObject;
 	import flash.display.InteractiveObject;
 	import flash.display.Sprite;
@@ -36,7 +37,7 @@ package org.omoa.layer {
 	import org.omoa.framework.BoundingBox;
 	import org.omoa.spacemodel.iterator.SimpleIterator;
 	import org.omoa.spacemodel.SpaceModelEntity;
-	import peba.omoa.GridIndex;
+	import org.omoa.spacemodel.index.GridIndex;
 	
 	[Event(name = SymbolEvent.CLICK, type = "org.omoa.event.SymbolEvent")]
 	[Event(name = SymbolEvent.POINT, type = "org.omoa.event.SymbolEvent")]
@@ -66,7 +67,6 @@ package org.omoa.layer {
 		private var _interactive:Boolean;
 		
 		private var _isInvalid:Boolean = false;
-		private var index:GridIndex;
 
 		public function SymbolLayer(id:String, spaceModel:ISpaceModel) {
 			super(id, spaceModel);
@@ -146,15 +146,17 @@ package org.omoa.layer {
 				sprite.addEventListener( MouseEvent.MOUSE_UP, symbolClick );
 				//sprite.addEventListener( MouseEvent.MOUSE_OVER, symbolPoint );
 				//sprite.addEventListener( MouseEvent.MOUSE_OUT, symbolPoint );
-				if (!index && spaceModel.entityCount() > 500) {
-					//index = spaceModel.iterator("peba.omoa.GridIndex") as GridIndex;
+				
+				/*
+				// Enforce Index automatically?
+				// not efficient in every case (non-interactive, static SymbolEntity-Symbols) 
+				if (!_spaceModel.index && _spaceModel.entityCount() > 500) {
+					_spaceModel.setIndex( new GridIndex() );
 				}
+				*/
+				
 			} else {
 				sprite.mouseChildren = false;
-			}
-			
-			if (!index) {
-				index = spaceModel.iterator("peba.omoa.GridIndex") as GridIndex;
 			}
 			
 			// this should fail...
@@ -285,11 +287,17 @@ package org.omoa.layer {
 			var iterator:ISpaceModelIterator;
 			var spaceEntity:SpaceModelEntity;
 			var symbol:ISymbol;
+			var iteratorOutside:ISpaceModelIterator;
 			
 			if (customIterator) {
 				iterator = customIterator;
 			} else {
-				iterator = _spaceModel.iterator();
+				if (_spaceModel.index) {
+					iterator = _spaceModel.index.iterator(viewportBounds);
+					iteratorOutside = _spaceModel.index.iteratorOutside(viewportBounds);
+				} else {
+					iterator = _spaceModel.iterator();
+				}
 			}
 			
 			var symbolToSymbolSprite:Dictionary = layerSpriteToSymbol[sprite] as Dictionary;
@@ -320,20 +328,37 @@ package org.omoa.layer {
 					var entityDisplayObject:DisplayObject;
 					var entityDictionary:Dictionary = symbolSpriteToEntityDictionary[symbolSprite];	
 					
+					if (iteratorOutside) {
+						while (iteratorOutside.hasNext()) {
+							spaceEntity = iteratorOutside.next();
+							entityDisplayObject = entityDictionary[spaceEntity];
+							entityDisplayObject.visible = false;
+						}
+					}
+					
 					if (symbol.needsRescale) {
 						iterator.reset();
 						if (symbol.needsRenderOnRescale) {
 							while (iterator.hasNext()) {
 								spaceEntity = iterator.next();
 								entityDisplayObject = entityDictionary[spaceEntity];
+								entityDisplayObject.visible = true;
 								symbol.render( entityDisplayObject, spaceEntity, displayExtent, viewportBounds, transformation );
 							}
 						} else {
 							while (iterator.hasNext()) {
 								spaceEntity = iterator.next();
 								entityDisplayObject = entityDictionary[spaceEntity];
+								entityDisplayObject.visible = true;
 								symbol.rescale( entityDisplayObject, spaceEntity, displayExtent, viewportBounds, transformation );
 							}
+						}
+					} else if (iteratorOutside) {
+						iterator.reset();
+						while (iterator.hasNext()) {
+							spaceEntity = iterator.next();
+							entityDisplayObject = entityDictionary[spaceEntity];
+							entityDisplayObject.visible = true;
 						}
 					}
 				} else {
@@ -364,26 +389,16 @@ package org.omoa.layer {
 			var iterator:ISpaceModelIterator;
 			var spaceEntity:SpaceModelEntity;
 			var symbol:ISymbol;
-			var indexOutside:SimpleIterator;
+			var iteratorOutside:ISpaceModelIterator;
 			
-			if (_spaceModel.index) {
-				trace( "Inside: " + _spaceModel.index.getCells( viewportBounds ) + ". Oder in Worten: ");
-				var i:ISpaceModelIterator = _spaceModel.index.iterator( viewportBounds );
-				var out:Array  = new Array();
-				while (i.hasNext()) {
-					out.push(i.next().name);
-				}
-				trace( out.join(", ") );
-				trace( "Outside: " + _spaceModel.index.getCellsOutside( viewportBounds ) );
-			}
 			
-			if (index) {
-				index.init(viewportBounds);
-				iterator = index.iterator();
-				indexOutside = index.outsideIterator();
+			
+			if (customIterator) {
+				iterator = customIterator;
 			} else {
-				if (customIterator) {
-					iterator = customIterator;
+				if (_spaceModel.index) {
+					iterator = _spaceModel.index.iterator(viewportBounds);
+					iteratorOutside = _spaceModel.index.iteratorOutside(viewportBounds);
 				} else {
 					iterator = _spaceModel.iterator();
 				}
@@ -417,9 +432,9 @@ package org.omoa.layer {
 					var entityDisplayObject:DisplayObject;
 					var entityDictionary:Dictionary = symbolSpriteToEntityDictionary[symbolSprite];
 					
-					if (indexOutside) {
-						while (indexOutside.hasNext()) {
-							spaceEntity = indexOutside.next();
+					if (iteratorOutside) {
+						while (iteratorOutside.hasNext()) {
+							spaceEntity = iteratorOutside.next();
 							entityDisplayObject = entityDictionary[spaceEntity];
 							entityDisplayObject.visible = false;
 						}
@@ -442,7 +457,7 @@ package org.omoa.layer {
 								symbol.recenter( entityDisplayObject, spaceEntity, displayExtent, viewportBounds, transformation );
 							}
 						}
-					} else if (indexOutside) {
+					} else if (iteratorOutside) {
 						iterator.reset();
 						while (iterator.hasNext()) {
 							spaceEntity = iterator.next();

@@ -14,8 +14,8 @@ package org.omoa.framework
 		function getCellsOutside(bounds:Rectangle):Vector.<int>;
 		function getEntities(cellID:int):Vector.<SpaceModelEntity>;
 		
-		function iterator(bounds:Rectangle):ISpaceModelIterator;
-		function iteratorOutside(bounds:Rectangle):ISpaceModelIterator;
+		function iterator(bounds:Rectangle, consolidated:Boolean=false):ISpaceModelIterator;
+		function iteratorOutside(bounds:Rectangle, consolidated:Boolean=false):ISpaceModelIterator;
 	}
 	
 }
