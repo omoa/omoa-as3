@@ -51,7 +51,11 @@ package org.omoa.spacemodel.index
 			cellCount = cells.length;
 			if (cellCount) {
 				entities = index.getEntities(cells[cellIndex]);
-				entityCount = entities.length;
+				if (entities) {
+					entityCount = entities.length;
+				} else {
+					entityCount = 0;
+				}
 			} else {
 				entityCount = 0;
 			}
@@ -64,6 +68,9 @@ package org.omoa.spacemodel.index
 				cellIndex++;
 				if (cellIndex < cellCount) {
 					entities = index.getEntities( cells[cellIndex] );
+					if (!entities) {
+						return false;
+					}
 					entityCount = entities.length;
 					if (entityCount > 0) {
 						entityIndex = 0;

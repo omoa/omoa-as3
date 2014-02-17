@@ -20,6 +20,8 @@ along with OMOA.  If not, see <http://www.gnu.org/licenses/>.
 
 package org.omoa {
 
+	import flash.display.Bitmap;
+	import flash.display.BitmapData;
 	import flash.display.Shape;
 	import flash.display.Sprite;
 	import flash.events.Event;
@@ -93,6 +95,8 @@ package org.omoa {
 		
 		private var _bg:Shape;
 		private var _layerContainerWrapper:Sprite;
+		private var _layerCache:Bitmap;
+		private var _layerCacheWrapper:Sprite;
 		private var _layerContainer:Sprite;
 		private var _frameDecoration:Sprite;
 		private var _overlayContainer:Sprite;
@@ -106,6 +110,7 @@ package org.omoa {
 		private var _worldHeight:Number;
 		
 		private var layerTransformation:Matrix = new Matrix();
+		private var _bgColor:int;
 		
 		public function MapFrame(map:Map=null) {
 			_map = map;
@@ -122,8 +127,14 @@ package org.omoa {
 			
 			_layerContainer = new Sprite();
 			_layerContainer.mouseChildren = true;
-			//_layerContainer.cacheAsBitmap = true;
 			_layerContainerWrapper.addChild( _layerContainer);
+			
+			
+			_layerCacheWrapper = new Sprite();
+			_layerCacheWrapper.visible = false;
+			_layerCache = new Bitmap();
+			_layerCacheWrapper.addChild(_layerCache);
+			_layerContainerWrapper.addChild( _layerCacheWrapper);
 			
 			_frameDecoration = new Sprite();
 			_frameDecoration.mouseChildren = false;
@@ -162,46 +173,91 @@ package org.omoa {
 		}
 		
 		public function set bgColor( value:int ):void {
+			_bgColor = value;
 			_bg.graphics.clear();
 			_bg.graphics.beginFill(value);
 			_bg.graphics.drawRect(0, 0, 1, 1);
 			_bg.graphics.endFill();
 		}
 		
+		public function get bgColor():int {
+			return _bgColor;
+		}
+		
 		override public function startDrag(lockCenter:Boolean = false, bounds:Rectangle = null):void {
-			_layerContainer.startDrag(lockCenter, bounds);
+			if (_layerCacheWrapper.visible) {
+				_layerCacheWrapper.startDrag(lockCenter, bounds);
+			} else {
+				_layerContainer.startDrag(lockCenter, bounds);
+			}
 
 			addEventListener(MouseEvent.MOUSE_MOVE, whileDrag);
 		}
 		
 		private function whileDrag(e:MouseEvent):void {
 			_overlayContainer.visible = false;
+			if (_layerCacheWrapper.visible) {
+				_layerContainer.visible = false;
+			}
 		}
 		
 		public function followDrag( x:Number, y:Number):void {
-			_layerContainer.x = x;
-			_layerContainer.y = y;
+			if (_layerCacheWrapper.visible) {
+				_layerCacheWrapper.x = x;
+				_layerCacheWrapper.y = y;
+			} else {
+				_layerContainer.x = x;
+				_layerContainer.y = y;
+			}
 		}
 		
 		public function stopFollowDrag():void {
-			_layerContainer.x = 0;
-			_layerContainer.y = 0;
+			if (_layerCacheWrapper.visible) {
+				_layerCacheWrapper.x = 0;
+				_layerCacheWrapper.y = 0;
+			} else {
+				_layerContainer.x = 0;
+				_layerContainer.y = 0;
+			}
 		}
 		
 		//TODO: There is an offset involved.
 		public function dragPosition():Point {
-			return _layerContainer.getRect(this).topLeft; 
+			var p:Point;
+			if (_layerCacheWrapper.visible) {
+				p = _layerCacheWrapper.getRect(this).topLeft;
+			} else {
+				p = _layerContainer.getRect(this).topLeft;
+			}
+			return p;
 		}
 		
 		override public function stopDrag():void {
+			var movement:Number
+			
 			removeEventListener(MouseEvent.MOUSE_MOVE, whileDrag);
 			_overlayContainer.visible = true;
-			_layerContainer.stopDrag();
+			_layerContainer.visible = true;
 			
-			_layerContainer.cacheAsBitmap = false;
-			moveCenterByScreenCoordinates( _layerContainer.x*-1, _layerContainer.y*-1 );
-			_layerContainer.x = 0;
-			_layerContainer.y = 0;
+			
+			if (_layerCacheWrapper.visible) {
+				_layerCacheWrapper.stopDrag();
+				movement = Math.abs(_layerCacheWrapper.x * _layerCacheWrapper.y);
+				if (movement>4) {
+					moveCenterByScreenCoordinates( _layerCacheWrapper.x * -1, _layerCacheWrapper.y * -1 );
+				}
+				_layerCacheWrapper.x = 0;
+				_layerCacheWrapper.y = 0;
+				_layerCacheWrapper.visible = false;
+			} else {
+				_layerContainer.stopDrag();
+				movement = Math.abs(_layerContainer.x * _layerContainer.y);
+				if (movement>4) {
+					moveCenterByScreenCoordinates( _layerContainer.x * -1, _layerContainer.y * -1 );
+				}
+				_layerContainer.x = 0;
+				_layerContainer.y = 0;
+			}
 		}
 		
 		/* ===========================================
@@ -805,16 +861,50 @@ package org.omoa {
 			addEventListener(Event.ENTER_FRAME, recreateCache);
 		}
 		
-		private function recreateCache(e:Event):void 
-		{
+		private function recreateCache(e:Event):void {
 			removeEventListener(Event.ENTER_FRAME, recreateCache);
 			
 			var r:Rectangle = _layerContainer.getBounds(stage);
-			if (r.width*r.height<0xffffff) {
+			
+			if ((r.width * r.height) < 0xffffff) {
+				// Flash-Player-internal caching
 				_layerContainer.cacheAsBitmap = true;
+				//_layerContainer.visible = true;
+				_layerCacheWrapper.visible = false;
+				trace("autocache");
 			} else {
-				trace("Not caching a layerContainer with " + Math.sqrt(r.width * r.height) + " square px." + r);
+				// manual caching
+				//_layerCacheWrapper.visible = true;
+				//_layerContainer.visible = false;
+				if (!_layerCache.bitmapData
+					|| _layerCache.bitmapData.width != _bg.width
+					|| _layerCache.bitmapData.height != _bg.height)
+				{
+					var b:BitmapData = new BitmapData(_bg.width, _bg.height);
+					_layerCache.bitmapData = b;
+					//_layerCache.alpha = 0.5;
+				}
+				/*
+				if (_layerCache.bitmapData.width != _bg.width || _layerCache.bitmapData.height != _bg.height) {
+					
+				}
+				*/
+				addEventListener(Event.ENTER_FRAME, recreateBitmapCache);
+				_layerCacheWrapper.x = 0;
+				_layerCacheWrapper.y = 0;
+				trace("Manually caching layerContainer with " + Math.sqrt(r.width * r.height) + " square px." + r);
+				trace(  _layerContainer.scrollRect );
 			}
+		}
+		
+		private function recreateBitmapCache(e:Event):void {
+			removeEventListener(Event.ENTER_FRAME, recreateBitmapCache);
+			var r:Rectangle = _layerContainer.getBounds(stage);
+			//var rBmp:Rectangle = new Rectangle( r.x * -1, r.y*-1, _bg.width, _bg.height);
+			var rBmp:Rectangle = new Rectangle( 0, 0, _bg.width, _bg.height);
+			_layerCache.bitmapData.fillRect( _layerCache.bitmapData.rect, _bgColor);
+			_layerCache.bitmapData.draw( _layerContainerWrapper, null, null, null, rBmp );
+			_layerCacheWrapper.visible = true;
 		}
 		
 		

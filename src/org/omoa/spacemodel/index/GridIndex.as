@@ -5,6 +5,7 @@ package org.omoa.spacemodel.index
 	import org.omoa.framework.ISpaceModel;
 	import org.omoa.framework.ISpaceModelIndex;
 	import org.omoa.framework.ISpaceModelIterator;
+	import org.omoa.spacemodel.NullIterator;
 	import org.omoa.spacemodel.SpaceModel;
 	import org.omoa.spacemodel.SpaceModelEntity;
 	
@@ -35,6 +36,12 @@ package org.omoa.spacemodel.index
 		
 		public function createIndex(entities:Vector.<SpaceModelEntity>):void {
 			var t:Number = new Date().getTime();
+			
+			if (!entities) {
+				allEntities = null;
+				cells = null;
+				return;
+			}
 						
 			if (entities.length>0) {
 				var sme:SpaceModelEntity = entities[0];
@@ -155,7 +162,7 @@ package org.omoa.spacemodel.index
 		}
 		
 		public function getEntities(cellID:int):Vector.<SpaceModelEntity> {
-			if (cellID < xCellCount * yCellCount && cellID > -1) {
+			if (cells && cellID < xCellCount * yCellCount && cellID > -1) {
 				var y:int = cellID / xCellCount;
 				var x:int = cellID - y * xCellCount;
 				return cells[x][y];
@@ -164,6 +171,9 @@ package org.omoa.spacemodel.index
 		}
 		
 		public function iterator(bounds:Rectangle, consolidated:Boolean = false):ISpaceModelIterator {
+			if (!cells) {
+				return new NullIterator();
+			}
 			if (consolidated)
 				return new ConsolidatedGridIndexIterator(this, getCells(bounds));
 			else
@@ -171,6 +181,9 @@ package org.omoa.spacemodel.index
 		}
 		
 		public function iteratorOutside(bounds:Rectangle, consolidated:Boolean = false):ISpaceModelIterator {
+			if (!cells) {
+				return new NullIterator();
+			}
 			if (consolidated)
 				return new ConsolidatedGridIndexIterator(this, getCellsOutside(bounds));
 			else 
