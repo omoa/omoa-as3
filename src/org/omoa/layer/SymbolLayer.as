@@ -20,7 +20,6 @@ along with OMOA.  If not, see <http://www.gnu.org/licenses/>.
 
 package org.omoa.layer {
 
-	import cocktail.core.html.TimeRanges;
 	import flash.display.DisplayObject;
 	import flash.display.InteractiveObject;
 	import flash.display.Sprite;
@@ -86,7 +85,6 @@ package org.omoa.layer {
 			// do it for the new symbol too
 			for (var layerSprite:Object in layerSpriteToSymbol) {
 				setup( layerSprite as Sprite );
-				//TODO: The new Symbol won't display. How do we request a render?
 			}
 			invalidate();
 		}
@@ -144,8 +142,8 @@ package org.omoa.layer {
 			if (_interactive) {
 				sprite.mouseChildren = true;
 				sprite.addEventListener( MouseEvent.MOUSE_UP, symbolClick );
-				//sprite.addEventListener( MouseEvent.MOUSE_OVER, symbolPoint );
-				//sprite.addEventListener( MouseEvent.MOUSE_OUT, symbolPoint );
+				sprite.addEventListener( MouseEvent.MOUSE_OVER, symbolPoint );
+				sprite.addEventListener( MouseEvent.MOUSE_OUT, symbolPoint );
 				
 				/*
 				// Enforce Index automatically?
