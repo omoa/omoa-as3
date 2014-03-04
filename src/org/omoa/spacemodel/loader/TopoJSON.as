@@ -179,7 +179,7 @@ package org.omoa.spacemodel.loader
 				
 				//TODO: Calculate center for each sme
 				var sme:SpaceModelEntity = entities[0];
-				if (sme && !sme.bounds) {
+				if (sme && sme.path && !sme.bounds) {
 					// The file did not countain bounding boxes on an entity level
 					t = new Timer(50);
 					t.addEventListener(TimerEvent.TIMER, postprocessBounds);
@@ -197,6 +197,10 @@ package org.omoa.spacemodel.loader
 			for each (var sme:SpaceModelEntity in entities) {
 				sme.bounds = new BoundingBox(0, 1, 2, 3);
 				GeometryFunctions.boundsFromPath(sme.path as GraphicsPath, sme.bounds);
+				if (!sme.center) {
+					sme.center = new Point();
+					GeometryFunctions.centroid(sme.path as GraphicsPath, sme.center);
+				}
 			}
 			
 			finalizeModel();
