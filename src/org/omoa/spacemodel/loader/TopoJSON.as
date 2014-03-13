@@ -33,7 +33,7 @@ package org.omoa.spacemodel.loader
 	public class TopoJSON extends AbstractSMLoader {
 		
 		private var attributeFieldName:String = "";
-		private var attributeFieldId:String = "ID";
+		private var attributeFieldId:String = null;
 		private var compact:Boolean = false;
 		
 		private var json:Object;

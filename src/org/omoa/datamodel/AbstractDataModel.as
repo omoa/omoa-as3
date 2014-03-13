@@ -116,6 +116,10 @@ package org.omoa.datamodel {
 		override public function toString():String {
 			throw new Error( "addDatum() must be implemented in Subclass." );
 		}
+		
+		public function clear():void {
+			throw new Error( "clear() must be implemented in Subclass." );
+		}
 	}
 	
 }

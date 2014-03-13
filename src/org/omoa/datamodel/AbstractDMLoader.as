@@ -167,6 +167,10 @@ package org.omoa.datamodel {
 			model.addValueDimension(valueDimension);
 		}
 		
+		public function clear():void {
+			model.clear();
+		}
+		
 		override public function toString():String {
 			return model.toString();
 		}

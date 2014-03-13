@@ -173,6 +173,11 @@ package org.omoa.datamodel {
 			}
 			return s;
 		}
+		
+		override public function clear():void 
+		{
+			data = new Vector.<Number>(data.length);
+		}
 
 
 	}
