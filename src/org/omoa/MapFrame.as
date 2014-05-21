@@ -185,10 +185,10 @@ package org.omoa {
 		}
 		
 		override public function startDrag(lockCenter:Boolean = false, bounds:Rectangle = null):void {
-			if (_layerCacheWrapper.visible) {
-				_layerCacheWrapper.startDrag(lockCenter, bounds);
-			} else {
+			if (_layerContainer.cacheAsBitmap) {
 				_layerContainer.startDrag(lockCenter, bounds);
+			} else {
+				_layerCacheWrapper.startDrag(lockCenter, bounds);
 			}
 
 			addEventListener(MouseEvent.MOUSE_MOVE, whileDrag);
@@ -196,7 +196,8 @@ package org.omoa {
 		
 		private function whileDrag(e:MouseEvent):void {
 			_overlayContainer.visible = false;
-			if (_layerCacheWrapper.visible) {
+			if (!_layerContainer.cacheAsBitmap) {
+				_layerCacheWrapper.visible = true;
 				_layerContainer.visible = false;
 			}
 		}
@@ -904,7 +905,7 @@ package org.omoa {
 			var rBmp:Rectangle = new Rectangle( 0, 0, _bg.width, _bg.height);
 			_layerCache.bitmapData.fillRect( _layerCache.bitmapData.rect, _bgColor);
 			_layerCache.bitmapData.draw( _layerContainerWrapper, null, null, null, rBmp );
-			_layerCacheWrapper.visible = true;
+			//_layerCacheWrapper.visible = true;
 		}
 		
 		
