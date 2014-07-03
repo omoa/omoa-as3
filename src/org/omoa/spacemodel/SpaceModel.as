@@ -63,7 +63,9 @@ package org.omoa.spacemodel {
 		
 		public function setIndex(index:ISpaceModelIndex):void {
 			_index = index;
-			_index.createIndex( entities.slice( 0, entities.length ) );
+			if (_index) {
+				_index.createIndex( entities.slice( 0, entities.length ) );
+			}
 		}
 		
 		public function get index():ISpaceModelIndex {
