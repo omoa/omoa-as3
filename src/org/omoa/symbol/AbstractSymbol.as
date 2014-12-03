@@ -27,6 +27,7 @@ package org.omoa.symbol {
 	import flash.geom.Rectangle;
 	import flash.utils.getDefinitionByName;
 	import org.omoa.classification.AbstractClassification;
+	import org.omoa.classification.DictionaryClassification;
 	import org.omoa.framework.Description;
 	import org.omoa.framework.Datum;
 	import org.omoa.framework.ISymbol;
@@ -34,6 +35,7 @@ package org.omoa.symbol {
 	import org.omoa.framework.SymbolProperty;
 	import org.omoa.framework.BoundingBox;
 	import org.omoa.spacemodel.SpaceModelEntity;
+	import peba.omoa.DictionaryClassification;
 	
 	
 	/**
@@ -136,6 +138,7 @@ package org.omoa.symbol {
 			var property:SymbolProperty;
 			var manipulator:ISymbolPropertyManipulator;
 			var classification:AbstractClassification;
+			var dictClassification:DictionaryClassification
 			
 			for each (property in _dynamicProperties) {
 				classification = property.manipulator as AbstractClassification;
@@ -146,6 +149,10 @@ package org.omoa.symbol {
 					} else {
 						classification.selectElement( null );
 					}
+				}
+				dictClassification = property.manipulator as DictionaryClassification;
+				if (dictClassification) {
+					dictClassification.selectElement(spaceEntity);
 				}
 				setStaticProperty( property );
 			}
