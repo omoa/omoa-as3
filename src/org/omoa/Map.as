@@ -25,6 +25,7 @@ package org.omoa {
 	import flash.display.StageQuality;
 	import flash.events.Event;
 	import flash.events.MouseEvent;
+	import flash.events.ProgressEvent;
 	import flash.events.TimerEvent;
 	import flash.geom.Point;
 	import flash.text.TextField;
@@ -68,6 +69,9 @@ package org.omoa {
 		private var clickEventBuffer:MouseEvent;
 		private var clickEventMapFrame:MapFrame;
 		private var clickEventStageCoordinates:Point = new Point();
+		
+		private var bytesExpected:int = 0;
+		private var bytesLoaded:Object = {};
 		
 		public function Map() {
 			
@@ -736,12 +740,14 @@ package org.omoa {
 				spaceModels.push( spaceModel );
 				if (!spaceModel.isComplete) {
 					spaceModel.addEventListener( Event.COMPLETE, eventSpaceModelComplete, false, 1000 );
+					spaceModel.addEventListener( ProgressEvent.PROGRESS, onSpaceModelProgress );
 				} else {
 					linkModels(spaceModel);
 					//spaceModel.addEventListener( Event.CHANGE, eventSpaceModelChange );
 				}
 			}	
 		}
+		
 		
 		/**
 		 * Creates a SpaceModel and adds it to the map.
@@ -801,6 +807,7 @@ package org.omoa {
 			var sm:ISpaceModel = e.target as ISpaceModel;
 			if (sm) {
 				sm.removeEventListener( Event.COMPLETE, eventSpaceModelComplete );
+				sm.removeEventListener( ProgressEvent.PROGRESS, onSpaceModelProgress );
 				linkModels( sm );
 				//sm.addEventListener( Event.CHANGE, eventSpaceModelChange );
 			}
@@ -813,6 +820,35 @@ package org.omoa {
 				trace( sm.id + " changed." );
 			}
 			*/
+		}
+		
+		/**
+		 * (Re-)sets the Number of Bytes the following load processes are expected to load. 
+		 * If set to zero ( resetBytesExpected(); ) the load process is not tracked.
+		 * 
+		 * @param	bytesExpectedToLoad The number of bytes expected to load.
+		 */
+		public function resetBytesExpected(bytesExpectedToLoad:int=0):void {
+			bytesLoaded = {};
+			bytesExpected = bytesExpectedToLoad;
+		}
+		
+		private function onSpaceModelProgress(e:ProgressEvent):void {
+			if (!bytesLoaded[e.bytesTotal]) {
+				bytesLoaded[e.bytesTotal] = 0;
+			}
+			bytesLoaded[e.bytesTotal] = e.bytesLoaded;
+		}
+		
+		public function getLoadProgress():Number {
+			if (bytesExpected == 0) {
+				return 0;
+			}
+			var sum:Number = 0;
+			for each ( var load:Number in bytesLoaded) {
+				sum += load;
+			}
+			return Math.round( sum / bytesExpected * 1000) / 10;
 		}
 
 		public function addDataModel(dataModel:IDataModel):void {

@@ -22,6 +22,7 @@ package org.omoa.framework {
 
 	import flash.events.Event;
 	import flash.events.IEventDispatcher;
+	import flash.events.ProgressEvent;
 	import org.omoa.spacemodel.SpaceModelEntity;
 	
 	
@@ -37,6 +38,10 @@ package org.omoa.framework {
 	 * Signalises the pending deconstruction of a SpaceModel.
 	 */
 	[Event(name = Event.REMOVED, type = "flash.events.Event")]
+	/**
+	 * Signalises the end of the loading process. You may now use this class as a SpaceModel.
+	 */
+	[Event(name = ProgressEvent.PROGRESS, type = "flash.events.ProgressEvent")]
 	
 	/**
 	 * Implementations of this interface store (or process) spatial data.

@@ -3,6 +3,7 @@ package org.omoa.spacemodel.loader
 	import flash.display.GraphicsPath;
 	import flash.events.Event;
 	import flash.events.IOErrorEvent;
+	import flash.events.ProgressEvent;
 	import flash.events.TimerEvent;
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
@@ -79,7 +80,12 @@ package org.omoa.spacemodel.loader
 			loader = new URLLoader();
 			loader.addEventListener(Event.COMPLETE, loadComplete );
 			loader.addEventListener(IOErrorEvent.IO_ERROR, error );
+			loader.addEventListener(ProgressEvent.PROGRESS, progress);
 			loader.load( new URLRequest(url) );
+		}
+		
+		private function progress(e:ProgressEvent):void {
+			dispatchEvent(e);
 		}
 		
 		private function loadComplete( e:Event ):void {
@@ -88,6 +94,7 @@ package org.omoa.spacemodel.loader
 				initialize( loader.data );
 				loader.removeEventListener(Event.COMPLETE, loadComplete );
 				loader.removeEventListener(IOErrorEvent.IO_ERROR, error );
+				loader.removeEventListener(ProgressEvent.PROGRESS, progress);
 				loader = null;
 			}
 		}
