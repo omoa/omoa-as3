@@ -21,17 +21,20 @@ along with OMOA.  If not, see <http://www.gnu.org/licenses/>.
 package org.omoa.classification {
 	
 	import org.omoa.framework.Description;
+	import org.omoa.framework.IClassification;
 	import org.omoa.framework.IClassificationElement;
 	import org.omoa.framework.IStyle;
+	import org.omoa.framework.ISymbolPropertyManipulator;
 	import org.omoa.spacemodel.SpaceModelEntity;
 	
 	/**
-	 * This Classification ...
+	 * This Classification creates a simple linkage between an attribute of a SpaceModelEntity
+	 * and a value.
 	 * 
 	 * @author Sebastian Specht
 	 */
 	
-	public class DictionaryClassification {
+	public class DictionaryClassification implements IClassification, ISymbolPropertyManipulator {
 		
 		private var _elements:Vector.<IClassificationElement> = new Vector.<IClassificationElement>();
 		private var _selectedElement:IClassificationElement;
@@ -43,7 +46,10 @@ package org.omoa.classification {
 		private var _dict:Object;
 		
 		/**
-		 * This Classification ....
+		 * This Classification creates a simple linkage between an attribute of a SpaceModelEntity
+		 * and a value. The data selector object follows the form: 
+		 * {"<attribute key>":{"<attribute value>": <symbol value>, <attribute value>: <symbol value>}}
+		 * 
 		 * @param	dictionary
 		 * The data selector object.
 		 */
@@ -62,28 +68,15 @@ package org.omoa.classification {
 			}
 			var spaceEntity:SpaceModelEntity = value as SpaceModelEntity;
 			if (spaceEntity) {
-				for each (var key:String in _dict) {
+				for (var key:String in _dict) {
 					var attributeValue:* = spaceEntity.attributes[key];
-					if (attributeValue) {
+					if (attributeValue!==null) {
 						_selectedElement = _selectedElementBuffer;
 						_selectedElement.manipulator.value = _dict[key][attributeValue];
 					} else {
 						_selectedElement = null;
 					}
 				}
-				/*
-				var v:Number = parseFloat(value);
-				var output:Number;
-				if (v) {
-					_selectedElement = _selectedElementBuffer;
-					_selectedElement.manipulator.value = Math.sqrt(Math.abs(v) * _pre) * _post;
-					if (v < 0) {
-						_selectedElement.manipulator.value *= -1;
-					}
-				} else {
-					_selectedElement = null;
-				}
-				*/
 			} else {
 				_selectedElement = null;
 			}
@@ -156,9 +149,6 @@ package org.omoa.classification {
 		public function set style(style:IStyle):void {}
 
 		public function get dataDescription():Description {
-			//if (_selectedElement) {
-			//	return _selectedElement.manipulator.dataDescription;
-			//}
 			return null;
 		}
 		

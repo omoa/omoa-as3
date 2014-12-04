@@ -35,7 +35,6 @@ package org.omoa.symbol {
 	import org.omoa.framework.SymbolProperty;
 	import org.omoa.framework.BoundingBox;
 	import org.omoa.spacemodel.SpaceModelEntity;
-	import peba.omoa.DictionaryClassification;
 	
 	
 	/**
@@ -260,6 +259,7 @@ package org.omoa.symbol {
 			PointSymbolEntity;
 			VectorSymbol;
 			VectorSymbolEntity;
+			DictionaryClassification;
 			
 			// create instance
 			try {
