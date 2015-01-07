@@ -107,9 +107,9 @@ package org.omoa.spacemodel.loader
 			var jsonString:String = data as String;
 			
 			if (jsonString) {
-				trace( new Date().getTime() + " TopoJSON a1" );
+				
 				json = decodeJson( jsonString, true );
-				trace( new Date().getTime() + " TopoJSON a2" );
+				
 				if (json.hasOwnProperty("type") && json.type == "Topology") {
 					// json Represents the root object
 					if (json.hasOwnProperty("bbox")) {
@@ -184,7 +184,6 @@ package org.omoa.spacemodel.loader
 				json = null;
 				jsonString = null;
 				
-				//TODO: Calculate center for each sme
 				var sme:SpaceModelEntity = entities[0];
 				if (sme && sme.path && !sme.bounds) {
 					// The file did not countain bounding boxes on an entity level
@@ -214,10 +213,23 @@ package org.omoa.spacemodel.loader
 		}
 		
 		private function finalizeModel():void {
+			if (!_bounds) {
+				var b:Rectangle = new Rectangle();
+				for each (var sme:SpaceModelEntity in entities) {
+					if (!_bounds) {
+						b.copyFrom( sme.bounds as Rectangle );
+						_bounds = new BoundingBox(0,1,2,3);
+					} else {
+						b = b.union( sme.bounds as Rectangle );
+					}
+				}
+				_bounds.fromRectangle(b);
+			}
+			
 			_complete = true;
-			trace( new Date().getTime() + " TopoJSON b" );
+			
 			dispatchEvent( new Event( Event.COMPLETE ) );
-			trace( new Date().getTime() + " TopoJSON c" );
+			
 		}
 		
 		private function decodeArc(arc:Array):Array {
