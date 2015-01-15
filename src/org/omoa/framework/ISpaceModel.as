@@ -66,6 +66,7 @@ package org.omoa.framework {
 		function linkDataModel( model:IDataModel, dataDescription:Description = null ):void;
 
 		function findById(id:String):SpaceModelEntity;
+		function findByCoordinate(x:Number,y:Number):SpaceModelEntity;
 		
 		function createPropertyDimension(withLabels:Boolean = false):ModelDimension;
 		

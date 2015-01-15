@@ -185,14 +185,17 @@ package org.omoa.spacemodel.loader
 				jsonString = null;
 				
 				var sme:SpaceModelEntity = entities[0];
-				if (sme && sme.path && !sme.bounds) {
-					// The file did not countain bounding boxes on an entity level
-					t = new Timer(50);
-					t.addEventListener(TimerEvent.TIMER, postprocessBounds);
-					t.start();
-				} else {
-					finalizeModel();
+				if (sme && sme.path) {
+					if (sme.bounds && sme.center) {
+						finalizeModel();
+					} else {
+						// The file did not countain bounding boxes on an entity level
+						t = new Timer(30);
+						t.addEventListener(TimerEvent.TIMER, postprocessBounds);
+						t.start();
+					}
 				}
+				
 			}
 		}
 		

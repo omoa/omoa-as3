@@ -4,7 +4,10 @@
  */
 package org.omoa.spacemodel {
 
+	import flash.display.GraphicsPath;
+	import flash.display.IGraphicsPath;
 	import flash.events.EventDispatcher;
+	import flash.geom.Rectangle;
 	import org.omoa.framework.BoundingBox;
 	import org.omoa.framework.Description;
 	import org.omoa.framework.ISpaceModelIndex;
@@ -16,6 +19,7 @@ package org.omoa.spacemodel {
 	import org.omoa.framework.ISpaceModelIterator;
 	import org.omoa.framework.ModelDimensionType;
 	import org.omoa.projection.AbstractProjection;
+	import org.omoa.util.GeometryFunctions;
 	
 
 	/**
@@ -109,6 +113,33 @@ package org.omoa.spacemodel {
 			for each (entity in entities) {
 				if (entity.id == id) {
 					return entity;
+				}
+			}
+			return null;
+		}
+		
+		public function findByCoordinate(x:Number, y:Number):SpaceModelEntity {
+			var bounds:Rectangle = new Rectangle(x, y, 0.000001, 0.000001);
+			var i:ISpaceModelIterator;
+			var sme:SpaceModelEntity;
+			var testEntities:Vector.<SpaceModelEntity> = new Vector.<SpaceModelEntity>();
+			
+			if (_index) {
+				i = _index.iterator(bounds, true);
+			} else {
+				i = iterator();
+			}
+			
+			while (i.hasNext()) {
+				sme = i.next();
+				if (sme.bounds.containsPoint( bounds.topLeft )) {
+					testEntities.push( sme );
+				}
+			}
+			
+			for each (sme in testEntities) {
+				if (GeometryFunctions.pointInPolygon(sme.path as GraphicsPath, x, y)) {
+					return sme;
 				}
 			}
 			return null;

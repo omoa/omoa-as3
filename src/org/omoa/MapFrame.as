@@ -37,6 +37,7 @@ package org.omoa {
 	import org.omoa.framework.ISpaceModel;
 	import org.omoa.Map;
 	import org.omoa.projection.AbstractProjection;
+	import org.omoa.spacemodel.SpaceModelEntity;
 	import org.omoa.util.NavigationButtons;
 	import org.omoa.util.OmoaLogo;
 	
@@ -968,6 +969,25 @@ package org.omoa {
 			rescale();
 		}
 		
-
+		public function getEntityByScreencoordinate( mapframeX:Number, mapframeY:Number, layerID:String ):SpaceModelEntity {
+			var layer:ILayer;
+			var sm:ISpaceModel;
+			var sme:SpaceModelEntity;
+			
+			for each (layer in _layers) {
+				if (layer.id == layerID) {
+					break;
+				}
+			}
+			if (layer) {
+				sm = layer.spaceModel;
+				
+				var smX:Number = viewportBounds.minx + mapframeX / _scale;
+				var smY:Number = viewportBounds.maxy - mapframeY / _scale;
+				
+				return sm.findByCoordinate( smX, smY );
+			}
+			return null;
+		}
 	}
 }
