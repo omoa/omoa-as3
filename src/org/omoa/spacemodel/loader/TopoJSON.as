@@ -385,10 +385,12 @@ package org.omoa.spacemodel.loader
 			}
 		}
 		
+		/*
 		override public function linkDataModel(model:IDataModel, dataDescription:Description = null):void {
 			// does this make sense?
 			trace("TopoJSON.linkDataModel() not implemented");
 		}
+		*/
 		
 		public function createSpaceModel( collectionID:String, overrideSpaceModelID:String = null ):ISpaceModel {
 			var smes:Vector.<SpaceModelEntity> = entityCollections[collectionID] as Vector.<SpaceModelEntity>;

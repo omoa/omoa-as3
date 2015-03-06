@@ -176,7 +176,9 @@ package org.omoa {
 		public function set bgColor( value:int ):void {
 			_bgColor = value;
 			_bg.graphics.clear();
-			_bg.graphics.beginFill(value);
+			if (_bgColor >= 0) {
+				_bg.graphics.beginFill(value);
+			}
 			_bg.graphics.drawRect(0, 0, 1, 1);
 			_bg.graphics.endFill();
 		}
@@ -555,7 +557,7 @@ package org.omoa {
 			_worldHeight = heightNew / _scale;
 			
 			_frameDecoration.graphics.clear();
-			if (!isNaN(borderColor)) {
+			if (!isNaN(borderColor) && borderColor >= 0 ) {
 				_frameDecoration.graphics.lineStyle(1, borderColor, 1, true);
 				_frameDecoration.graphics.drawRect(0, 0, widthNew - 0.55, heightNew - 0.55);
 			}
@@ -873,7 +875,6 @@ package org.omoa {
 				_layerContainer.cacheAsBitmap = true;
 				//_layerContainer.visible = true;
 				_layerCacheWrapper.visible = false;
-				trace("autocache");
 			} else {
 				// manual caching
 				//_layerCacheWrapper.visible = true;
@@ -894,8 +895,8 @@ package org.omoa {
 				addEventListener(Event.ENTER_FRAME, recreateBitmapCache);
 				_layerCacheWrapper.x = 0;
 				_layerCacheWrapper.y = 0;
-				trace("Manually caching layerContainer with " + Math.sqrt(r.width * r.height) + " square px." + r);
-				trace(  _layerContainer.scrollRect );
+				//trace("Manually caching layerContainer with " + Math.sqrt(r.width * r.height) + " square px." + r);
+				//trace(  _layerContainer.scrollRect );
 			}
 		}
 		
@@ -988,6 +989,16 @@ package org.omoa {
 				return sm.findByCoordinate( smX, smY );
 			}
 			return null;
+		}
+		
+		public function transformScreenToSpace(screen:Point, space:Point):void {
+			space.x = viewportBounds.minx + screen.x / _scale;
+			space.y = viewportBounds.maxy - screen.y / _scale;
+		}
+		
+		public function transformSpaceToScreen(space:Point, screen:Point):void {
+			screen.x = Math.round((space.x - viewportBounds.minx) * _scale);
+			screen.y = Math.round((viewportBounds.maxy-space.y) * _scale);
 		}
 	}
 }
