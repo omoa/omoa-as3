@@ -251,6 +251,10 @@ package org.omoa.symbol {
 			_interactive = value;
 		}
 		
+		public function setStyle( tf:TextFormat ):void {
+			style = tf;
+		}
+		
 	}
 	
 }

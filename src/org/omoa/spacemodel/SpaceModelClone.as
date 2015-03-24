@@ -13,7 +13,11 @@ package org.omoa.spacemodel
 		public function SpaceModelClone(id:String, bounds:BoundingBox, type:String, entityVector:Vector.<SpaceModelEntity>, recalculateBounds:Boolean = true ) 
 		{
 			_id = id;
-			_bounds = bounds;
+			if (bounds) {
+				_bounds = bounds;
+			} else {
+				_bounds = new BoundingBox(0, 0, 1, 1);
+			}
 			_type = type;
 			entities = entityVector;
 			if (recalculateBounds) reinitialize();
