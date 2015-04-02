@@ -22,6 +22,7 @@ package org.omoa.symbol {
 	
 	import flash.display.DisplayObject;
 	import flash.display.Sprite;
+	import flash.filters.GlowFilter;
 	import flash.geom.Matrix;
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
@@ -48,6 +49,9 @@ package org.omoa.symbol {
 		public const SIZE:String = "size";
 		public const ALIGNMENT:String = "alignment";
 		public const DISTANCE:String = "distance";
+		
+		public var highlightColor:int = -1;
+		public var highlightSize:int = 6;
 		
 		private var style:TextFormat;
 		private var alpha:Number = 1;
@@ -102,10 +106,14 @@ package org.omoa.symbol {
 			tf.multiline = true;
 			tf.wordWrap = false;
 			//tf.border = true;
-			tf.antiAliasType = AntiAliasType.NORMAL;// AntiAliasType.ADVANCED;
+			tf.embedFonts = true;
+			tf.antiAliasType = AntiAliasType.ADVANCED;// AntiAliasType.NORMAL;
 			container.addChild( tf );
 			parentSprite.addChild( container );
 			//trace( "TextField created for " + spaceEntity.name );
+			if (highlightColor>0) {
+				container.filters = new Array( new GlowFilter( highlightColor, 1, highlightSize, highlightSize, highlightSize*4));
+			}
 			return container;
 		}
 		
