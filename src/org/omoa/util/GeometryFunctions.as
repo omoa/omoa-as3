@@ -74,7 +74,7 @@ package org.omoa.util
 							currentPath.cubicCurveTo( points[i++], points[i++], points[i++], points[i++], points[i++], points[i++] );
 							break;
 						case GraphicsPathCommand.WIDE_LINE_TO:
-							currentPath.( points[i++], points[i++] );
+							currentPath.wideLineTo( points[i++], points[i++] );
 							i++; i++;
 							// TODO: Test
 							break;
@@ -132,6 +132,81 @@ package org.omoa.util
 				p.x = x / (-6 * area);
 				p.y = y / (-6 * area);
 			}
+		}
+		
+		public static function pointInPolygon( path:GraphicsPath, x:Number, y:Number ):Boolean {
+			if (path) {
+				var points:Vector.<Number> = path.data;
+				var numCommands:int = path.commands.length;
+				var currentPath:GraphicsPath;
+				
+				if (numCommands > 0) {
+					// adapted from GKA
+					// https://bitbucket.org/gka/as3-vis4/src/f3fc7fd5a8b8e1612dd48c50765d9d44bd590aed/src/net/vis4/geom/Polygon.as?at=default
+					var xinters:Number;
+					var counter:int = 0;
+						
+					var i:int = 0;
+					var currentCommand:int = 0;
+					var p1:Point = new Point( points[i++], points[i++] );
+					var p2:Point = new Point(0, 0);
+					currentCommand++;
+					
+					while (currentCommand < numCommands) {
+						switch ( path.commands[currentCommand] ) {
+							case GraphicsPathCommand.LINE_TO:
+								p2.x = points[i++];
+								p2.y = points[i++];
+								break;
+							case GraphicsPathCommand.MOVE_TO:
+								p2.x = points[i++];
+								p2.y = points[i++];
+								break;
+							case GraphicsPathCommand.CURVE_TO:
+								i++; i++;
+								p2.x = points[i++];
+								p2.y = points[i++];
+								break;
+							case GraphicsPathCommand.CUBIC_CURVE_TO:
+								i++; i++;
+								i++; i++;
+								p2.x = points[i++];
+								p2.y = points[i++];
+								break;
+							case GraphicsPathCommand.WIDE_LINE_TO:
+								p2.x = points[i++];
+								p2.y = points[i++];
+								i++; i++;
+								// TODO: Test
+								break;
+							case GraphicsPathCommand.WIDE_MOVE_TO:
+								p2.x = points[i++];
+								p2.y = points[i++];
+								i++; i++;
+								break;
+						}
+						currentCommand++;
+						
+						
+						
+						if (y > Math.min(p1.y, p2.y)) {
+							if (y <= Math.max(p1.y, p2.y)) {
+								if (x <= Math.max(p1.x, p2.x)) {
+									if (p1.y != p2.y) {
+										xinters = (y - p1.y) * (p2.x - p1.x) / (p2.y - p1.y) + p1.x;
+										if (p1.x == p2.x || x <= xinters) counter++;
+									}
+								}
+							}
+						}
+						
+						p1.x = p2.x;
+						p1.y = p2.y;
+					}
+					return (counter % 2 != 0);
+				}
+			}
+			return false;
 		}
 		
 	}

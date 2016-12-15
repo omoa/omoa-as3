@@ -59,6 +59,7 @@ package org.omoa.framework {
 		function addDatum(datum:Datum):void;
 		function addPropertyDimension(propertyDimension:ModelDimension):void;
 		function addValueDimension(valueDimension:ModelDimension):void;
-
+		
+		function clear():void;
 	}
 }

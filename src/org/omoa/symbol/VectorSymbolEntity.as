@@ -31,8 +31,8 @@ package org.omoa.symbol {
 	
 	public class VectorSymbolEntity extends VectorSymbol {
 		
-		public function VectorSymbolEntity() {
-			super();
+		public function VectorSymbolEntity(id:String=null) {
+			super(id);
 			
 			_entities = true;
 			_interactive = false;

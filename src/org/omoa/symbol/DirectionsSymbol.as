@@ -26,6 +26,8 @@ package org.omoa.symbol {
 	import flash.display.LineScaleMode;
 	import flash.display.Sprite;
 	import flash.geom.Matrix;
+	import flash.geom.Rectangle;
+	import org.omoa.framework.BoundingBox;
 	import org.omoa.framework.SymbolProperty;
 	import org.omoa.framework.SymbolPropertyType;
 	import org.omoa.spacemodel.SpaceModelEntity;
@@ -123,7 +125,7 @@ package org.omoa.symbol {
 		private var w_length:Number = 1;
 		private var nw_length:Number = 1;
 		
-		public function DirectionsSymbol() {
+		public function DirectionsSymbol(id:String=null) {
 			_symbolProperties = new Vector.<SymbolProperty>(40, true);
 			
 			_symbolProperties[0] = new SymbolProperty();
@@ -297,7 +299,7 @@ package org.omoa.symbol {
 			_symbolProperties[39].type = SymbolPropertyType.VALUE;
 			
 			
-			super();
+			super(id);
 			
 			stroke.fill = strokefill;
 			stroke.scaleMode = LineScaleMode.NONE;
@@ -336,7 +338,7 @@ package org.omoa.symbol {
 		}
 		
 		
-		override protected function renderEntity(target:DisplayObject, spaceEntity:SpaceModelEntity, transformation:Matrix):void {
+		override protected function renderEntity(target:DisplayObject, spaceEntity:SpaceModelEntity, displayExtent:Rectangle, viewportBounds:BoundingBox, transformation:Matrix):void {
 			//sprite.graphics.clear();
 			var sprite:Sprite = target as Sprite;
 			var SINPI4:Number = Math.sin( Math.PI * 0.25 );

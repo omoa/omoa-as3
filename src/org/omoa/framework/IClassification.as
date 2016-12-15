@@ -37,6 +37,7 @@ package org.omoa.framework {
 		function currentElement():IClassificationElement;
 		function count():int;
 		function element(index:int):IClassificationElement;
+		function get dataDescription():Description;
 
 	}
 }

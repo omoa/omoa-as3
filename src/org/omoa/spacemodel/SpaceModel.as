@@ -4,16 +4,22 @@
  */
 package org.omoa.spacemodel {
 
+	import flash.display.GraphicsPath;
+	import flash.display.IGraphicsPath;
 	import flash.events.EventDispatcher;
+	import flash.geom.Rectangle;
 	import org.omoa.framework.BoundingBox;
 	import org.omoa.framework.Description;
+	import org.omoa.framework.ISpaceModelIndex;
 	import org.omoa.framework.ModelDimension;
 	import org.omoa.framework.GeometryType;
 	import org.omoa.framework.IDataModel;
 	import org.omoa.framework.IProjection;
 	import org.omoa.framework.ISpaceModel;
 	import org.omoa.framework.ISpaceModelIterator;
+	import org.omoa.framework.ModelDimensionType;
 	import org.omoa.projection.AbstractProjection;
+	import org.omoa.util.GeometryFunctions;
 	
 
 	/**
@@ -27,6 +33,7 @@ package org.omoa.spacemodel {
 		protected var _id:String;
 		protected var _type:String = GeometryType.GEOMETRY_NONE;
 		protected var _bounds:BoundingBox;
+		protected var _index:ISpaceModelIndex;
 		protected var _projection:IProjection = new AbstractProjection();
 		protected var _attributes:IDataModel;
 		protected var _complete:Boolean = false;
@@ -47,6 +54,7 @@ package org.omoa.spacemodel {
 		 * @param	entity
 		 */
 		protected function addEntity(entity:SpaceModelEntity):void {
+			entity.model = this;
 			entities.push( entity );
 		}
 
@@ -55,6 +63,17 @@ package org.omoa.spacemodel {
 
 		public function get projection():IProjection {
 			return _projection;
+		}
+		
+		public function setIndex(index:ISpaceModelIndex):void {
+			_index = index;
+			if (_index) {
+				_index.createIndex( entities.slice( 0, entities.length ) );
+			}
+		}
+		
+		public function get index():ISpaceModelIndex {
+			return _index;
 		}
 
 		/**
@@ -94,6 +113,33 @@ package org.omoa.spacemodel {
 			for each (entity in entities) {
 				if (entity.id == id) {
 					return entity;
+				}
+			}
+			return null;
+		}
+		
+		public function findByCoordinate(x:Number, y:Number):SpaceModelEntity {
+			var bounds:Rectangle = new Rectangle(x, y, 0.000001, 0.000001);
+			var i:ISpaceModelIterator;
+			var sme:SpaceModelEntity;
+			var testEntities:Vector.<SpaceModelEntity> = new Vector.<SpaceModelEntity>();
+			
+			if (_index) {
+				i = _index.iterator(bounds, true);
+			} else {
+				i = iterator();
+			}
+			
+			while (i.hasNext()) {
+				sme = i.next();
+				if (sme.bounds.containsPoint( bounds.topLeft )) {
+					testEntities.push( sme );
+				}
+			}
+			
+			for each (sme in testEntities) {
+				if (GeometryFunctions.pointInPolygon(sme.path as GraphicsPath, x, y)) {
+					return sme;
 				}
 			}
 			return null;
@@ -170,12 +216,50 @@ package org.omoa.spacemodel {
 						//trace( "*** Linking " + model.id +":" + dimension.classificationID + " with " + _id);
 						for each (entity in entities) {
 							description = model.createDescription( entity.id );
-							if ( description.representsSomething) {
+							//if ( description.representsSomething) {
 								entity.addDescription( description );
-							}
+							//}
 						}
 					}
 				}
+			}
+		}
+		
+		/**
+		 * Creates a PropertyDimension (ModelDimension) from the model for use with an IDataModel.
+		 * 
+		 * @param	withLabels	Set true, when you need the entity names as code labels. Default is false.
+		 * @return A ModelDimension or null, when the SpaceModel is not yet initialized.
+		 */
+		public function createPropertyDimension(withLabels:Boolean = false):ModelDimension {
+			if (_complete) {
+				var codes:Array = new Array();
+				var labels:Array = null;
+				var sme:SpaceModelEntity;
+				var iterator:ISpaceModelIterator = iterator();
+				
+				while (iterator.hasNext()) {
+					sme = iterator.next();
+					codes.push(sme.id);
+				}
+				
+				if (withLabels) {
+					labels = new Array();
+					iterator.reset();
+					while (iterator.hasNext()) {
+						sme = iterator.next();
+						labels.push(sme.name);
+					}
+				}
+				
+				return new ModelDimension(  id,
+											"Entities of " + id + " SpaceModel",
+											"["+ModelDimensionType.ENTITY_ID+"]",
+											ModelDimensionType.ENTITY_ID,
+											codes,
+											labels );
+			} else {
+				return null;
 			}
 		}
 

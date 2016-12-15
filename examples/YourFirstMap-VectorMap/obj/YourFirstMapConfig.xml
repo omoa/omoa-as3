@@ -4,8 +4,8 @@
 <flex-config>
   <target-player>11.0</target-player>
   <benchmark>false</benchmark>
-  <use-network>false</use-network>
   <static-link-runtime-shared-libraries>true</static-link-runtime-shared-libraries>
+  <use-network>false</use-network>
   <compiler>
     <define append="true">
       <name>CONFIG::debug</name>
@@ -17,18 +17,30 @@
     </define>
     <define append="true">
       <name>CONFIG::timeStamp</name>
-      <value>'21.11.2012'</value>
+      <value>'28.10.2014'</value>
+    </define>
+    <define append="true">
+      <name>CONFIG::air</name>
+      <value>false</value>
+    </define>
+    <define append="true">
+      <name>CONFIG::mobile</name>
+      <value>false</value>
+    </define>
+    <define append="true">
+      <name>CONFIG::desktop</name>
+      <value>false</value>
     </define>
     <verbose-stacktraces>true</verbose-stacktraces>
     <source-path append="true">
-      <path-element>E:\ifldev\omoa\omoa\examples\YourFirstMap-VectorMap\src</path-element>
-      <path-element>E:\ifldev\omoa\omoa\src</path-element>
-      <path-element>E:\ifldev\omoa\omoa\lib-src</path-element>
-      <path-element>C:\Program Files\FlashDevelop\Library\AS3\classes</path-element>
+      <path-element>C:\Users\S_Specht\Documents\2014_dev\lib\omoa-as3\examples\YourFirstMap-VectorMap\src</path-element>
+      <path-element>C:\Users\S_Specht\Documents\2014_dev\lib\omoa-as3\src</path-element>
+      <path-element>C:\Users\S_Specht\Documents\2014_dev\lib\omoa-as3\lib-src</path-element>
+      <path-element>C:\Program Files (x86)\FlashDevelop\Library\AS3\classes</path-element>
     </source-path>
   </compiler>
   <file-specs>
-    <path-element>E:\ifldev\omoa\omoa\examples\YourFirstMap-VectorMap\src\yourfirstmap\Main.as</path-element>
+    <path-element>C:\Users\S_Specht\Documents\2014_dev\lib\omoa-as3\examples\YourFirstMap-VectorMap\src\yourfirstmap\Main.as</path-element>
   </file-specs>
   <default-background-color>#FFFFFF</default-background-color>
   <default-frame-rate>5</default-frame-rate>

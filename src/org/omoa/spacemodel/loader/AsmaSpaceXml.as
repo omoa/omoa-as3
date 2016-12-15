@@ -41,11 +41,14 @@ package org.omoa.spacemodel.loader {
 		private var xml:XML;
 		private var loader:URLLoader
 		
+		private var _parameters:Object;
+		
 		public function AsmaSpaceXml() {
 			super();
 		}
 		
-		override public function load( url:String, parameters:Object=null ):void {
+		override public function load( url:String, parameters:Object = null ):void {
+			_parameters = parameters;
 			loader = new URLLoader();
 			loader.addEventListener(Event.COMPLETE, loadComplete );
 			loader.addEventListener(IOErrorEvent.IO_ERROR, error );
@@ -99,6 +102,10 @@ package org.omoa.spacemodel.loader {
 					isPacked = true;
 				}
 				
+				if (_parameters && _parameters.packed) {
+					isPacked = _parameters.packed;
+				}
+				
 				var sme:SpaceModelEntity;
 				var bb:Array;
 				
@@ -134,6 +141,8 @@ package org.omoa.spacemodel.loader {
 					// Alternative Implementierung für Attribute als DM
 					//attributes[ sme.id ] = new Object();
 					//entityIds.push(sme.id);
+					
+					sme.attributes = new Object();
 					
 					for each ( var attribute:XML in place.@ * ) {
 						attributeName = attribute.name().toString();

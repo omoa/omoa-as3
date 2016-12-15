@@ -26,6 +26,7 @@ package org.omoa.spacemodel {
 	import flash.geom.Matrix;
 	import flash.geom.Point;
 	import org.omoa.framework.BoundingBox;
+	import org.omoa.framework.ISpaceModel;
 	
 	import org.omoa.framework.Description;
 	//import org.omoa.framework.IDataModel;
@@ -51,6 +52,10 @@ package org.omoa.spacemodel {
 		 * Name of the entity.
 		 */
 		public var name:String;
+		/**
+		 * The model, the entity originates from.
+		 */
+		public var model:ISpaceModel;
 
 		/**
 		 * BoundingBox of the geometry
@@ -65,7 +70,7 @@ package org.omoa.spacemodel {
 		 * An associative array holding entitity attributes
 		 * from the input file.
 		 */
-		public var attributes:Object = new Object();
+		public var attributes:Object;
 		//public var attributes:IDataModel;
 
 		/**
@@ -83,8 +88,6 @@ package org.omoa.spacemodel {
 		public function SpaceModelEntity(dataDescriptions:Object=null) {
 			if (dataDescriptions) {
 				_dataDescriptions = dataDescriptions;
-			} else {
-				_dataDescriptions = new Object();
 			}
 		}
 		
@@ -97,6 +100,9 @@ package org.omoa.spacemodel {
 		public function addDescription( dataDescription:Description ):void {
 			//_dataDescriptions[ dataDescription.model.id ] = null;
 			if (dataDescription) {
+				if (!_dataDescriptions) {
+					_dataDescriptions = new Object();
+				}
 				_dataDescriptions[ dataDescription.model.id ] = dataDescription;
 			}
 		}
@@ -107,8 +113,9 @@ package org.omoa.spacemodel {
 		 * @param	dataDescription
 		 */
 		public function removeDescription( dataDescription:Description ):void {
-			if (dataDescription && dataDescription.model) {
+			if (_dataDescriptions && dataDescription && dataDescription.model) {
 				_dataDescriptions[ dataDescription.model.id ] = null;
+				delete _dataDescriptions[ dataDescription.model.id ];
 			}
 		}
 		
@@ -119,7 +126,10 @@ package org.omoa.spacemodel {
 		 * @return  The Description or null.
 		 */
 		public function getDescription( modelID:String ):Description {
-			return _dataDescriptions[modelID] as Description;
+			if (_dataDescriptions) {
+				return _dataDescriptions[modelID] as Description;
+			}
+			return null;
 		}
 		
 		/**
@@ -129,8 +139,10 @@ package org.omoa.spacemodel {
 		 */
 		public function getModelIDs():Array {
 			var keys:Array = [];
-			for (var key:String in _dataDescriptions) {
-				keys.push( key );
+			if (_dataDescriptions) {
+				for (var key:String in _dataDescriptions) {
+					keys.push( key );
+				}
 			}
 			return keys;
 		}
@@ -138,8 +150,10 @@ package org.omoa.spacemodel {
 		public function toString():String {
 			var out:String;
 			out = name + " (" + id + ")\r";
-			for (var attributeName:String in attributes) {
-				out += attributeName + "=" + attributes[attributeName] + "; ";
+			if (attributes) {
+				for (var attributeName:String in attributes) {
+					out += attributeName + "=" + attributes[attributeName] + "; ";
+				}
 			}
 			out += "\rLinked DataModels: " + getModelIDs().join(", ");
 			return out;

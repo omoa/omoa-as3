@@ -95,8 +95,8 @@ package org.omoa.datamodel {
 		}
 
 		public function valueDimension(index:int = 0):ModelDimension {
-			if (index > -1 && index < propertyDimensions.length) {
-				return propertyDimensions[index];
+			if (index > -1 && index < valueDimensions.length) {
+				return valueDimensions[index];
 			}
 			return null;
 		}
@@ -115,6 +115,10 @@ package org.omoa.datamodel {
 		
 		override public function toString():String {
 			throw new Error( "addDatum() must be implemented in Subclass." );
+		}
+		
+		public function clear():void {
+			throw new Error( "clear() must be implemented in Subclass." );
 		}
 	}
 	

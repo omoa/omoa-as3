@@ -76,6 +76,7 @@ package org.omoa.spacemodel {
 			AsmaSpaceXml;
 			RasterSpaceModel;
 			GeoJSON;
+			TopoJSON;
 			
 			var loaderClass:Class;
 			var loader:ISpaceModelLoader;
@@ -84,18 +85,17 @@ package org.omoa.spacemodel {
 			try {
 				// try loading from omoa loaders package first
 				loaderClass = getDefinitionByName( "org.omoa.spacemodel.loader." + className ) as Class;
-				if (!loaderClass) {
-					loaderClass = getDefinitionByName( className ) as Class;
-				}
-				if (loaderClass) {
-					loader = new loaderClass() as ISpaceModelLoader;
-					loader.setId(name);
-				}
 			} catch (e:ReferenceError) {
-				e.message = "SpaceModelLoader class '" + className + "' could not be loaded. " + e.message;
-				throw e;
+				try {
+					loaderClass = getDefinitionByName( className ) as Class;
+				} catch (e:ReferenceError) {
+					// nothing we can do
+				}
 			}
-			
+			if (loaderClass) {
+				loader = new loaderClass() as ISpaceModelLoader;
+				loader.setId(name);
+			}
 			return loader;
 		}
 		

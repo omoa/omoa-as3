@@ -20,7 +20,9 @@ along with OMOA.  If not, see <http://www.gnu.org/licenses/>.
 	
 package org.omoa.framework {
 
+	import flash.events.Event;
 	import flash.events.IEventDispatcher;
+	import flash.events.ProgressEvent;
 	import org.omoa.spacemodel.SpaceModelEntity;
 	
 	
@@ -36,6 +38,10 @@ package org.omoa.framework {
 	 * Signalises the pending deconstruction of a SpaceModel.
 	 */
 	[Event(name = Event.REMOVED, type = "flash.events.Event")]
+	/**
+	 * Signalises the end of the loading process. You may now use this class as a SpaceModel.
+	 */
+	[Event(name = ProgressEvent.PROGRESS, type = "flash.events.ProgressEvent")]
 	
 	/**
 	 * Implementations of this interface store (or process) spatial data.
@@ -50,6 +56,7 @@ package org.omoa.framework {
 		function get bounds():BoundingBox;
 		function get geometryType():String;
 		function get isComplete():Boolean;
+		function get index():ISpaceModelIndex;
 		
 		function iterator(type:String = null):ISpaceModelIterator;
 		function attributes():IDataModel;
@@ -59,5 +66,10 @@ package org.omoa.framework {
 		function linkDataModel( model:IDataModel, dataDescription:Description = null ):void;
 
 		function findById(id:String):SpaceModelEntity;
+		function findByCoordinate(x:Number,y:Number):SpaceModelEntity;
+		
+		function createPropertyDimension(withLabels:Boolean = false):ModelDimension;
+		
+		function setIndex(index:ISpaceModelIndex):void;
 	}
 }

@@ -25,6 +25,7 @@ package org.omoa {
 	import flash.display.StageQuality;
 	import flash.events.Event;
 	import flash.events.MouseEvent;
+	import flash.events.ProgressEvent;
 	import flash.events.TimerEvent;
 	import flash.geom.Point;
 	import flash.text.TextField;
@@ -35,6 +36,7 @@ package org.omoa {
 	import org.omoa.layer.AbstractLayer;
 	import org.omoa.layer.SymbolLayer;
 	import org.omoa.spacemodel.AbstractSMLoader;
+	import org.omoa.symbol.AbstractSymbol;
 	import org.omoa.util.NavigationButtons;
 	
 	/**
@@ -50,6 +52,7 @@ package org.omoa {
 		public var mapframeMargin:int = 10;
 
 		protected var layers:Vector.<ILayer> = new Vector.<ILayer>();
+		protected var symbols:Vector.<ISymbol> = new Vector.<ISymbol>();
 		protected var spaceModels:Vector.<ISpaceModel> = new Vector.<ISpaceModel>();
 		protected var dataModels:Vector.<IDataModel> = new Vector.<IDataModel>();
 		
@@ -66,6 +69,9 @@ package org.omoa {
 		private var clickEventBuffer:MouseEvent;
 		private var clickEventMapFrame:MapFrame;
 		private var clickEventStageCoordinates:Point = new Point();
+		
+		private var bytesExpected:int = 0;
+		private var bytesLoaded:Object = {};
 		
 		public function Map() {
 			
@@ -244,10 +250,10 @@ package org.omoa {
 				// only layout mapframes that are children of the map sprite
 				if (mf.parent == this) {
 					mf.y = mapframeMargin;
-					mf.x = 1 + mapframeMargin + mfWidth * count + mapframeMargin * count;
+					mf.x = mapframeMargin + mfWidth * count + mapframeMargin * count;
 					
 					mf.resize( mfWidth, _height - 2 * mapframeMargin );
-					
+					mf.resetBoundsAndScale();
 					count++;
 				}
 			}
@@ -326,10 +332,10 @@ package org.omoa {
 				}
 				clickTimer.reset();
 				//stage.quality = StageQuality.HIGH;
+				dragMapFrame = null;
 			}
 			//e.stopPropagation();
 			//e.stopImmediatePropagation();
-			dragMapFrame = null;
 			//TODO: Syncronize mapframes?
 		}
 		
@@ -340,9 +346,11 @@ package org.omoa {
 			// the mouse button has been released, but the 			
 			// mouse has not moved: remove the drag-handlers
 			stage.removeEventListener(MouseEvent.MOUSE_UP, stopDragging);
-			dragMapFrame.stopDrag();
-			dragMapFrame.removeEventListener(MouseEvent.MOUSE_MOVE, whileDragging);
-			dragMapFrame = null;
+			if (dragMapFrame) {
+				dragMapFrame.stopDrag();
+				dragMapFrame.removeEventListener(MouseEvent.MOUSE_MOVE, whileDragging);
+				dragMapFrame = null;
+			}
 			
 			if (e.currentTarget is MapFrame && !(e.target.parent is NavigationButtons) ) {	
 				// timer-based double click logic
@@ -575,6 +583,12 @@ package org.omoa {
 			return layer;
 		}
 		
+		public function removeLayer(name:String):ILayer {
+			//TODO: implement removeLayer
+			throw new Error("TODO");
+			return null;
+		}
+		
 		/**
 		 * Returns a layer from the layer pool.
 		 * 
@@ -631,6 +645,75 @@ package org.omoa {
 		}
 		
 		// ===================================================================
+		// Symbol Management
+
+		public function createSymbol(name:String, symbolClassName:String="VectorSymbol"):ISymbol {
+			var symbolClass:Class;
+			var symbol:ISymbol;
+			
+			// check uniqueness of name
+			for each (symbol in symbols) {
+				if (symbol.id == name) {
+					throw new Error(" Symbol name '" + name + "' is not unique.");
+				}
+			}
+			
+			symbol = AbstractSymbol.create( name, symbolClassName );
+			
+			if (symbol) {
+				symbols.push(symbol);
+			} else {
+				throw new Error(" Symbol '" + name + "' not created.");
+			}
+			
+			return symbol;
+		}
+		
+		public function removeSymbol(name:String):ISymbol {
+			//TODO: implement removeSymbol
+			throw new Error("TODO");
+			return null;
+		}
+		
+		/**
+		 * Returns a symbol from the symbol pool as ISymbol.
+		 * 
+		 * @param	name The name of the symbol.
+		 * @return The symbol instance.
+		 */
+		public function symbol(name:String):ISymbol {
+			for each (var symbol:ISymbol in symbols) {
+				if (symbol.id == name) {
+					return symbol;
+				}
+			}
+			throw new Error( "Symbol " + name + " does not exist." );
+			return null;
+		}
+		
+		/**
+		 * Returns the number of symbols in the symbol pool.
+		 * 
+		 * @return
+		 */
+		public function countSymbols():uint {
+			return symbols.length;
+		}
+		
+		/**
+		 * Returns a symbol by index.
+		 * 
+		 * @param	index The index of the symbol in the symbol pool.
+		 * @return  The layer.
+		 */
+		public function getSymbol(index:uint):ISymbol {
+			if (index < symbols.length) {
+				return symbols[index];
+			}
+			return null;
+		}
+		
+		// ===================================================================
 		// Model Management
 
 		/**
@@ -657,11 +740,14 @@ package org.omoa {
 				spaceModels.push( spaceModel );
 				if (!spaceModel.isComplete) {
 					spaceModel.addEventListener( Event.COMPLETE, eventSpaceModelComplete, false, 1000 );
+					spaceModel.addEventListener( ProgressEvent.PROGRESS, onSpaceModelProgress );
 				} else {
 					linkModels(spaceModel);
+					//spaceModel.addEventListener( Event.CHANGE, eventSpaceModelChange );
 				}
 			}	
 		}
+		
 		
 		/**
 		 * Creates a SpaceModel and adds it to the map.
@@ -721,8 +807,48 @@ package org.omoa {
 			var sm:ISpaceModel = e.target as ISpaceModel;
 			if (sm) {
 				sm.removeEventListener( Event.COMPLETE, eventSpaceModelComplete );
+				sm.removeEventListener( ProgressEvent.PROGRESS, onSpaceModelProgress );
 				linkModels( sm );
+				//sm.addEventListener( Event.CHANGE, eventSpaceModelChange );
 			}
+		}
+		
+		private function eventSpaceModelChange(e:Event):void {
+			/*
+			var sm:ISpaceModel = e.target as ISpaceModel;
+			if (sm) {
+				trace( sm.id + " changed." );
+			}
+			*/
+		}
+		
+		/**
+		 * (Re-)sets the Number of Bytes the following load processes are expected to load. 
+		 * If set to zero ( resetBytesExpected(); ) the load process is not tracked.
+		 * 
+		 * @param	bytesExpectedToLoad The number of bytes expected to load.
+		 */
+		public function resetBytesExpected(bytesExpectedToLoad:int=0):void {
+			bytesLoaded = {};
+			bytesExpected = bytesExpectedToLoad;
+		}
+		
+		private function onSpaceModelProgress(e:ProgressEvent):void {
+			if (!bytesLoaded[e.bytesTotal]) {
+				bytesLoaded[e.bytesTotal] = 0;
+			}
+			bytesLoaded[e.bytesTotal] = e.bytesLoaded;
+		}
+		
+		public function getLoadProgress():Number {
+			if (bytesExpected == 0) {
+				return 0;
+			}
+			var sum:Number = 0;
+			for each ( var load:Number in bytesLoaded) {
+				sum += load;
+			}
+			return Math.round( sum / bytesExpected * 1000) / 10;
 		}
 
 		public function addDataModel(dataModel:IDataModel):void {
@@ -798,18 +924,24 @@ package org.omoa {
 			if (!model) {
 				for each (spaceModel in spaceModels) {
 					for each (dataModel in dataModels) {
-						spaceModel.linkDataModel( dataModel );
+						if (dataModel.isComplete) {
+							spaceModel.linkDataModel( dataModel );
+						}
 					}
 				}
 			} else if (model is ISpaceModel) {
 				spaceModel = model as ISpaceModel;
 				for each (dataModel in dataModels) {
-					spaceModel.linkDataModel( dataModel );
+					if (dataModel.isComplete) {
+						spaceModel.linkDataModel( dataModel );
+					}
 				}
 			} else if (model is IDataModel) {
 				dataModel = model as IDataModel;
 				for each (spaceModel in spaceModels) {
-					spaceModel.linkDataModel( dataModel );
+					if (spaceModel.isComplete) {
+						spaceModel.linkDataModel( dataModel );
+					}
 				}
 			}
 		}

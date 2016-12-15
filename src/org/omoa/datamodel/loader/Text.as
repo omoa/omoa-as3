@@ -137,13 +137,15 @@ package org.omoa.datamodel.loader {
 		private function loadComplete(e:Event):void {
 			if (loader){
 				initialize(loader.data);
+				_isComplete = true;
 				dispatchEvent(new Event(Event.COMPLETE));
 			}
 		}
 		
 		private function error(e:Event):void {
-			trace("CsvLoader: Load error" + e);
-			dispatchEvent(new ErrorEvent(ErrorEvent.ERROR, false, false, ("CsvLoader: Load error " + e)));
+			//trace("CsvLoader: Load error" + e);
+			//dispatchEvent(new ErrorEvent(ErrorEvent.ERROR, false, false, ("CsvLoader: Load error " + e)));
+			throw new Error(e.toString());
 		}
 		
 		private function parseType(value:*):String {
@@ -201,6 +203,9 @@ package org.omoa.datamodel.loader {
 			var lines:Array = file.split(_parameters.linebreak);
 			file = null;
 			
+			if (lines.length < 3) {
+				throw new Error("Text-Loader: wrong linebreak parameter\r"+lines[0]);
+			}
 			// extract header
 			if (_parameters.hasHeader){
 				header = String(lines.shift()).split(_parameters.separator);

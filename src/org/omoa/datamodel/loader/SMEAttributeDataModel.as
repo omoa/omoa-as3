@@ -38,12 +38,11 @@ package org.omoa.datamodel.loader {
 	
 	public class SMEAttributeDataModel extends AbstractDMLoader {
 		
-		public function SMEAttributeDataModel(id:String=null, spaceModel:ISpaceModel=null, attributeKey:String=null) {
+		public function SMEAttributeDataModel(id:String, spaceModel:ISpaceModel, attributeKey:*) {
 			super();
-			if (id && spaceModel && attributeKey) {
-				_id = id;
-				init(spaceModel, attributeKey);
-			}
+			
+			_id = id;
+			init(spaceModel, attributeKey);
 		}
 		
 		override public function load(url:String, parameters:Object = null):void {
@@ -51,7 +50,7 @@ package org.omoa.datamodel.loader {
 		}
 		
 		override public function initialize(data:*):void {
-			if (data is Object) {
+			if (data && data is Object) {
 				if (data.spaceModel && data.attributeKey && data.spaceModel is ISpaceModel) {
 					init( data.spaceModel as ISpaceModel, data.attributeKey );
 					_isComplete = true;
@@ -61,27 +60,44 @@ package org.omoa.datamodel.loader {
 		}
 		
 		//TODO: implement for multiple value Dimension, not just one
-		private function init(spaceModel:ISpaceModel, attributeKey:String ):void {
+		private function init(spaceModel:ISpaceModel, attributeKey:* ):void {
 			var codes:Array = new Array();
-			var attributes:Array = new Array();
+			var attributes:Object = new Object();
 			var numberCount:int = 0;
 			var notNumberCount:int = 0;
+			
+			var keys:Array;
+			if (attributeKey is String) {
+				keys = [attributeKey];
+			} else if (attributeKey is Array) {
+				keys = attributeKey;
+			} else {
+				throw new Error("The parameter attributeKey must be a String or an Array of Strings.");
+			}
+			
 			
 			var iterator:ISpaceModelIterator = spaceModel.iterator();
 			var sme:SpaceModelEntity;
 			var n:Number;
+			var key:String;
+			
+			for each (key in keys) {
+				attributes[key] = new Array();
+			}
 			
 			// we need to if we are dealing with numbers or strings
 			while (iterator.hasNext()) {
 				sme = iterator.next();
 				codes.push(sme.id);
-				attributes.push(sme.attributes[attributeKey]);
-				n = parseFloat( sme.attributes[attributeKey] )
-				//if (isNaN(n)) { // isNaN() is slow
-				if (n!=n) {
-					notNumberCount++;
-				} else {
-					numberCount++;
+				for each (key in keys) {
+					attributes[key].push(sme.attributes[key]);
+					n = parseFloat( sme.attributes[key] )
+					//if (isNaN(n)) { // isNaN() is slow
+					if (n!=n) {
+						notNumberCount++;
+					} else {
+						numberCount++;
+					}
 				}
 			}
 			
@@ -105,24 +121,59 @@ package org.omoa.datamodel.loader {
 										codes );
 			addPropertyDimension( spaceDimension );
 			
-			var attributeDimension:ModelDimension = 
-					new ModelDimension( attributeKey, 
-										spaceModel.id + "'s " + attributeKey,
-										"",
-										dimType,
-										null, null, true );
-			addValueDimension( attributeDimension );
+			var attributeDimension:ModelDimension;
+			if (keys.length==1) {
+				attributeDimension = 
+						new ModelDimension( attributeKey, 
+											spaceModel.id + "'s " + attributeKey,
+											"",
+											dimType,
+											null, null, true );
+				addValueDimension( attributeDimension );
+			} else {
+				attributeDimension = 
+						new ModelDimension( "ValueDim", 
+											spaceModel.id + "'s Attribute Dimension",
+											"",
+											ModelDimensionType.NOMINAL,
+											keys,
+											keys );
+				addPropertyDimension( attributeDimension );
+				
+				var valDimension:ModelDimension = 
+						new ModelDimension( "Value", 
+											spaceModel.id + "'s " + attributeKey,
+											"",
+											dimType,
+											null, null, true );
+				addValueDimension( valDimension );
+			}
 			
 			// store data
+			var i:int;
 			var value:Datum = new Datum();
 			value.description = createDescription();
-			value.description.selectByCode( value.description.valueDimensionOrder(), attributeKey );
 			
-			for ( var i:int = 0; i < codes.length; i++) {
-				value.description.selectByCode( 1, codes[i] );
-				value.value = attributes[i];
-				addDatum( value );
+			if (keys.length == 1) {
+				value.description.selectByCode( value.description.valueDimensionOrder(), attributeKey );
+				key = attributeKey;
+				for ( i = 0; i < codes.length; i++) {
+					value.description.selectByCode( 1, codes[i] );
+					value.value = attributes[key][i];
+					addDatum( value );
+				}
+			} else {
+				value.description.selectByCode( value.description.valueDimensionOrder(), "Value" );
+				for ( i = 0; i < codes.length; i++) {
+					value.description.selectByCode( 1, codes[i] );
+					for each (key in keys) {
+						value.description.selectByCode( 2, key );
+						value.value = attributes[key][i];
+						addDatum( value );
+					}
+				}
 			}
+			
 
 			_isComplete = true;
 		}

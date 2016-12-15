@@ -23,18 +23,24 @@ package org.omoa.layer {
 	import flash.display.DisplayObject;
 	import flash.display.InteractiveObject;
 	import flash.display.Sprite;
+	import flash.events.Event;
 	import flash.events.MouseEvent;
 	import flash.geom.Matrix;
 	import flash.geom.Rectangle;
 	import flash.utils.Dictionary;
 	import org.omoa.event.SymbolEvent;
 	import org.omoa.framework.ISpaceModel;
+	import org.omoa.framework.ISpaceModelIndex;
 	import org.omoa.framework.ISpaceModelIterator;
 	import org.omoa.framework.ISymbol;
 	import org.omoa.framework.BoundingBox;
+	import org.omoa.spacemodel.iterator.SimpleIterator;
 	import org.omoa.spacemodel.SpaceModelEntity;
+	import org.omoa.spacemodel.index.GridIndex;
 	
 	[Event(name = SymbolEvent.CLICK, type = "org.omoa.event.SymbolEvent")]
+	[Event(name = SymbolEvent.POINT, type = "org.omoa.event.SymbolEvent")]
+	[Event(name = Event.CHANGE, type = "flash.events.Event")]
 	
 	/**
 	 * This layer visualizes a SpaceModel through one or more Symbols. 
@@ -58,6 +64,8 @@ package org.omoa.layer {
 		private var entityDictionaries:Vector.<Dictionary>;
 		
 		private var _interactive:Boolean;
+		
+		private var _isInvalid:Boolean = false;
 
 		public function SymbolLayer(id:String, spaceModel:ISpaceModel) {
 			super(id, spaceModel);
@@ -77,9 +85,19 @@ package org.omoa.layer {
 			// do it for the new symbol too
 			for (var layerSprite:Object in layerSpriteToSymbol) {
 				setup( layerSprite as Sprite );
-				//TODO: The new Symbol won't display. How do we request a render?
-				// Throw everything away and start over?
 			}
+			invalidate();
+		}
+		
+		public function removeSymbol(name:String):ISymbol {
+			var s:ISymbol = this.symbol(name);
+			if (s) {
+				var index:int = _symbols.indexOf(s);
+				_symbols.splice(index, 1);
+				//s.cleanup();
+				throw new Error("Not implemented");
+			}
+			return s;
 		}
 		
 		public function countSymbols():int {
@@ -94,23 +112,50 @@ package org.omoa.layer {
 			}
 		}
 		
+		public function symbol(name:String):ISymbol {
+			for each (var symbol:ISymbol in _symbols) {
+				if (symbol.id==name) {
+					return symbol;
+				}
+			}
+			return null;
+		}
+		
+		private function invalidate():void {
+			if (!_isInvalid) {
+				_isInvalid = true;
+				dispatchEvent(new Event(Event.CHANGE));
+			}
+		}
+		
 		override public function isSetup(sprite:Sprite):Boolean {
 			return Boolean(layerSpriteToSymbol[sprite]);
 		}
 		
 		override public function setup(sprite:Sprite):void {
-			var symbol:ISymbol;
-			
+			var symbol:ISymbol;	
 			var symbolToSymbolSprite:Dictionary;
 			var count:int;
+			
+			cleanup(sprite);
 			
 			if (_interactive) {
 				sprite.mouseChildren = true;
 				sprite.addEventListener( MouseEvent.MOUSE_UP, symbolClick );
+				sprite.addEventListener( MouseEvent.MOUSE_OVER, symbolPoint );
+				sprite.addEventListener( MouseEvent.MOUSE_OUT, symbolPoint );
+				
+				/*
+				// Enforce Index automatically?
+				// not efficient in every case (non-interactive, static SymbolEntity-Symbols) 
+				if (!_spaceModel.index && _spaceModel.entityCount() > 500) {
+					_spaceModel.setIndex( new GridIndex() );
+				}
+				*/
+				
 			} else {
 				sprite.mouseChildren = false;
 			}
-			
 			
 			// this should fail...
 			symbolToSymbolSprite = layerSpriteToSymbol[sprite] as Dictionary;
@@ -118,6 +163,8 @@ package org.omoa.layer {
 				// ...instead create a symbolToSymbolSprite Dictionary
 				symbolToSymbolSprite = new Dictionary(false);
 				layerSpriteToSymbol[sprite] = symbolToSymbolSprite;
+			} else {
+				// The layer was setup already and is probably re-setup
 			}
 			
 			var symbolCount:int = 0;
@@ -216,13 +263,13 @@ package org.omoa.layer {
 					while (iterator.hasNext()) {
 						spaceEntity = iterator.next();
 						entityDisplayObject = entityDictionary[spaceEntity];
-						symbol.render( entityDisplayObject, spaceEntity, transformation );
+						symbol.render( entityDisplayObject, spaceEntity, displayExtent, viewportBounds, transformation );
 					}
 				} else {
 					// render symbols with one DisplayObject for all entites
 					while (iterator.hasNext()) {
 						spaceEntity = iterator.next();
-						symbol.render( symbolSprite, spaceEntity, transformation );
+						symbol.render( symbolSprite, spaceEntity, displayExtent, viewportBounds, transformation );
 					}
 				}
 				
@@ -238,11 +285,17 @@ package org.omoa.layer {
 			var iterator:ISpaceModelIterator;
 			var spaceEntity:SpaceModelEntity;
 			var symbol:ISymbol;
+			var iteratorOutside:ISpaceModelIterator;
 			
 			if (customIterator) {
 				iterator = customIterator;
 			} else {
-				iterator = _spaceModel.iterator();
+				if (_spaceModel.index) {
+					iterator = _spaceModel.index.iterator(viewportBounds);
+					iteratorOutside = _spaceModel.index.iteratorOutside(viewportBounds);
+				} else {
+					iterator = _spaceModel.iterator();
+				}
 			}
 			
 			var symbolToSymbolSprite:Dictionary = layerSpriteToSymbol[sprite] as Dictionary;
@@ -264,28 +317,68 @@ package org.omoa.layer {
 					symbolSprite.transform.matrix = transformation;
 				}
 				
+				if (symbol.needsRenderOnRescale) {
+					symbol.prepareRender(symbolSprite);
+				}
+				
 				if (symbol.needsEntities) {
 					// rescale symbols with one DisplayObject per entity
 					var entityDisplayObject:DisplayObject;
 					var entityDictionary:Dictionary = symbolSpriteToEntityDictionary[symbolSprite];	
 					
+					if (iteratorOutside) {
+						while (iteratorOutside.hasNext()) {
+							spaceEntity = iteratorOutside.next();
+							entityDisplayObject = entityDictionary[spaceEntity];
+							entityDisplayObject.visible = false;
+						}
+					}
+					
 					if (symbol.needsRescale) {
+						iterator.reset();
+						if (symbol.needsRenderOnRescale) {
+							while (iterator.hasNext()) {
+								spaceEntity = iterator.next();
+								entityDisplayObject = entityDictionary[spaceEntity];
+								entityDisplayObject.visible = true;
+								symbol.render( entityDisplayObject, spaceEntity, displayExtent, viewportBounds, transformation );
+							}
+						} else {
+							while (iterator.hasNext()) {
+								spaceEntity = iterator.next();
+								entityDisplayObject = entityDictionary[spaceEntity];
+								entityDisplayObject.visible = true;
+								symbol.rescale( entityDisplayObject, spaceEntity, displayExtent, viewportBounds, transformation );
+							}
+						}
+					} else if (iteratorOutside) {
 						iterator.reset();
 						while (iterator.hasNext()) {
 							spaceEntity = iterator.next();
 							entityDisplayObject = entityDictionary[spaceEntity];
-							symbol.rescale( entityDisplayObject, spaceEntity, displayExtent, viewportBounds, transformation );
+							entityDisplayObject.visible = true;
 						}
 					}
 				} else {
 					// rescale symbols with one DisplayObject for all entites
 					if (symbol.needsRescale) {
 						iterator.reset();
-						while (iterator.hasNext()) {
-							spaceEntity = iterator.next();
-							symbol.rescale( symbolSprite, spaceEntity, displayExtent, viewportBounds, transformation );
+						if (symbol.needsRenderOnRescale) {
+							while (iterator.hasNext()) {
+								spaceEntity = iterator.next();
+								symbol.render( symbolSprite, spaceEntity, displayExtent, viewportBounds, transformation );
+							}
+						} else {
+							while (iterator.hasNext()) {
+								spaceEntity = iterator.next();
+								symbol.rescale( symbolSprite, spaceEntity, displayExtent, viewportBounds, transformation );
+							}
 						}
 					}
+				}
+				
+				if (symbol.needsRenderOnRescale) {
+					symbol.afterRender(symbolSprite);
 				}
 			}
 		}
@@ -294,11 +387,19 @@ package org.omoa.layer {
 			var iterator:ISpaceModelIterator;
 			var spaceEntity:SpaceModelEntity;
 			var symbol:ISymbol;
+			var iteratorOutside:ISpaceModelIterator;
+			
+			
 			
 			if (customIterator) {
 				iterator = customIterator;
 			} else {
-				iterator = _spaceModel.iterator();
+				if (_spaceModel.index) {
+					iterator = _spaceModel.index.iterator(viewportBounds);
+					iteratorOutside = _spaceModel.index.iteratorOutside(viewportBounds);
+				} else {
+					iterator = _spaceModel.iterator();
+				}
 			}
 			
 			var symbolToSymbolSprite:Dictionary = layerSpriteToSymbol[sprite] as Dictionary;
@@ -312,7 +413,7 @@ package org.omoa.layer {
 				
 				if (!symbolSprite) {
 					// TODO: This shouldn't happen: Setup hasn't been called yet. Bailing out.
-					trace( "SymbolLayer.rescale(): ERROR, no Sprite vor Symbol existing." );
+					trace( "SymbolLayer.recenter(): ERROR, no Sprite vor Symbol existing." );
 					break;
 				}
 				
@@ -320,35 +421,113 @@ package org.omoa.layer {
 					symbolSprite.transform.matrix = transformation;
 				}
 				
+				if (symbol.needsRenderOnRecenter) {
+					symbol.prepareRender(symbolSprite);
+				}
+				
 				if (symbol.needsEntities) {
 					// recenter symbols with one DisplayObject per entity
 					var entityDisplayObject:DisplayObject;
 					var entityDictionary:Dictionary = symbolSpriteToEntityDictionary[symbolSprite];
 					
+					if (iteratorOutside) {
+						while (iteratorOutside.hasNext()) {
+							spaceEntity = iteratorOutside.next();
+							entityDisplayObject = entityDictionary[spaceEntity];
+							entityDisplayObject.visible = false;
+						}
+					}
+					
 					if (symbol.needsRecenter) {
+						iterator.reset();
+						if (symbol.needsRenderOnRecenter) {
+							while (iterator.hasNext()) {
+								spaceEntity = iterator.next();
+								entityDisplayObject = entityDictionary[spaceEntity];
+								entityDisplayObject.visible = true;
+								symbol.render( entityDisplayObject, spaceEntity, displayExtent, viewportBounds, transformation );
+							}	
+						} else {
+							while (iterator.hasNext()) {
+								spaceEntity = iterator.next();
+								entityDisplayObject = entityDictionary[spaceEntity];
+								entityDisplayObject.visible = true;
+								symbol.recenter( entityDisplayObject, spaceEntity, displayExtent, viewportBounds, transformation );
+							}
+						}
+					} else if (iteratorOutside) {
 						iterator.reset();
 						while (iterator.hasNext()) {
 							spaceEntity = iterator.next();
 							entityDisplayObject = entityDictionary[spaceEntity];
-							symbol.recenter( entityDisplayObject, spaceEntity, displayExtent, viewportBounds, transformation );
+							entityDisplayObject.visible = true;
 						}
 					}
+					
+					
 				} else {
 					// recenter symbols with one DisplayObject for all Entites
 					if (symbol.needsRecenter) {
 						iterator.reset();
-						while (iterator.hasNext()) {
-							spaceEntity = iterator.next();
-							symbol.recenter( symbolSprite, spaceEntity, displayExtent, viewportBounds, transformation );
+						if (symbol.needsRenderOnRecenter) {
+							while (iterator.hasNext()) {
+								spaceEntity = iterator.next();
+								symbol.render( symbolSprite, spaceEntity, displayExtent, viewportBounds, transformation );
+							}
+						} else {
+							while (iterator.hasNext()) {
+								spaceEntity = iterator.next();
+								symbol.recenter( symbolSprite, spaceEntity, displayExtent, viewportBounds, transformation );
+							}
 						}
 					}
 				}
+				
+				if (symbol.needsRenderOnRecenter) {
+					symbol.afterRender(symbolSprite);
+				}
+				
+				
 			}
 
 		}
 		
 		override public function cleanup(sprite:Sprite):void {
-			throw new Error( "NOT IMPLEMENTED.");
+			// Cleanup Layer(!)
+			var symbol:ISymbol;	
+			var symbolToSymbolSprite:Dictionary = layerSpriteToSymbol[sprite] as Dictionary;
+			var count:int;
+			
+			if (!symbolToSymbolSprite) {
+				return;
+			} else {
+				layerSpriteToSymbol[sprite] = null;
+				delete layerSpriteToSymbol[sprite];
+			}
+			
+			if (sprite.hasEventListener( MouseEvent.MOUSE_UP )) {
+				sprite.removeEventListener( MouseEvent.MOUSE_UP, symbolClick );
+			}
+			if (sprite.hasEventListener( MouseEvent.MOUSE_OVER )) {
+				sprite.removeEventListener( MouseEvent.MOUSE_OVER, symbolPoint );
+			}
+			if (sprite.hasEventListener( MouseEvent.MOUSE_OUT )) {
+				sprite.removeEventListener( MouseEvent.MOUSE_OUT, symbolPoint );
+			}
+			
+			for each (symbol in _symbols) {
+				var symbolSprite:Sprite = symbolToSymbolSprite[symbol];
+				
+				if (symbolSprite) {
+					symbolSprite.removeChildren();
+					sprite.removeChild(symbolSprite);
+					symbolToSymbolSprite[symbol] = null;
+					delete symbolToSymbolSprite[symbol];
+					symbolSpriteToEntityDictionary[symbolSprite] = null;
+					delete symbolSpriteToEntityDictionary[symbolSprite];
+				}
+				
+			}
 		}
 		
 		public function getEntityForSprite( displayObject:DisplayObject ):SpaceModelEntity {
@@ -367,10 +546,23 @@ package org.omoa.layer {
 			if (e.target) {
 				se.entity = spaceModel.findById(e.target.name);
 			}
-				
+			
 			if (se.entity) {
 				dispatchEvent( se );
 			}
+			
+		}
+		
+		private function symbolPoint(e:MouseEvent):void {
+			var se:SymbolEvent = new SymbolEvent( SymbolEvent.POINT, e.bubbles, e.cancelable,
+												e.localX, e.localY, e.target as InteractiveObject,
+												e.ctrlKey, e.altKey, e.shiftKey, e.buttonDown, e.delta);
+			
+			if (e.target && e.type == MouseEvent.MOUSE_OVER) {
+				se.entity = spaceModel.findById(e.target.name);
+			}
+				
+			dispatchEvent( se );
 		}
 
 	}

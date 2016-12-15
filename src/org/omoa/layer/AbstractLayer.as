@@ -126,15 +126,15 @@ package org.omoa.layer {
 			try {
 				// try loading omoa layer first
 				layerClass = getDefinitionByName( "org.omoa.layer." + className ) as Class;
-				if (!layerClass) {
-					layerClass = getDefinitionByName( className ) as Class;
-				}
-				if (layerClass) {
-					layer = new layerClass( name, spacemodel );
-				}
 			} catch (e:ReferenceError) {
-				e.message = "Layer class '" + className + "' could not be loaded. " + e.message;
-				throw e;
+				try {
+					layerClass = getDefinitionByName( className ) as Class;
+				} catch (e:ReferenceError) {
+					// nothing we can do
+				}
+			}
+			if (layerClass) {
+				layer = new layerClass( name, spacemodel );
 			}
 			
 			return layer;

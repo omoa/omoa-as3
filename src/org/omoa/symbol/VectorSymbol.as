@@ -28,6 +28,8 @@ package org.omoa.symbol {
 	import flash.display.LineScaleMode;
 	import flash.display.Sprite;
 	import flash.geom.Matrix;
+	import flash.geom.Rectangle;
+	import org.omoa.framework.BoundingBox;
 	import org.omoa.framework.SymbolProperty;
 	import org.omoa.framework.SymbolPropertyType;
 	import org.omoa.spacemodel.SpaceModelEntity;
@@ -55,7 +57,7 @@ package org.omoa.symbol {
 		private var noStroke:GraphicsStroke = new GraphicsStroke();
 		private var noFill:GraphicsEndFill = new GraphicsEndFill();
 		
-		public function VectorSymbol() {			
+		public function VectorSymbol(id:String=null) {			
 			_symbolProperties = new Vector.<SymbolProperty>(5, true);
 			
 			_symbolProperties[0] = new SymbolProperty();
@@ -77,7 +79,7 @@ package org.omoa.symbol {
 			_symbolProperties[4] = new SymbolProperty();
 			_symbolProperties[4].name = OUTLINEWIDTH;
 			_symbolProperties[4].type = SymbolPropertyType.VALUE;
-			super();
+			super(id);
 			
 			stroke.fill = strokefill;
 			stroke.scaleMode = LineScaleMode.NONE;
@@ -91,7 +93,7 @@ package org.omoa.symbol {
 			parentSprite.graphics.clear();
 		}
 		
-		override protected function renderEntity(target:DisplayObject, spaceEntity:SpaceModelEntity, transformation:Matrix):void {
+		override protected function renderEntity(target:DisplayObject, spaceEntity:SpaceModelEntity, displayExtent:Rectangle, viewportBounds:BoundingBox, transformation:Matrix):void {
 			var sprite:Sprite = target as Sprite;
 			graphics.splice(0, graphics.length);
 			if (fill.alpha > 0) {

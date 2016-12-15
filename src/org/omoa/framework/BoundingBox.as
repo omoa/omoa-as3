@@ -20,6 +20,7 @@ along with OMOA.  If not, see <http://www.gnu.org/licenses/>.
 
 package org.omoa.framework {
 
+	import flash.geom.Point;
 	import flash.geom.Rectangle;
 	
 	/**
@@ -81,6 +82,11 @@ package org.omoa.framework {
 			width = rect.width;
 			_maxx = rect.right;
 			_maxy = rect.bottom;
+		}
+		
+		public function get center():Point {
+			var p:Point = new Point(_minx + width * 0.5, _miny + height * 0.5);
+			return p;
 		}
 		
 		override public function toString():String {
